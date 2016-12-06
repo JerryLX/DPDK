@@ -3,3 +3,5 @@
 *.log
 *.map
 /old_arm/*
+/autotest_*/*
+/dpdkinstall/*
