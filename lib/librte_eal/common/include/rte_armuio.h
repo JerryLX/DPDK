@@ -123,7 +123,8 @@ void rte_eal_armuio_unregister(struct rte_armuio_driver *driver);
  *
  * @author lixu 
  */
-int rte_eal_armuio_init(void);
+//maybe should not put it here
+//int rte_eal_armuio_init(void);
 
 /**
  * Alloc device data.
