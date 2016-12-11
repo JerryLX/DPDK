@@ -346,7 +346,7 @@ igbuio_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	pci_set_master(dev);
 
 	/* remap IO memory */
-	err = igbuio_setup_bars(dev, &udev->info);
+    err = igbuio_setup_bars(dev, &udev->info);
 	if (err != 0)
 		goto fail_release_iomem;
 
