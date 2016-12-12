@@ -25,6 +25,19 @@
 #define FILE_TRUE 1
 #define FILE_MAX 256
 
+#define SYSFS_PLATFORM_DEVICES "/sys/bus/platform/devices"
+
+const char *platform_get_sysfs_path(void)
+{
+	const char *path = NULL;
+
+	path = getenv("SYSFS_PLATFORM_DEVICES");
+	if (path == NULL)
+		return SYSFS_PLATFORM_DEVICES;
+
+	return path;
+}
+
 struct platform_driver_list platform_driver_list;
 struct platform_device_list platform_device_list;
 struct platform_data_list platform_data_list;
@@ -35,6 +48,8 @@ struct dev_file_info {
 }
 
 struct dev_file_info dev_file[FILE_MAX];
+
+
 
 struct rte_platform_driver *rte_check_platform_drv_is_reg(char *drv_name)
 {

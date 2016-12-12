@@ -60,8 +60,9 @@ struct rte_platform_device {
     /**< UIO Memory Resource. */
     struct rte_platform_resource mem_resource[PLATFORM_MAX_RESOURCE];
     struct rte_platform_driver  *driver;      /**< Associated driver */
-    int                        uio_fd;
-    int                        numa_node;   /**< NUMA node connection */
+    struct rte_intr_handle       intr_handle;
+    int                          uio_fd;
+    int                          numa_node;   /**< NUMA node connection */
 };
 
 /**
@@ -95,6 +96,19 @@ struct rte_platform_data {
     char *name;
     void *data;
 };
+
+/**
+ * Probe the platform vbus for registed drivers.
+ * 
+ * Call the probe() function for all registered drivers.
+ *
+ * @return 
+ *   - 0 on success
+ *   - Negative on error.
+ * 
+ * @author lixu
+ */
+int rte_eal_platform_probe(void);
 
 /**
  * Register a Platform driver.

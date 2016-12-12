@@ -36,6 +36,7 @@
 
 #include <stdio.h>
 #include <rte_pci.h>
+#include <rte_platform.h>
 
 /**
  * Initialize the memzone subsystem (private to eal).
@@ -117,7 +118,7 @@ int rte_eal_log_early_init(void);
 int rte_eal_log_init(const char *id, int facility);
 
 /**
- * Init the default log stream
+ * Init the PCI
  *
  * This function is private to EAL.
  *
@@ -125,6 +126,18 @@ int rte_eal_log_init(const char *id, int facility);
  *   0 on success, negative on error
  */
 int rte_eal_pci_init(void);
+
+/**
+ * Init the platform
+ *
+ * This funtion is private to EAL
+ *
+ * @return
+ *   0 on success, negative on error
+ * @author
+ *   lixu
+ */
+int rte_eal_platform_init(void);
 
 #ifdef RTE_LIBRTE_IVSHMEM
 /**
@@ -226,6 +239,9 @@ void pci_uio_free_resource(struct rte_pci_device *dev,
 int pci_uio_map_resource_by_index(struct rte_pci_device *dev, int res_idx,
 		struct mapped_pci_resource *uio_res, int map_idx);
 
+
+struct rte_platform_device;
+struct rte_platform_driver;
 /**
  * Init tail queues for non-EAL library structures. This is to allow
  * the rings, mempools, etc. lists to be shared among multiple processes

@@ -70,6 +70,7 @@
 #include <rte_cpuflags.h>
 #include <rte_interrupts.h>
 #include <rte_pci.h>
+#include <rte_platform.h>
 #include <rte_devargs.h>
 #include <rte_common.h>
 #include <rte_version.h>
@@ -794,6 +795,10 @@ for(i=0;i<argc;i++){
 	if (rte_eal_pci_init() < 0)
 		rte_panic("Cannot init PCI\n");
 
+    //by lixu 
+    if (rte_eal_platform_init() < 0)
+        rte_panic("Cannot init Platform\n");
+
 #ifdef VFIO_PRESENT
 	if (rte_eal_vfio_setup() < 0)
 		rte_panic("Cannot init VFIO\n");
@@ -888,6 +893,11 @@ for(i=0;i<argc;i++){
 	/* Probe & Initialize PCI devices */
 	if (rte_eal_pci_probe())
 		rte_panic("Cannot probe PCI\n");
+
+    /* Probe & Initialize Platform devices */
+    //by lixu
+    if (rte_eal_platform_probe())
+        rte_panic("Cannot probe Platform");
 
 	rte_eal_mcfg_complete();
 
