@@ -1,6 +1,5 @@
-dep_test_pmd_perf.o = /root/dpdk-stable-16.07.1/app/test/test_pmd_perf.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_test_pmd_perf.o = /root/lixu/app/test/test_pmd_perf.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -50,13 +49,12 @@ dep_test_pmd_perf.o = /root/dpdk-stable-16.07.1/app/test/test_pmd_perf.c \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/stdlib.h /usr/include/aarch64-linux-gnu/bits/waitflags.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h /usr/include/stdlib.h \
+ /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/xlocale.h \
  /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
@@ -72,57 +70,53 @@ dep_test_pmd_perf.o = /root/dpdk-stable-16.07.1/app/test/test_pmd_perf.c \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ethdev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/build/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy_64.h \
- /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
+ /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mempool.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/generic/rte_memcpy.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_mempool.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/timex.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eth_ctrl.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev_info.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/app/test/packet_burst_generator.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_arp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ip.h \
- /usr/include/netinet/in.h /usr/include/aarch64-linux-gnu/sys/socket.h \
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_ring.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_prefetch.h \
+ /root/lixu/build/include/rte_prefetch_64.h \
+ /root/lixu/build/include/generic/rte_prefetch.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_eth_ctrl.h \
+ /root/lixu/build/include/rte_dev_info.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/app/test/packet_burst_generator.h \
+ /root/lixu/build/include/rte_ether.h /root/lixu/build/include/rte_arp.h \
+ /root/lixu/build/include/rte_ip.h /usr/include/netinet/in.h \
+ /usr/include/aarch64-linux-gnu/sys/socket.h \
  /usr/include/aarch64-linux-gnu/sys/uio.h \
  /usr/include/aarch64-linux-gnu/bits/uio.h \
  /usr/include/aarch64-linux-gnu/bits/socket.h \
@@ -134,7 +128,6 @@ dep_test_pmd_perf.o = /root/dpdk-stable-16.07.1/app/test/test_pmd_perf.c \
  /usr/include/asm-generic/sockios.h \
  /usr/include/aarch64-linux-gnu/bits/socket2.h \
  /usr/include/aarch64-linux-gnu/bits/in.h \
- /root/dpdk-stable-16.07.1/build/include/rte_udp.h \
- /root/dpdk-stable-16.07.1/app/test/test.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h
+ /root/lixu/build/include/rte_udp.h /root/lixu/app/test/test.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h

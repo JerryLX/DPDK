@@ -81,8 +81,6 @@ get_num_hugepages(const char *subdir)
 			sys_dir_path, subdir, nr_hp_file);
 	if (eal_parse_sysfs_value(path, &num_pages) < 0)
 		return 0;
-printf("resv_pages:%d\n",resv_pages);
-printf("free_pages:%d\n",num_pages);
 
 	if (num_pages == 0)
 		RTE_LOG(WARNING, EAL, "No free hugepages reported in %s\n",

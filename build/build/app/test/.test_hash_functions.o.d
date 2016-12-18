@@ -1,7 +1,5 @@
-dep_test_hash_functions.o = \
- /root/dpdk-stable-16.07.1/app/test/test_hash_functions.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_test_hash_functions.o = /root/lixu/app/test/test_hash_functions.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -42,13 +40,11 @@ dep_test_hash_functions.o = \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/ctype.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
@@ -56,23 +52,21 @@ dep_test_hash_functions.o = \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_hash.h \
- /root/dpdk-stable-16.07.1/build/include/rte_jhash.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_hash_crc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cpuflags.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cpuflags_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cpuflags.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_crc_arm64.h \
- /root/dpdk-stable-16.07.1/app/test/test.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_hash.h /root/lixu/build/include/rte_jhash.h \
+ /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_hash_crc.h \
+ /root/lixu/build/include/rte_cpuflags.h \
+ /root/lixu/build/include/rte_cpuflags_64.h \
+ /root/lixu/build/include/generic/rte_cpuflags.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_crc_arm64.h /root/lixu/app/test/test.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h

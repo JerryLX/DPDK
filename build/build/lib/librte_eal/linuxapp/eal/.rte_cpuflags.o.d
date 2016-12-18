@@ -1,12 +1,9 @@
-dep_rte_cpuflags.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/arch/arm/rte_cpuflags.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cpuflags.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cpuflags_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cpuflags.h \
- /usr/include/errno.h /usr/include/features.h \
- /usr/include/aarch64-linux-gnu/sys/cdefs.h \
+dep_rte_cpuflags.o = /root/lixu/lib/librte_eal/common/arch/arm/rte_cpuflags.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /root/lixu/build/include/rte_cpuflags.h \
+ /root/lixu/build/include/rte_cpuflags_64.h \
+ /root/lixu/build/include/generic/rte_cpuflags.h /usr/include/errno.h \
+ /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \

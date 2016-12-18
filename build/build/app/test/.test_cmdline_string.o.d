@@ -1,7 +1,5 @@
-dep_test_cmdline_string.o = \
- /root/dpdk-stable-16.07.1/app/test/test_cmdline_string.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_test_cmdline_string.o = /root/lixu/app/test/test_cmdline_string.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -21,7 +19,7 @@ dep_test_cmdline_string.o = \
  /usr/include/aarch64-linux-gnu/bits/string3.h /usr/include/inttypes.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -48,7 +46,7 @@ dep_test_cmdline_string.o = \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h \
- /root/dpdk-stable-16.07.1/app/test/test_cmdline.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h \
+ /root/lixu/app/test/test_cmdline.h

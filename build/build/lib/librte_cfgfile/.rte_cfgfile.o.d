@@ -1,6 +1,5 @@
-dep_rte_cfgfile.o = /root/dpdk-stable-16.07.1/lib/librte_cfgfile/rte_cfgfile.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_cfgfile.o = /root/lixu/lib/librte_cfgfile/rte_cfgfile.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -34,5 +33,5 @@ dep_rte_cfgfile.o = /root/dpdk-stable-16.07.1/lib/librte_cfgfile/rte_cfgfile.c \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h /usr/include/ctype.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_cfgfile/rte_cfgfile.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_cfgfile/rte_cfgfile.h

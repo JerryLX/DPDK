@@ -1,12 +1,9 @@
-dep_test_timer_racecond.o = \
- /root/dpdk-stable-16.07.1/app/test/test_timer_racecond.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/app/test/test.h \
+dep_test_timer_racecond.o = /root/lixu/app/test/test_timer_racecond.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /root/lixu/app/test/test.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stddef.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -48,32 +45,29 @@ dep_test_timer_racecond.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h \
- /usr/include/unistd.h /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h /usr/include/unistd.h \
+ /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_timer.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_timer.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/timex.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h

@@ -1,7 +1,5 @@
-dep_cmdline_vt100.o = \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_vt100.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_vt100.o = /root/lixu/lib/librte_cmdline/cmdline_vt100.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -39,4 +37,4 @@ dep_cmdline_vt100.o = \
  /usr/include/aarch64-linux-gnu/bits/string3.h /usr/include/ctype.h \
  /usr/include/termios.h /usr/include/aarch64-linux-gnu/bits/termios.h \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_vt100.h
+ /root/lixu/lib/librte_cmdline/cmdline_vt100.h

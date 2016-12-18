@@ -1,7 +1,5 @@
-dep_rte_power_kvm_vm.o = \
- /root/dpdk-stable-16.07.1/lib/librte_power/rte_power_kvm_vm.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_power_kvm_vm.o = /root/lixu/lib/librte_power/rte_power_kvm_vm.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/errno.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -15,8 +13,7 @@ dep_rte_power_kvm_vm.o = \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
@@ -49,12 +46,12 @@ dep_rte_power_kvm_vm.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/guest_channel.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/channel_commands.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/channel_commands.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/rte_power_kvm_vm.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/rte_power_common.h
+ /root/lixu/lib/librte_power/guest_channel.h \
+ /root/lixu/lib/librte_power/channel_commands.h \
+ /root/lixu/lib/librte_power/channel_commands.h \
+ /root/lixu/lib/librte_power/rte_power_kvm_vm.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_power/rte_power_common.h

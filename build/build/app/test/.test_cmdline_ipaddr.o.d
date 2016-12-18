@@ -1,7 +1,5 @@
-dep_test_cmdline_ipaddr.o = \
- /root/dpdk-stable-16.07.1/app/test/test_cmdline_ipaddr.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_test_cmdline_ipaddr.o = /root/lixu/app/test/test_cmdline_ipaddr.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -44,7 +42,7 @@ dep_test_cmdline_ipaddr.o = \
  /usr/include/asm-generic/sockios.h \
  /usr/include/aarch64-linux-gnu/bits/socket2.h \
  /usr/include/aarch64-linux-gnu/bits/in.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_ipaddr.h \
- /root/dpdk-stable-16.07.1/app/test/test_cmdline.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_ipaddr.h \
+ /root/lixu/app/test/test_cmdline.h

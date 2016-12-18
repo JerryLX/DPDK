@@ -1,7 +1,5 @@
-dep_cmdline_cirbuf.o = \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_cirbuf.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_cirbuf.o = /root/lixu/lib/librte_cmdline/cmdline_cirbuf.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/string.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -22,4 +20,4 @@ dep_cmdline_cirbuf.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_cirbuf.h
+ /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h

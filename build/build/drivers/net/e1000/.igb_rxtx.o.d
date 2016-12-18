@@ -1,6 +1,5 @@
-dep_igb_rxtx.o = /root/dpdk-stable-16.07.1/drivers/net/e1000/igb_rxtx.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_igb_rxtx.o = /root/lixu/drivers/net/e1000/igb_rxtx.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/stdio.h \
  /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -39,84 +38,76 @@ dep_igb_rxtx.o = /root/dpdk-stable-16.07.1/drivers/net/e1000/igb_rxtx.c \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/ctype.h \
+ /usr/include/inttypes.h /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mempool.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ethdev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eth_ctrl.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev_info.h \
- /root/dpdk-stable-16.07.1/build/include/rte_udp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_tcp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_sctp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/e1000_logs.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_api.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_hw.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_osdep.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/../e1000_logs.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_regs.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_defines.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_mac.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_phy.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_nvm.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_manage.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_mbx.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_api.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82541.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82543.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82571.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_80003es2lan.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_ich8lan.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82575.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_i210.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/e1000_ethdev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_time.h
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_pci.h /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h \
+ /root/lixu/build/include/generic/rte_memcpy.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_launch.h /root/lixu/build/include/rte_eal.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_ring.h \
+ /root/lixu/build/include/rte_mempool.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/build/include/rte_prefetch.h \
+ /root/lixu/build/include/rte_prefetch_64.h \
+ /root/lixu/build/include/generic/rte_prefetch.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_eth_ctrl.h \
+ /root/lixu/build/include/rte_dev_info.h \
+ /root/lixu/build/include/rte_udp.h /root/lixu/build/include/rte_tcp.h \
+ /root/lixu/build/include/rte_sctp.h \
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/drivers/net/e1000/e1000_logs.h \
+ /root/lixu/drivers/net/e1000/base/e1000_api.h \
+ /root/lixu/drivers/net/e1000/base/e1000_hw.h \
+ /root/lixu/drivers/net/e1000/base/e1000_osdep.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/drivers/net/e1000/base/../e1000_logs.h \
+ /root/lixu/drivers/net/e1000/base/e1000_regs.h \
+ /root/lixu/drivers/net/e1000/base/e1000_defines.h \
+ /root/lixu/drivers/net/e1000/base/e1000_mac.h \
+ /root/lixu/drivers/net/e1000/base/e1000_phy.h \
+ /root/lixu/drivers/net/e1000/base/e1000_nvm.h \
+ /root/lixu/drivers/net/e1000/base/e1000_manage.h \
+ /root/lixu/drivers/net/e1000/base/e1000_mbx.h \
+ /root/lixu/drivers/net/e1000/base/e1000_api.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82541.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82543.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82571.h \
+ /root/lixu/drivers/net/e1000/base/e1000_80003es2lan.h \
+ /root/lixu/drivers/net/e1000/base/e1000_ich8lan.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82575.h \
+ /root/lixu/drivers/net/e1000/base/e1000_i210.h \
+ /root/lixu/drivers/net/e1000/e1000_ethdev.h \
+ /root/lixu/build/include/rte_time.h

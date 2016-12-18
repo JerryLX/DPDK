@@ -1,1 +1,1 @@
-/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_82599.c
+/root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_82599.c

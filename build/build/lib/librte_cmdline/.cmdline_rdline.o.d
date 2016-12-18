@@ -1,7 +1,5 @@
-dep_cmdline_rdline.o = \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_rdline.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_rdline.o = /root/lixu/lib/librte_cmdline/cmdline_rdline.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -40,8 +38,7 @@ dep_cmdline_rdline.o = \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /usr/include/ctype.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_rdline.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_vt100.h
+ /usr/include/ctype.h /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
+ /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
+ /root/lixu/build/include/cmdline_cirbuf.h \
+ /root/lixu/build/include/cmdline_vt100.h

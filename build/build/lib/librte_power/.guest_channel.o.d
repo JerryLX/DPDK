@@ -1,7 +1,5 @@
-dep_guest_channel.o = \
- /root/dpdk-stable-16.07.1/lib/librte_power/guest_channel.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_guest_channel.o = /root/lixu/lib/librte_power/guest_channel.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -70,11 +68,9 @@ dep_guest_channel.o = \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /usr/include/ctype.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/guest_channel.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/channel_commands.h \
- /root/dpdk-stable-16.07.1/lib/librte_power/channel_commands.h
+ /usr/include/ctype.h /root/lixu/lib/librte_power/guest_channel.h \
+ /root/lixu/lib/librte_power/channel_commands.h \
+ /root/lixu/lib/librte_power/channel_commands.h

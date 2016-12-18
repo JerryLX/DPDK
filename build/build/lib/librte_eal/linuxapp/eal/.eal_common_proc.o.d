@@ -1,7 +1,5 @@
-dep_eal_common_proc.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_proc.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_eal_common_proc.o = /root/lixu/lib/librte_eal/common/eal_common_proc.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -36,14 +34,13 @@ dep_eal_common_proc.o = \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
+ /root/lixu/build/include/rte_eal.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/xlocale.h \
- /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_filesystem.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+ /root/lixu/lib/librte_eal/common/eal_filesystem.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
@@ -54,6 +51,6 @@ dep_eal_common_proc.o = \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_internal_cfg.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci_dev_feature_defs.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_eal/common/eal_internal_cfg.h \
+ /root/lixu/build/include/rte_pci_dev_feature_defs.h

@@ -187,5 +187,62 @@ void rte_eal_platform_data_free(char *name)
     RTE_LOG(ERR,EAL,"name: %s not found!\n",name);
 }
 
+/*
+ * If name match, call the devinit() function of the
+ * driver.
+ */
+static int
+rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_platform_device *dev)
+{
+	int ret;
+
+	for (; ;) {
+
+		/* check if device's identifiers match the driver's ones */
+
+		if (dr->drv_flags & RTE_PCI_DRV_NEED_MAPPING) {
+			/* map resources for devices that use plf_uio */
+			ret = rte_eal_platform_map_device(dev);
+			if (ret != 0)
+				return ret;
+		}
+
+		/* reference driver structure */
+		dev->driver = dr;
+
+		/* call the driver devinit() function */
+		return dr->devinit(dr, dev);
+	}
+	/* return positive value if driver doesn't support this device */
+	return 1;
+}
+/*
+ * If name match, call the devinit() function of all
+ * registered driver for the given device. Return -1 if initialization
+ * failed, return 1 if no driver is found for this device.
+ */
+static int
+platform_probe_all_drivers(struct rte_platform_device *dev)
+{
+	struct rte_platform_driver *dr = NULL;
+	int rc = 0;
+
+	if (dev == NULL)
+		return -1;
+
+	TAILQ_FOREACH(dr, &platform_driver_list, next) {
+		rc = rte_eal_platform_probe_one_driver(dr, dev);
+		if (rc < 0)
+			/* negative value is an error */
+			return -1;
+		if (rc > 0)
+			/* positive value means driver doesn't support it */
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+
 
 

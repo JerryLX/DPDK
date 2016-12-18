@@ -1,7 +1,5 @@
-dep_cmdline_socket.o = \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_socket.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_socket.o = /root/lixu/lib/librte_cmdline/cmdline_socket.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -48,10 +46,10 @@ dep_cmdline_socket.o = \
  /usr/include/aarch64-linux-gnu/bits/fcntl2.h /usr/include/termios.h \
  /usr/include/aarch64-linux-gnu/bits/termios.h \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_rdline.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_vt100.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_socket.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_rdline.h
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h \
+ /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
+ /root/lixu/build/include/cmdline_cirbuf.h \
+ /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/lib/librte_cmdline/cmdline_socket.h \
+ /root/lixu/lib/librte_cmdline/cmdline.h \
+ /root/lixu/build/include/cmdline_rdline.h

@@ -1,7 +1,7 @@
-dep_rte_red.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_red.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h /usr/include/math.h \
- /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
+dep_rte_red.o = /root/lixu/lib/librte_sched/rte_red.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /usr/include/math.h /usr/include/features.h \
+ /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
@@ -13,7 +13,7 @@ dep_rte_red.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_red.c \
  /usr/include/aarch64-linux-gnu/bits/mathdef.h \
  /usr/include/aarch64-linux-gnu/bits/mathcalls.h \
  /usr/include/aarch64-linux-gnu/bits/mathinline.h \
- /root/dpdk-stable-16.07.1/lib/librte_sched/rte_red.h \
+ /root/lixu/lib/librte_sched/rte_red.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
@@ -24,8 +24,7 @@ dep_rte_red.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_red.c \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
  /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/stdlib.h \
+ /root/lixu/build/include/rte_common.h /usr/include/stdlib.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stddef.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
@@ -48,20 +47,19 @@ dep_rte_red.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_red.c \
  /usr/include/errno.h /usr/include/aarch64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h \
- /usr/include/wchar.h /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h /usr/include/stdio.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_random.h

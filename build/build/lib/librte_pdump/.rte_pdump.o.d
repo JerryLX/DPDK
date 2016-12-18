@@ -1,6 +1,5 @@
-dep_rte_pdump.o = /root/dpdk-stable-16.07.1/lib/librte_pdump/rte_pdump.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_pdump.o = /root/lixu/lib/librte_pdump/rte_pdump.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/aarch64-linux-gnu/sys/socket.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -50,13 +49,13 @@ dep_rte_pdump.o = /root/dpdk-stable-16.07.1/lib/librte_pdump/rte_pdump.c \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy_64.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/generic/rte_memcpy.h \
+ /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
@@ -72,41 +71,37 @@ dep_rte_pdump.o = /root/dpdk-stable-16.07.1/lib/librte_pdump/rte_pdump.c \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mempool.h \
- /usr/include/inttypes.h /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ethdev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/build/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eth_ctrl.h \
- /root/dpdk-stable-16.07.1/build/include/rte_dev_info.h \
- /root/dpdk-stable-16.07.1/build/include/rte_errno.h \
- /root/dpdk-stable-16.07.1/lib/librte_pdump/rte_pdump.h
+ /root/lixu/build/include/rte_mempool.h /usr/include/inttypes.h \
+ /usr/include/aarch64-linux-gnu/sys/queue.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_per_lcore.h \
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_ring.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_prefetch.h \
+ /root/lixu/build/include/rte_prefetch_64.h \
+ /root/lixu/build/include/generic/rte_prefetch.h \
+ /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_eth_ctrl.h \
+ /root/lixu/build/include/rte_dev_info.h \
+ /root/lixu/build/include/rte_errno.h \
+ /root/lixu/lib/librte_pdump/rte_pdump.h

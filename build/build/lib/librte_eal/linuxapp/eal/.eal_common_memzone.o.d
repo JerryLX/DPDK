@@ -1,7 +1,6 @@
 dep_eal_common_memzone.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_memzone.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+ /root/lixu/lib/librte_eal/common/eal_common_memzone.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -42,8 +41,7 @@ dep_eal_common_memzone.o = \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/include/ctype.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
@@ -51,35 +49,35 @@ dep_eal_common_memzone.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h /usr/include/sched.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_eal.h /usr/include/sched.h \
  /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal_memconfig.h \
- /root/dpdk-stable-16.07.1/build/include/rte_tailq.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc_heap.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_rwlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_rwlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_errno.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/malloc_heap.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/malloc_elem.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_private.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+ /root/lixu/build/include/rte_eal_memconfig.h \
+ /root/lixu/build/include/rte_tailq.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_malloc_heap.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_rwlock.h \
+ /root/lixu/build/include/generic/rte_rwlock.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_errno.h \
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_eal/common/malloc_heap.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/lib/librte_eal/common/malloc_elem.h \
+ /root/lixu/lib/librte_eal/common/eal_private.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/common/include/rte_platform.h

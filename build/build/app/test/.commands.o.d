@@ -1,8 +1,6 @@
-dep_commands.o = /root/dpdk-stable-16.07.1/app/test/commands.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /usr/include/stdio.h /usr/include/features.h \
- /usr/include/aarch64-linux-gnu/sys/cdefs.h \
+dep_commands.o = /root/lixu/app/test/commands.c /usr/include/stdc-predef.h \
+ /root/lixu/build/include/rte_config.h /usr/include/stdio.h \
+ /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
@@ -55,8 +53,7 @@ dep_commands.o = /root/dpdk-stable-16.07.1/app/test/commands.c \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/ctype.h \
+ /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
@@ -64,49 +61,46 @@ dep_commands.o = /root/dpdk-stable-16.07.1/app/test/commands.c \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h /usr/include/sched.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h \
+ /root/lixu/build/include/generic/rte_memcpy.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_eal.h /usr/include/sched.h \
  /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/timex.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/aarch64-linux-gnu/bits/timex.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mempool.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_rdline.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_vt100.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_ipaddr.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_num.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline.h \
- /root/dpdk-stable-16.07.1/app/test/test.h
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_ring.h \
+ /root/lixu/build/include/rte_mempool.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/build/include/rte_prefetch.h \
+ /root/lixu/build/include/rte_prefetch_64.h \
+ /root/lixu/build/include/generic/rte_prefetch.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/cmdline_rdline.h \
+ /root/lixu/build/include/cmdline_cirbuf.h \
+ /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_ipaddr.h \
+ /root/lixu/build/include/cmdline_parse_num.h \
+ /root/lixu/build/include/cmdline_parse_string.h \
+ /root/lixu/build/include/cmdline.h /root/lixu/app/test/test.h

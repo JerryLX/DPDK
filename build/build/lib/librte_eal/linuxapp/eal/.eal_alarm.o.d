@@ -1,7 +1,5 @@
-dep_eal_alarm.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/eal_alarm.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_eal_alarm.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_alarm.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -57,9 +55,9 @@ dep_eal_alarm.o = \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /usr/include/aarch64-linux-gnu/sys/timerfd.h \
  /usr/include/aarch64-linux-gnu/bits/timerfd.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
@@ -71,21 +69,19 @@ dep_eal_alarm.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_alarm.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_alarm.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_errno.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_private.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /usr/include/inttypes.h
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_errno.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/lib/librte_eal/common/eal_private.h \
+ /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/lib/librte_eal/common/include/rte_platform.h

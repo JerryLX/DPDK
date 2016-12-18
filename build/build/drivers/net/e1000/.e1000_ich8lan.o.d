@@ -1,10 +1,8 @@
-dep_e1000_ich8lan.o = \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_ich8lan.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_api.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_hw.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_osdep.h \
+dep_e1000_ich8lan.o = /root/lixu/drivers/net/e1000/base/e1000_ich8lan.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /root/lixu/drivers/net/e1000/base/e1000_api.h \
+ /root/lixu/drivers/net/e1000/base/e1000_hw.h \
+ /root/lixu/drivers/net/e1000/base/e1000_osdep.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -24,7 +22,7 @@ dep_e1000_ich8lan.o = \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -50,31 +48,30 @@ dep_e1000_ich8lan.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/../e1000_logs.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_regs.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_defines.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_mac.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_phy.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_nvm.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_manage.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_mbx.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82541.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82543.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82571.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_80003es2lan.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_ich8lan.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_82575.h \
- /root/dpdk-stable-16.07.1/drivers/net/e1000/base/e1000_i210.h
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/drivers/net/e1000/base/../e1000_logs.h \
+ /root/lixu/drivers/net/e1000/base/e1000_regs.h \
+ /root/lixu/drivers/net/e1000/base/e1000_defines.h \
+ /root/lixu/drivers/net/e1000/base/e1000_mac.h \
+ /root/lixu/drivers/net/e1000/base/e1000_phy.h \
+ /root/lixu/drivers/net/e1000/base/e1000_nvm.h \
+ /root/lixu/drivers/net/e1000/base/e1000_manage.h \
+ /root/lixu/drivers/net/e1000/base/e1000_mbx.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82541.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82543.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82571.h \
+ /root/lixu/drivers/net/e1000/base/e1000_80003es2lan.h \
+ /root/lixu/drivers/net/e1000/base/e1000_ich8lan.h \
+ /root/lixu/drivers/net/e1000/base/e1000_82575.h \
+ /root/lixu/drivers/net/e1000/base/e1000_i210.h

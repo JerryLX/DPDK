@@ -12,7 +12,6 @@
 extern "C" {
 #endif
 
-#define PAGE_SIZE 4096
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,15 +75,23 @@ typedef int (platform_devinit_t)(struct rte_platform_driver *,struct rte_platfor
 typedef int (platform_devuninit_t)(struct rte_platform_device *);
 
 /**
+ * A structure describing an ID for a platform device
+ */
+struct rte_platform_id {
+    char name[PLATFORM_NAME_MAX_LEN];    
+};
+
+/**
  * A structure describing a Platform UIO driver.
  */
 struct rte_platform_driver {
     TAILQ_ENTRY(rte_armuio_driver) next;        /**< Next in list. */
     
-    char                 *name; /**< Driver name. */
+    char                 *name;                      /**< Driver name. */
     platform_devinit_t   *dev_init;                  /**< Device init. funcion. */
     platform_devuninit_t *dev_uninit;                /**< Device uninit. function. */
 
+    const struct rte_platform_id *id_table;          /**< ID table. */
 };
 
 /**
@@ -96,6 +103,23 @@ struct rte_platform_data {
     char *name;
     void *data;
 };
+
+/**
+ * Map the Platform device resources in user space virtual memory address
+ *
+ * Note that driver should not call this function when flag
+ * RTE_PCI_DRV_NEED_MAPPING is set, as EAL will do that for
+ * you when it's on.
+ *
+ * @param dev
+ *   A pointer to a rte_platform_device structure describing the device
+ *   to use
+ *
+ * @return
+ *   0 on success, negative on error and positive if no driver
+ *   is found for the device.
+ */
+int rte_eal_platform_map_device(struct rte_platform_device *dev);
 
 /**
  * Probe the platform vbus for registed drivers.

@@ -1,7 +1,5 @@
-dep_test_power_acpi_cpufreq.o = \
- /root/dpdk-stable-16.07.1/app/test/test_power_acpi_cpufreq.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_test_power_acpi_cpufreq.o = /root/lixu/app/test/test_power_acpi_cpufreq.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -31,11 +29,9 @@ dep_test_power_acpi_cpufreq.o = \
  /usr/include/aarch64-linux-gnu/bits/xopen_lim.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
- /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/app/test/test.h \
+ /usr/include/aarch64-linux-gnu/bits/string3.h /root/lixu/app/test/test.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -55,10 +51,10 @@ dep_test_power_acpi_cpufreq.o = \
  /usr/include/errno.h /usr/include/aarch64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h \
- /root/dpdk-stable-16.07.1/build/include/rte_power.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h \
+ /root/lixu/build/include/rte_power.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_string_fns.h

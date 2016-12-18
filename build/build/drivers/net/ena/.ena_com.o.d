@@ -1,9 +1,8 @@
-dep_ena_com.o = /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_com.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_com.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_plat.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_plat_dpdk.h \
+dep_ena_com.o = /root/lixu/drivers/net/ena/base/ena_com.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /root/lixu/drivers/net/ena/base/ena_com.h \
+ /root/lixu/drivers/net/ena/base/ena_plat.h \
+ /root/lixu/drivers/net/ena/base/ena_plat_dpdk.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdbool.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -39,17 +38,15 @@ dep_ena_com.o = /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_com.c \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/ctype.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
@@ -62,21 +59,19 @@ dep_ena_com.o = /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_com.c \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_per_lcore.h \
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
  /usr/include/aarch64-linux-gnu/sys/time.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_defs/ena_common_defs.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_defs/ena_admin_defs.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_defs/ena_eth_io_defs.h \
- /root/dpdk-stable-16.07.1/drivers/net/ena/base/ena_defs/ena_regs_defs.h
+ /root/lixu/drivers/net/ena/base/ena_defs/ena_common_defs.h \
+ /root/lixu/drivers/net/ena/base/ena_defs/ena_admin_defs.h \
+ /root/lixu/drivers/net/ena/base/ena_defs/ena_eth_io_defs.h \
+ /root/lixu/drivers/net/ena/base/ena_defs/ena_regs_defs.h

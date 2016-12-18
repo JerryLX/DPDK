@@ -1,6 +1,5 @@
-dep_rte_approx.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_approx.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_approx.o = /root/lixu/lib/librte_sched/rte_approx.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -25,6 +24,6 @@ dep_rte_approx.o = /root/dpdk-stable-16.07.1/lib/librte_sched/rte_approx.c \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib.h \
- /root/dpdk-stable-16.07.1/lib/librte_sched/rte_approx.h \
+ /root/lixu/lib/librte_sched/rte_approx.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h

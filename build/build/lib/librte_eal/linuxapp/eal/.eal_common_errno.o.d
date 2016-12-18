@@ -1,7 +1,5 @@
-dep_eal_common_errno.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_errno.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_eal_common_errno.o = /root/lixu/lib/librte_eal/common/eal_common_errno.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -24,14 +22,13 @@ dep_eal_common_errno.o = \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/endian.h \
- /usr/include/aarch64-linux-gnu/bits/endian.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/endian.h /usr/include/aarch64-linux-gnu/bits/endian.h \
  /usr/include/aarch64-linux-gnu/bits/byteswap.h \
  /usr/include/aarch64-linux-gnu/bits/byteswap-16.h /usr/include/sched.h \
  /usr/include/time.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/time.h \
  /usr/include/aarch64-linux-gnu/bits/pthreadtypes.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_errno.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h
+ /root/lixu/build/include/rte_errno.h \
+ /root/lixu/build/include/rte_string_fns.h

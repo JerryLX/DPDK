@@ -1,7 +1,6 @@
 dep_eal_common_hexdump.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_hexdump.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+ /root/lixu/lib/librte_eal/common/eal_common_hexdump.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -37,5 +36,5 @@ dep_eal_common_hexdump.o = \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /root/dpdk-stable-16.07.1/build/include/rte_hexdump.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h
+ /root/lixu/build/include/rte_hexdump.h \
+ /root/lixu/build/include/rte_string_fns.h

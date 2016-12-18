@@ -1,6 +1,5 @@
-fd_man.o: /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_user/fd_man.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+fd_man.o: /root/lixu/lib/librte_vhost/vhost_user/fd_man.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -49,8 +48,8 @@ fd_man.o: /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_user/fd_man.c \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/ctype.h /usr/include/xlocale.h /usr/include/errno.h \
+ /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
+ /usr/include/xlocale.h /usr/include/errno.h \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
@@ -60,9 +59,7 @@ fd_man.o: /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_user/fd_man.c \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_user/fd_man.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
+ /root/lixu/lib/librte_vhost/vhost_user/fd_man.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h

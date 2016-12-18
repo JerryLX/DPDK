@@ -1,13 +1,13 @@
-cmd_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := gcc -Wp,-MD,/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/.e1000_mac.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni --param max-inline-insns-single=50   -I/root/dpdk-stable-16.07.1/build/include   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb -include /root/dpdk-stable-16.07.1/build/include/rte_config.h -Wall -Werror -DUBUNTU_RELEASE_CODE=1504 -D"UBUNTU_KERNEL_CODE=UBUNTU_KERNEL_VERSION(4,4,11+,1)"  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(e1000_mac)"  -D"KBUILD_MODNAME=KBUILD_STR(rte_kni)" -c -o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/.tmp_e1000_mac.o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.c
+cmd_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := gcc -Wp,-MD,/root/lixu/build/build/lib/librte_eal/linuxapp/kni/.e1000_mac.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/lixu/build/build/lib/librte_eal/linuxapp/kni -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/lixu/lib/librte_eal/linuxapp/kni --param max-inline-insns-single=50   -I/root/lixu/build/include   -I/root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe   -I/root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb -include /root/lixu/build/include/rte_config.h -Wall -Werror -DUBUNTU_RELEASE_CODE=1504 -D"UBUNTU_KERNEL_CODE=UBUNTU_KERNEL_VERSION(4,4,11+,1)"  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(e1000_mac)"  -D"KBUILD_MODNAME=KBUILD_STR(rte_kni)" -c -o /root/lixu/build/build/lib/librte_eal/linuxapp/kni/.tmp_e1000_mac.o /root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.c
 
-source_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.c
+source_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := /root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.c
 
-deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := \
-  /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o := \
+  /root/lixu/build/include/rte_config.h \
     $(wildcard include/config/h.h) \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_api.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_hw.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_osdep.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_api.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_hw.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_osdep.h \
   /root/open-estuary/kernel/include/linux/pci.h \
     $(wildcard include/config/pci/iov.h) \
     $(wildcard include/config/pcieaspm.h) \
@@ -792,7 +792,7 @@ deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac
   /root/open-estuary/kernel/include/linux/splice.h \
   /root/open-estuary/kernel/include/linux/pipe_fs_i.h \
   /root/open-estuary/kernel/include/net/flow.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/kcompat.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/kcompat.h \
     $(wildcard include/config/igb/disable/packet/split.h) \
     $(wildcard include/config/net/poll/controller.h) \
     $(wildcard include/config/have/efficient/unaligned/access.h) \
@@ -1079,19 +1079,19 @@ deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac
   /root/open-estuary/kernel/include/linux/pm_runtime.h \
   /root/open-estuary/kernel/include/linux/mdio.h \
   /root/open-estuary/kernel/include/uapi/linux/mdio.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_regs.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_defines.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_regs.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_defines.h \
     $(wildcard include/config/res.h) \
     $(wildcard include/config/fault.h) \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_mac.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_phy.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_nvm.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_manage.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_mbx.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_api.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_82575.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_i210.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_mac.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_phy.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_nvm.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_manage.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_mbx.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_api.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_82575.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb/e1000_i210.h \
 
-/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o: $(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o)
+/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o: $(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o)
 
-$(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o):
+$(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/e1000_mac.o):

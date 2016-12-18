@@ -1,7 +1,6 @@
 dep_eal_common_pci_uio.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_pci_uio.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+ /root/lixu/lib/librte_eal/common/eal_common_pci_uio.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/fcntl.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -36,13 +35,13 @@ dep_eal_common_pci_uio.o = \
  /usr/include/aarch64-linux-gnu/sys/mman.h \
  /usr/include/aarch64-linux-gnu/bits/mman.h \
  /usr/include/aarch64-linux-gnu/bits/mman-linux.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
+ /root/lixu/build/include/rte_eal.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_tailq.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+ /root/lixu/build/include/rte_tailq.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/stdio.h \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
@@ -50,9 +49,8 @@ dep_eal_common_pci_uio.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
@@ -67,14 +65,13 @@ dep_eal_common_pci_uio.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_private.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
- /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/lib/librte_eal/common/eal_private.h \
+ /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/common/include/rte_platform.h

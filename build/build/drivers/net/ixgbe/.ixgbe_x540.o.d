@@ -1,12 +1,9 @@
-dep_ixgbe_x540.o = \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_x540.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_x540.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_type.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_osdep.h \
- /usr/include/string.h /usr/include/features.h \
- /usr/include/aarch64-linux-gnu/sys/cdefs.h \
+dep_ixgbe_x540.o = /root/lixu/drivers/net/ixgbe/base/ixgbe_x540.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_x540.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_type.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_osdep.h /usr/include/string.h \
+ /usr/include/features.h /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs.h \
  /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
@@ -24,7 +21,7 @@ dep_ixgbe_x540.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -50,22 +47,21 @@ dep_ixgbe_x540.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/../ixgbe_logs.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/../ixgbe_bypass_defines.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_mbx.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_api.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_common.h \
- /root/dpdk-stable-16.07.1/drivers/net/ixgbe/base/ixgbe_phy.h
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_cycles.h \
+ /root/lixu/build/include/rte_cycles_64.h \
+ /root/lixu/build/include/generic/rte_cycles.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/drivers/net/ixgbe/base/../ixgbe_logs.h \
+ /root/lixu/drivers/net/ixgbe/base/../ixgbe_bypass_defines.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_mbx.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_api.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_common.h \
+ /root/lixu/drivers/net/ixgbe/base/ixgbe_phy.h

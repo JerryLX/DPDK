@@ -34,8 +34,8 @@ include $(RTE_SDK)/mk/rte.vars.mk
 #
 # module name and path
 #
-MODULE = plt_uio
-MODULE_PATH = drivers/net/plt_uio
+MODULE = plf_uio
+MODULE_PATH = drivers/net/plf_uio
 
 #
 # CFLAGS
@@ -48,6 +48,6 @@ MODULE_CFLAGS += -include $(RTE_OUTPUT)/include/rte_config.h
 #
 # all source are stored in SRCS-y
 #
-SRCS-y := plt_uio.c
+SRCS-y := plf_uio.c
 
 include $(RTE_SDK)/mk/rte.module.mk

@@ -1,7 +1,6 @@
 dep_eal_common_devargs.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_common_devargs.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+ /root/lixu/lib/librte_eal/common/eal_common_devargs.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -19,7 +18,7 @@ dep_eal_common_devargs.o = \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -48,8 +47,8 @@ dep_eal_common_devargs.o = \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_private.h
+ /usr/include/inttypes.h /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/lib/librte_eal/common/eal_private.h \
+ /root/lixu/lib/librte_eal/common/include/rte_platform.h

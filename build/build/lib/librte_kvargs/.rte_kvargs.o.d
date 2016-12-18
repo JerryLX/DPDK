@@ -1,6 +1,5 @@
-dep_rte_kvargs.o = /root/dpdk-stable-16.07.1/lib/librte_kvargs/rte_kvargs.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_kvargs.o = /root/lixu/lib/librte_kvargs/rte_kvargs.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/string.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -28,8 +27,7 @@ dep_rte_kvargs.o = /root/dpdk-stable-16.07.1/lib/librte_kvargs/rte_kvargs.c \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/ctype.h /usr/include/errno.h \
@@ -48,5 +46,5 @@ dep_rte_kvargs.o = /root/dpdk-stable-16.07.1/lib/librte_kvargs/rte_kvargs.c \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_kvargs/rte_kvargs.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_kvargs/rte_kvargs.h

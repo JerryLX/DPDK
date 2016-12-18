@@ -1,7 +1,5 @@
-dep_rte_reciprocal.o = \
- /root/dpdk-stable-16.07.1/lib/librte_sched/rte_reciprocal.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_rte_reciprocal.o = /root/lixu/lib/librte_sched/rte_reciprocal.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -18,8 +16,8 @@ dep_rte_reciprocal.o = \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/stdlib.h /usr/include/aarch64-linux-gnu/bits/waitflags.h \
+ /root/lixu/build/include/rte_common.h /usr/include/stdlib.h \
+ /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
  /usr/include/aarch64-linux-gnu/bits/byteswap.h \
@@ -45,4 +43,4 @@ dep_rte_reciprocal.o = \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/lib/librte_sched/rte_reciprocal.h
+ /root/lixu/lib/librte_sched/rte_reciprocal.h

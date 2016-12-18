@@ -1,6 +1,5 @@
-dep_vhost_rxtx.o = /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_rxtx.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_vhost_rxtx.o = /root/lixu/lib/librte_vhost/vhost_rxtx.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -18,10 +17,8 @@ dep_vhost_rxtx.o = /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_rxtx.c \
  /usr/include/aarch64-linux-gnu/asm/posix_types.h \
  /usr/include/asm-generic/posix_types.h /usr/include/linux/virtio_ids.h \
  /usr/include/linux/virtio_config.h /usr/include/linux/virtio_types.h \
- /usr/include/linux/if_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /usr/include/stdlib.h \
+ /usr/include/linux/if_ether.h /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/build/include/rte_common.h /usr/include/stdlib.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stddef.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
@@ -51,51 +48,47 @@ dep_vhost_rxtx.o = /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_rxtx.c \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/build/include/rte_mempool.h \
- /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h \
- /usr/include/wchar.h /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
+ /root/lixu/build/include/rte_mempool.h /usr/include/stdio.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
  /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h /usr/include/inttypes.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/aarch64-linux-gnu/bits/sched.h \
+ /root/lixu/build/include/rte_spinlock.h \
+ /root/lixu/build/include/generic/rte_spinlock.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_memcpy_64.h \
- /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
+ /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/build/include/rte_ring.h \
+ /root/lixu/build/include/rte_atomic.h \
+ /root/lixu/build/include/rte_atomic_64.h \
+ /root/lixu/build/include/generic/rte_atomic.h \
+ /root/lixu/build/include/rte_memzone.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/build/include/rte_random.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/rte_ip.h \
- /usr/include/netinet/in.h /usr/include/aarch64-linux-gnu/sys/socket.h \
+ /root/lixu/build/include/generic/rte_memcpy.h \
+ /root/lixu/build/include/rte_prefetch.h \
+ /root/lixu/build/include/rte_prefetch_64.h \
+ /root/lixu/build/include/generic/rte_prefetch.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_random.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h \
+ /root/lixu/build/include/rte_ip.h /usr/include/netinet/in.h \
+ /usr/include/aarch64-linux-gnu/sys/socket.h \
  /usr/include/aarch64-linux-gnu/sys/uio.h \
  /usr/include/aarch64-linux-gnu/bits/uio.h \
  /usr/include/aarch64-linux-gnu/bits/socket.h \
@@ -107,20 +100,17 @@ dep_vhost_rxtx.o = /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost_rxtx.c \
  /usr/include/asm-generic/sockios.h \
  /usr/include/aarch64-linux-gnu/bits/socket2.h \
  /usr/include/aarch64-linux-gnu/bits/in.h \
- /root/dpdk-stable-16.07.1/lib/librte_vhost/rte_virtio_net.h \
- /usr/include/linux/vhost.h /usr/include/linux/ioctl.h \
- /usr/include/aarch64-linux-gnu/asm/ioctl.h \
+ /root/lixu/build/include/rte_virtio_net.h /usr/include/linux/vhost.h \
+ /usr/include/linux/ioctl.h /usr/include/aarch64-linux-gnu/asm/ioctl.h \
  /usr/include/asm-generic/ioctl.h /usr/include/linux/virtio_ring.h \
  /usr/include/aarch64-linux-gnu/sys/eventfd.h \
  /usr/include/aarch64-linux-gnu/bits/eventfd.h /usr/include/linux/if.h \
  /usr/include/linux/socket.h /usr/include/linux/hdlc/ioctl.h \
- /root/dpdk-stable-16.07.1/build/include/rte_tcp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_udp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_sctp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_arp.h \
- /root/dpdk-stable-16.07.1/lib/librte_vhost/vhost-net.h \
- /usr/include/unistd.h /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
+ /root/lixu/build/include/rte_tcp.h /root/lixu/build/include/rte_udp.h \
+ /root/lixu/build/include/rte_sctp.h /root/lixu/build/include/rte_arp.h \
+ /root/lixu/lib/librte_vhost/vhost-net.h /usr/include/unistd.h \
+ /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h \
- /root/dpdk-stable-16.07.1/lib/librte_vhost/rte_virtio_net.h
+ /root/lixu/lib/librte_vhost/rte_virtio_net.h

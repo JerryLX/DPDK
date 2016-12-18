@@ -1,7 +1,5 @@
-dep_eal_lcore.o = \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/eal_lcore.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_eal_lcore.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_lcore.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/unistd.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -26,8 +24,7 @@ dep_eal_lcore.o = \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h /usr/include/dirent.h \
  /usr/include/aarch64-linux-gnu/bits/dirent.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
@@ -54,24 +51,24 @@ dep_eal_lcore.o = \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/dpdk-stable-16.07.1/build/include/rte_eal.h /usr/include/sched.h \
+ /root/lixu/build/include/rte_eal.h /usr/include/sched.h \
  /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/build/include/rte_per_lcore.h \
- /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/timex.h \
+ /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
+ /usr/include/aarch64-linux-gnu/bits/timex.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/build/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/build/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/build/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/build/include/rte_log.h \
- /root/dpdk-stable-16.07.1/build/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_private.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_lcore.h \
+ /root/lixu/build/include/rte_launch.h \
+ /root/lixu/build/include/rte_common.h \
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_branch_prediction.h \
+ /root/lixu/lib/librte_eal/common/eal_private.h \
+ /root/lixu/build/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_filesystem.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_internal_cfg.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci_dev_feature_defs.h \
- /root/dpdk-stable-16.07.1/lib/librte_eal/common/eal_thread.h
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/common/include/rte_platform.h \
+ /root/lixu/lib/librte_eal/common/eal_filesystem.h \
+ /root/lixu/lib/librte_eal/common/eal_internal_cfg.h \
+ /root/lixu/build/include/rte_pci_dev_feature_defs.h \
+ /root/lixu/lib/librte_eal/common/eal_thread.h

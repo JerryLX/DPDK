@@ -1,5 +1,4 @@
-dep_pmdinfogen.o = \
- /root/dpdk-stable-16.07.1/buildtools/pmdinfogen/pmdinfogen.c \
+dep_pmdinfogen.o = /root/lixu/buildtools/pmdinfogen/pmdinfogen.c \
  /usr/include/stdc-predef.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -27,8 +26,7 @@ dep_pmdinfogen.o = \
  /usr/include/errno.h /usr/include/aarch64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /usr/include/libgen.h \
- /root/dpdk-stable-16.07.1/build/include/rte_common.h \
+ /usr/include/libgen.h /root/lixu/build/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/stdlib.h /usr/include/aarch64-linux-gnu/bits/waitflags.h \
@@ -41,7 +39,7 @@ dep_pmdinfogen.o = \
  /usr/include/aarch64-linux-gnu/sys/sysmacros.h \
  /usr/include/aarch64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
- /root/dpdk-stable-16.07.1/buildtools/pmdinfogen/pmdinfogen.h \
+ /root/lixu/buildtools/pmdinfogen/pmdinfogen.h \
  /usr/include/aarch64-linux-gnu/sys/stat.h \
  /usr/include/aarch64-linux-gnu/bits/stat.h \
  /usr/include/aarch64-linux-gnu/sys/mman.h \
@@ -54,10 +52,9 @@ dep_pmdinfogen.o = \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/elf.h /usr/include/aarch64-linux-gnu/bits/auxv.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
- /root/dpdk-stable-16.07.1/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_config.h /root/lixu/build/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
- /root/dpdk-stable-16.07.1/build/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/build/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/build/include/generic/rte_byteorder.h
+ /root/lixu/build/include/rte_interrupts.h \
+ /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_byteorder.h \
+ /root/lixu/build/include/generic/rte_byteorder.h

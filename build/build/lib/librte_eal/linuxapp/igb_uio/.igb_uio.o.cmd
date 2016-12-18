@@ -1,10 +1,10 @@
-cmd_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := gcc -Wp,-MD,/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/.igb_uio.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/igb_uio --param max-inline-insns-single=100   -I/root/dpdk-stable-16.07.1/build/include -Winline -Wall -Werror -include /root/dpdk-stable-16.07.1/build/include/rte_config.h  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(igb_uio)"  -D"KBUILD_MODNAME=KBUILD_STR(igb_uio)" -c -o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/.tmp_igb_uio.o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.c
+cmd_/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := gcc -Wp,-MD,/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/.igb_uio.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/lixu/lib/librte_eal/linuxapp/igb_uio --param max-inline-insns-single=100   -I/root/lixu/build/include -Winline -Wall -Werror -include /root/lixu/build/include/rte_config.h  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(igb_uio)"  -D"KBUILD_MODNAME=KBUILD_STR(igb_uio)" -c -o /root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/.tmp_igb_uio.o /root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.c
 
-source_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.c
+source_/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := /root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.c
 
-deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := \
+deps_/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o := \
     $(wildcard include/config/xen/dom0.h) \
-  /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+  /root/lixu/build/include/rte_config.h \
     $(wildcard include/config/h.h) \
   /root/open-estuary/kernel/include/linux/device.h \
     $(wildcard include/config/debug/devres.h) \
@@ -804,10 +804,10 @@ deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_u
   arch/arm64/include/generated/asm/msi.h \
   /root/open-estuary/kernel/include/asm-generic/msi.h \
   include/generated/uapi/linux/version.h \
-  /root/dpdk-stable-16.07.1/build/include/rte_pci_dev_features.h \
-  /root/dpdk-stable-16.07.1/build/include/rte_pci_dev_feature_defs.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/igb_uio/compat.h \
+  /root/lixu/build/include/rte_pci_dev_features.h \
+  /root/lixu/build/include/rte_pci_dev_feature_defs.h \
+  /root/lixu/lib/librte_eal/linuxapp/igb_uio/compat.h \
 
-/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o: $(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o)
+/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o: $(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o)
 
-$(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o):
+$(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/igb_uio/igb_uio.o):

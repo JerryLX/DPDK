@@ -1,7 +1,5 @@
-dep_cmdline_parse_num.o = \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_parse_num.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_parse_num.o = /root/lixu/lib/librte_cmdline/cmdline_parse_num.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -28,7 +26,7 @@ dep_cmdline_parse_num.o = \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /root/dpdk-stable-16.07.1/build/include/rte_string_fns.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_parse_num.h \
- /root/dpdk-stable-16.07.1/lib/librte_cmdline/cmdline_parse.h
+ /root/lixu/build/include/rte_string_fns.h \
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h \
+ /root/lixu/lib/librte_cmdline/cmdline_parse_num.h \
+ /root/lixu/build/include/cmdline_parse.h

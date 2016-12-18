@@ -1,1 +1,1 @@
-/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/Makefile
+/root/lixu/lib/librte_eal/linuxapp/kni/Makefile

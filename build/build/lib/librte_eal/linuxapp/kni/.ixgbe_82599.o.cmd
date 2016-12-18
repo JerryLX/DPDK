@@ -1,13 +1,13 @@
-cmd_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := gcc -Wp,-MD,/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/.ixgbe_82599.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni --param max-inline-insns-single=50   -I/root/dpdk-stable-16.07.1/build/include   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe   -I/root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/igb -include /root/dpdk-stable-16.07.1/build/include/rte_config.h -Wall -Werror -DUBUNTU_RELEASE_CODE=1504 -D"UBUNTU_KERNEL_CODE=UBUNTU_KERNEL_VERSION(4,4,11+,1)"  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(ixgbe_82599)"  -D"KBUILD_MODNAME=KBUILD_STR(rte_kni)" -c -o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/.tmp_ixgbe_82599.o /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.c
+cmd_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := gcc -Wp,-MD,/root/lixu/build/build/lib/librte_eal/linuxapp/kni/.ixgbe_82599.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/lixu/build/build/lib/librte_eal/linuxapp/kni -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/lixu/lib/librte_eal/linuxapp/kni --param max-inline-insns-single=50   -I/root/lixu/build/include   -I/root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe   -I/root/lixu/lib/librte_eal/linuxapp/kni/ethtool/igb -include /root/lixu/build/include/rte_config.h -Wall -Werror -DUBUNTU_RELEASE_CODE=1504 -D"UBUNTU_KERNEL_CODE=UBUNTU_KERNEL_VERSION(4,4,11+,1)"  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(ixgbe_82599)"  -D"KBUILD_MODNAME=KBUILD_STR(rte_kni)" -c -o /root/lixu/build/build/lib/librte_eal/linuxapp/kni/.tmp_ixgbe_82599.o /root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.c
 
-source_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := /root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.c
+source_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := /root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.c
 
-deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := \
+deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o := \
     $(wildcard include/config/ptr.h) \
-  /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+  /root/lixu/build/include/rte_config.h \
     $(wildcard include/config/h.h) \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_type.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_osdep.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_type.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_osdep.h \
   /root/open-estuary/kernel/include/linux/pci.h \
     $(wildcard include/config/pci/iov.h) \
     $(wildcard include/config/pcieaspm.h) \
@@ -792,7 +792,7 @@ deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_825
   /root/open-estuary/kernel/include/linux/splice.h \
   /root/open-estuary/kernel/include/linux/pipe_fs_i.h \
   /root/open-estuary/kernel/include/net/flow.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/kcompat.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/kcompat.h \
     $(wildcard include/config/ixgbe/napi.h) \
     $(wildcard include/config/ixgbe/disable/packet/split.h) \
     $(wildcard include/config/net/poll/controller.h) \
@@ -1075,13 +1075,13 @@ deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_825
   /root/open-estuary/kernel/include/linux/pci-aspm.h \
     $(wildcard include/config/pcieaspm/debug.h) \
   /root/open-estuary/kernel/include/linux/pm_runtime.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_mbx.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_type.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_82599.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_api.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_common.h \
-  /root/dpdk-stable-16.07.1/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_phy.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_mbx.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_type.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_82599.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_api.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_common.h \
+  /root/lixu/lib/librte_eal/linuxapp/kni/ethtool/ixgbe/ixgbe_phy.h \
 
-/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o: $(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o)
+/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o: $(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o)
 
-$(deps_/root/dpdk-stable-16.07.1/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o):
+$(deps_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/ixgbe_82599.o):

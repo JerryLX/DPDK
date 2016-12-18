@@ -59,7 +59,7 @@ enum rte_devtype {
 	RTE_DEVTYPE_WHITELISTED_PCI,
 	RTE_DEVTYPE_BLACKLISTED_PCI,
 	RTE_DEVTYPE_VIRTUAL,
-    RTE_DEVTYPE_PLATFORM, //add by lixu
+//    RTE_DEVTYPE_PLATFORM, //add by lixu
 };
 
 /**
@@ -88,12 +88,14 @@ struct rte_devargs {
 			/** Driver name. */
 			char drv_name[32];
 		} virt;
-        /** Used if type is RTE_DEVTYPE_PLATFORM */
-        struct {
-            /** Driver name. */
-            char drv_name[32];
-        } platform;
+  
+//        /** Used if type is RTE_DEVTYPE_PLATFORM */
+//        struct {
+//            /** Driver name. */
+//            char drv_name[32];
+//        } platform;
 	};
+
 	/** Arguments string as given by user or "" for no argument. */
 	char *args;
 };
