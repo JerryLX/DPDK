@@ -180,6 +180,7 @@ extern "C" {
 #include <rte_log.h>
 #include <rte_interrupts.h>
 #include <rte_pci.h>
+#include <rte_platform.h>
 #include <rte_dev.h>
 #include <rte_devargs.h>
 #include "rte_ether.h"
@@ -870,6 +871,7 @@ struct rte_eth_conf {
  */
 struct rte_eth_dev_info {
 	struct rte_pci_device *pci_dev; /**< Device PCI information. */
+	struct rte_platform_device *platform_dev; /**< Device Platform information. by lixu */
 	const char *driver_name; /**< Device Driver name. */
 	unsigned int if_index; /**< Index to bound host interface, or 0 if none.
 		Use if_indextoname() to translate into an interface name. */
@@ -1609,6 +1611,8 @@ enum rte_eth_dev_type {
 	RTE_ETH_DEV_UNKNOWN,	/**< unknown device type */
 	RTE_ETH_DEV_PCI,
 		/**< Physical function and Virtual function of PCI devices */
+	RTE_ETH_DEV_PLATFORM,
+		/**< Physical function and Virtual function of PLATFORM devices */
 	RTE_ETH_DEV_VIRTUAL,	/**< non hardware device */
 	RTE_ETH_DEV_MAX		/**< max value of this enum */
 };
@@ -1630,6 +1634,7 @@ struct rte_eth_dev {
 	const struct eth_driver *driver;/**< Driver for this device */
 	const struct eth_dev_ops *dev_ops; /**< Functions exported by PMD */
 	struct rte_pci_device *pci_dev; /**< PCI info. supplied by probing */
+	struct rte_platform_device *platform_dev; /**< Platform info. supplied by probing.  by lixu*/
 	/** User application callbacks for NIC interrupts */
 	struct rte_eth_dev_cb_list link_intr_cbs;
 	/**
@@ -1865,6 +1870,7 @@ typedef int (*eth_dev_uninit_t)(struct rte_eth_dev *eth_dev);
  */
 struct eth_driver {
 	struct rte_pci_driver pci_drv;    /**< The PMD is also a PCI driver. */
+	struct rte_platform_driver platform_drv;    /**< Or a Platform driver. */
 	eth_dev_init_t eth_dev_init;      /**< Device init function. */
 	eth_dev_uninit_t eth_dev_uninit;  /**< Device uninit function. */
 	unsigned int dev_private_size;    /**< Size of device private data. */
@@ -1881,6 +1887,20 @@ struct eth_driver {
  *   the Ethernet driver.
  */
 void rte_eth_driver_register(struct eth_driver *eth_drv);
+
+/**
+ * @internal
+ * A function invoked by the initialization function of an Ethernet driver
+ * to simultaneously register itself as a Platform driver and as an Ethernet
+ * Poll Mode Driver (PMD).
+ *
+ * In order not to modify original DPDK, add this funtion for Platform Device.
+ *
+ * @param eth_drv
+ *   The pointer to the *eth_driver* structure associated with
+ *   the Ethernet driver.
+ */
+void rte_eth_platform_driver_register(struct eth_driver *eth_drv);
 
 /**
  * Convert a numerical speed in Mbps to a bitmap flag that can be used in

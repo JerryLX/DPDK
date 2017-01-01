@@ -72,6 +72,7 @@ dep_eal_common_options.o = \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_memcpy.h \
  /root/lixu/build/include/rte_memcpy_64.h \
  /root/lixu/build/include/generic/rte_memcpy.h \

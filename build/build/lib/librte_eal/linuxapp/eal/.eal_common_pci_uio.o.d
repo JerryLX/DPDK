@@ -74,4 +74,5 @@ dep_eal_common_pci_uio.o = \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
  /root/lixu/lib/librte_eal/common/include/rte_platform.h

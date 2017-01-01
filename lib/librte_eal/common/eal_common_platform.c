@@ -40,23 +40,22 @@ const char *platform_get_sysfs_path(void)
 
 struct platform_driver_list platform_driver_list;
 struct platform_device_list platform_device_list;
-struct platform_data_list platform_data_list;
+//struct platform_data_list platform_data_list;
 
 struct dev_file_info {
     int            flag;
     struct dirent *file;
-}
+};
 
 struct dev_file_info dev_file[FILE_MAX];
 
 
-
-struct rte_platform_driver *rte_check_platform_drv_is_reg(char *drv_name)
+static struct rte_platform_driver *rte_check_platform_drv_is_reg(char *drv_name)
 {
-    struct rte_plfuio_driver *acc_drv;
+    struct rte_platform_driver *acc_drv;
     int len;
 
-    TAILQ_FOREACH(acc_drv, &plfuio_driver_list, next)
+    TAILQ_FOREACH(acc_drv, &platform_driver_list, next)
     {
         if (strlen(drv_name) != strlen(acc_drv->name))
             continue;
@@ -77,11 +76,11 @@ void rte_eal_platform_register(struct rte_platform_driver *driver)
     }
     if(!(driver->dev_init)) {
         RTE_LOG(ERR,EAL,"dev_init is null\n");
-        return
+        return;
     }
     if(!(driver->dev_uninit)) {
         RTE_LOG(ERR,EAL,"dev_uninit is null\n");
-        return
+        return;
     }
     if(rte_check_platform_drv_is_reg(driver->name)) {
         RTE_LOG(ERR,EAL,"call rte_check_platform_drv_is_reg failed!\n");
@@ -93,27 +92,66 @@ void rte_eal_platform_register(struct rte_platform_driver *driver)
 
 void rte_eal_platform_unregister(struct rte_platform_driver *driver)
 {
-    struct rte_platform_driver *drv_temp = NULL;
-    int len;
+//    struct rte_platform_driver *drv_temp;
+//    int len;
 
     if(!driver){
         RTE_LOG(ERR,EAL,"driver is null\n");
         return;
     }
+    TAILQ_REMOVE(&platform_driver_list, driver, next);
 
-    TAILQ_FOREACH (drv_temp, &platform_driver_list, next)
-    {
-        if (strlen(drv_temp->name) == strlen(driver->name)) {
-            len = strlen(driver->name);
-            if (strncmp(drv_temp->name, driver->name,len) == 0) {
-                TAILQ_REMOVE (platform_driver_list,drv_temp, next);
-                return;
-            }
-        }
-    }
-    RTE_LOG(ERR,EAL,"dev is not found!\n");
+//    TAILQ_FOREACH (drv_temp, &platform_driver_list, next)
+//    {
+//        RTE_LOG(ERR,EAL,"%s",drv_temp->name);
+//        if (strlen(drv_temp->name) == strlen(driver->name)) {
+//            len = strlen(driver->name);
+//            if (strncmp(drv_temp->name, driver->name,len) == 0) {
+//                TAILQ_REMOVE (&platform_driver_list,drv_temp);
+//                return;
+//            }
+//        }
+//    }  
+//    RTE_LOG(ERR,EAL,"dev is not found!\n");
+
 }
 
+void *
+platform_map_resource(void *requested_addr, int fd, off_t offset, size_t size,
+        int additional_flags)
+{
+    void *mapaddr;
+
+    mapaddr = mmap(requested_addr, size, PROT_READ | PROT_WRITE,
+            MAP_SHARED | additional_flags, fd, offset);
+    if(mapaddr == MAP_FAILED){
+     RTE_LOG(ERR, EAL, "%s(): cannot mmap(%d, %p, 0x%lx, 0x%lx): %s (%p)\n",
+               __func__, fd, requested_addr,
+              (unsigned long)size, (unsigned long)offset,
+               strerror(errno), mapaddr);
+    } else
+        RTE_LOG(DEBUG, EAL, "  Platform memory mapped at %p\n", mapaddr);
+    
+    return mapaddr;
+}
+
+void
+platform_unmap_resource(void *requested_addr, size_t size)
+{
+    if (requested_addr == NULL)
+        return;
+
+    /* Unmap the Platform memory resource of device */
+    if (munmap(requested_addr, size)) {
+        RTE_LOG(ERR, EAL, "%s(): cannot munmap(%p, 0x%lx): %s\n",
+            __func__, requested_addr, (unsigned long)size,
+            strerror(errno));
+     } else
+         RTE_LOG(DEBUG, EAL, "  Platform memory unmapped at %p\n",
+              requested_addr);
+}
+
+/*
 struct rte_platform_data *rte_platform_check_name_is_alloc(char *name)
 {
     struct rte_platform_data *uio_data;
@@ -186,7 +224,7 @@ void rte_eal_platform_data_free(char *name)
     }
     RTE_LOG(ERR,EAL,"name: %s not found!\n",name);
 }
-
+*/
 /*
  * If name match, call the devinit() function of the
  * driver.
@@ -195,10 +233,15 @@ static int
 rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_platform_device *dev)
 {
 	int ret;
-
-	for (; ;) {
+    unsigned int len;
+    const struct rte_platform_id *id;
+	for (id = dr->id_table; id != NULL; id++) {
 
 		/* check if device's identifiers match the driver's ones */
+        len = strlen(id->name);
+        if(len != strlen(dev->name) ||
+                strncmp(id->name, dev->name, len)) 
+            continue;
 
 		if (dr->drv_flags & RTE_PCI_DRV_NEED_MAPPING) {
 			/* map resources for devices that use plf_uio */
@@ -211,7 +254,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 		dev->driver = dr;
 
 		/* call the driver devinit() function */
-		return dr->devinit(dr, dev);
+		return dr->dev_init(dr, dev);
 	}
 	/* return positive value if driver doesn't support this device */
 	return 1;
@@ -244,5 +287,25 @@ platform_probe_all_drivers(struct rte_platform_device *dev)
 }
 
 
+/*
+ * Scan the content of the Platform vbus, and call the devinit() function for
+ * all registered drivers that have a matching entry in its id_table
+ * for discovered devices.
+ */
+int
+rte_eal_platform_probe(void)
+{
+	struct rte_platform_device *dev = NULL;
+	int ret = 0;
+
+	TAILQ_FOREACH(dev, &platform_device_list, next) {
+		ret = platform_probe_all_drivers(dev);
+		if (ret < 0)
+			rte_exit(EXIT_FAILURE, "Requested device %s" 
+				 " cannot be used\n", dev->name);
+	}
+
+	return 0;
+}
 
 

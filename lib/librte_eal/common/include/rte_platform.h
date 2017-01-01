@@ -6,6 +6,7 @@
  * @file
  *
  * RTE Platform Interface
+ * by lixu
  */
 
 #ifdef __cplusplus
@@ -20,16 +21,17 @@ extern "C" {
 #include <sys/queue.h>
 #include <stdint.h>
 #include <inttypes.h>
-
+#include <string.h>
 #include <rte_interrupts.h>
+#include <rte_pci_platform.h>
 
 TAILQ_HEAD(platform_driver_list, rte_platform_driver); /**< Platform drivers in D-linked Q. */
 TAILQ_HEAD(platform_device_list, rte_platform_device); /**< Platform devices in D-linked Q. */
-TAILQ_HEAD(platform_data_list, rte_platform_data); /**< Platform data in D-linked Q. */
+//TAILQ_HEAD(platform_data_list, rte_platform_data); /**< Platform data in D-linked Q. */
 
 extern struct platform_driver_list platform_driver_list; /**< Global list of Platform drivers. */
 extern struct platform_device_list platform_device_list; /**< Global list of Platform devices. */
-extern struct platform_data_list  platform_data_list; /**< Global list of Platform data. */
+//extern struct platform_data_list  platform_data_list; /**< Global list of Platform data. */
 /**
  * A structure describing a Platform UIO resource.
  */
@@ -38,6 +40,9 @@ struct rte_platform_resource {
     uint64_t len;           /**< Length of the resource. */
     void *addr;             /**< Virtual address, NULL when not mapped. */
 };
+
+/** Pathname of Platform devices directory. */
+const char *platform_get_sysfs_path(void);
 
 /** Maximum number of platform resources. */
 #define PLATFORM_MAX_RESOURCE (6)
@@ -48,6 +53,7 @@ struct rte_platform_resource {
 
 /** Calculate offset. */
 #define UIO_OFFSET(n) ((n) * PAGE_SIZE)
+
 /**
  * A structure describing a Platform UIO device.
  */
@@ -60,6 +66,7 @@ struct rte_platform_device {
     struct rte_platform_resource mem_resource[PLATFORM_MAX_RESOURCE];
     struct rte_platform_driver  *driver;      /**< Associated driver */
     struct rte_intr_handle       intr_handle;
+	enum rte_kernel_driver       kdrv;        /**< Kernel driver passthrough */
     int                          uio_fd;
     int                          numa_node;   /**< NUMA node connection */
 };
@@ -75,21 +82,50 @@ typedef int (platform_devinit_t)(struct rte_platform_driver *,struct rte_platfor
 typedef int (platform_devuninit_t)(struct rte_platform_device *);
 
 /**
+ * A structure describing a Platform mapping.
+ */
+struct platform_map{
+    void *addr;
+    char *path;
+    uint64_t offset;
+    uint64_t size;
+    uint64_t phaddr;
+};
+
+/**
+ * A structure describing a mapped Platform resource.
+ * For multi-process we need to reproduce all Platform mappings in
+ * secondary processes, so save then in a tailq.
+ */
+struct mapped_platform_resource {
+    TAILQ_ENTRY(mapped_platform_resource) next;
+
+    char *name;
+    char path[PATH_MAX];
+    int nb_maps;
+    struct platform_map maps[PLATFORM_MAX_RESOURCE];
+};
+
+/** mapped platform device list */
+TAILQ_HEAD(mapped_platform_res_list, mapped_pci_resource);
+
+/**
  * A structure describing an ID for a platform device
  */
 struct rte_platform_id {
-    char name[PLATFORM_NAME_MAX_LEN];    
+    char *name;    
 };
 
 /**
  * A structure describing a Platform UIO driver.
  */
 struct rte_platform_driver {
-    TAILQ_ENTRY(rte_armuio_driver) next;        /**< Next in list. */
+    TAILQ_ENTRY(rte_platform_driver) next;        /**< Next in list. */
     
     char                 *name;                      /**< Driver name. */
     platform_devinit_t   *dev_init;                  /**< Device init. funcion. */
     platform_devuninit_t *dev_uninit;                /**< Device uninit. function. */
+	uint32_t drv_flags;                              /**< Flags contolling handling of device. */
 
     const struct rte_platform_id *id_table;          /**< ID table. */
 };
@@ -97,19 +133,49 @@ struct rte_platform_driver {
 /**
  * A structure describing a platform data.
  */
-struct rte_platform_data {
-    TAILQ_ENTRY(rte_platform_data) next; /**< Next in list. */
-    
-    char *name;
-    void *data;
-};
+//struct rte_platform_data {
+//    TAILQ_ENTRY(rte_platform_data) next; /**< Next in list. */
+//    
+//    char *name;
+//    void *data;
+//};
+
+
+/**
+ * Compare two platform device.
+ * @return
+ *  - 1: not equal.
+ *  - 0: equal.
+ */
+static inline int
+rte_eal_compare_name(const char *name1, const char *name2)
+{
+    int len1 = strlen(name1);
+    int len2 = strlen(name2);
+
+    if(len1 != len2) return 1;
+    return strncmp(name1,name2,len1);
+}
+
+static inline int
+rte_eal_compare_platform_name(const struct rte_platform_device* d1, 
+        const struct rte_platform_device *d2)
+{
+    return rte_eal_compare_name(d1->name, d2->name);
+}
+
+
+/**
+ * Scan the content of the Platform vbus, and the devices in the devices
+ * list
+ *
+ * @return
+ *  0 on success, negative on error
+ */
+int rte_eal_platform_scan(void);
 
 /**
  * Map the Platform device resources in user space virtual memory address
- *
- * Note that driver should not call this function when flag
- * RTE_PCI_DRV_NEED_MAPPING is set, as EAL will do that for
- * you when it's on.
  *
  * @param dev
  *   A pointer to a rte_platform_device structure describing the device
@@ -120,6 +186,23 @@ struct rte_platform_data {
  *   is found for the device.
  */
 int rte_eal_platform_map_device(struct rte_platform_device *dev);
+
+/**
+ * @internal
+ * Map a particular resource from a file.
+ *
+ * @author lixu
+ */
+void *platform_map_resource(void *requested_addr, int fd, off_t offset,
+        size_t size, int additional_flags);
+
+/**
+ * @internal
+ * Unmap a particular resource.
+ *
+ * @author lixu
+ */
+void platform_unmap_resource(void *requested_addr, size_t size);
 
 /**
  * Probe the platform vbus for registed drivers.
@@ -174,7 +257,7 @@ void rte_eal_platform_unregister(struct rte_platform_driver *driver);
  *
  * @author lixu
  */
-void *rte_eal_platform_dev_data_alloc(char *name, uint32_t len);
+//void *rte_eal_platform_dev_data_alloc(char *name, uint32_t len);
 
 /**
  * Free device data.
@@ -184,7 +267,7 @@ void *rte_eal_platform_dev_data_alloc(char *name, uint32_t len);
  *
  * @author lixu
  */
-void rte_eal_platform_dev_data_free(char *name);
+//void rte_eal_platform_dev_data_free(char *name);
 
 
 #ifdef __cplusplus    
@@ -192,3 +275,4 @@ void rte_eal_platform_dev_data_free(char *name);
 #endif
 
 #endif /* _RTE_PLATFORM_UIO_H_ */
+

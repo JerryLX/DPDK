@@ -340,6 +340,90 @@ rte_eth_dev_uninit(struct rte_pci_device *pci_dev)
 	return 0;
 }
 
+static int
+rte_eth_platform_dev_init(struct rte_platform_driver *platform_drv,
+		 struct rte_platform_device *platform_dev)
+{
+	struct eth_driver    *eth_drv;
+	struct rte_eth_dev *eth_dev;
+	char ethdev_name[RTE_ETH_NAME_MAX_LEN];
+
+	int diag;
+
+	eth_drv = (struct eth_driver *)platform_drv;
+
+	eth_dev = rte_eth_dev_allocate(platform_dev->name, RTE_ETH_DEV_PLATFORM);
+	if (eth_dev == NULL)
+		return -ENOMEM;
+
+	if (rte_eal_process_type() == RTE_PROC_PRIMARY) {
+		eth_dev->data->dev_private = rte_zmalloc("ethdev private structure",
+				  eth_drv->dev_private_size,
+				  RTE_CACHE_LINE_SIZE);
+		if (eth_dev->data->dev_private == NULL)
+			rte_panic("Cannot allocate memzone for private port data\n");
+	}
+	eth_dev->platform_dev = platform_dev;
+	eth_dev->driver = eth_drv;
+	eth_dev->data->rx_mbuf_alloc_failed = 0;
+
+	/* init user callbacks */
+	TAILQ_INIT(&(eth_dev->link_intr_cbs));
+
+	/*
+	 * Set the default MTU.
+	 */
+	eth_dev->data->mtu = ETHER_MTU;
+
+	/* Invoke PMD device initialization function */
+	diag = (*eth_drv->eth_dev_init)(eth_dev);
+	if (diag == 0)
+		return 0;
+
+	RTE_PMD_DEBUG_TRACE("driver %s: eth_dev_init failed\n",
+			platform_drv->name);
+	if (rte_eal_process_type() == RTE_PROC_PRIMARY)
+		rte_free(eth_dev->data->dev_private);
+	rte_eth_dev_release_port(eth_dev);
+	return diag;
+}
+
+static int
+rte_eth_platform_dev_uninit(struct rte_platform_device *platform_dev)
+{
+	const struct eth_driver *eth_drv;
+	struct rte_eth_dev *eth_dev;
+	int ret;
+
+	if (platform_dev == NULL)
+		return -EINVAL;
+
+	eth_dev = rte_eth_dev_allocated(platform_dev->name);
+	if (eth_dev == NULL)
+		return -ENODEV;
+
+	eth_drv = (const struct eth_driver *)platform_dev->driver;
+
+	/* Invoke PMD device uninit function */
+	if (*eth_drv->eth_dev_uninit) {
+		ret = (*eth_drv->eth_dev_uninit)(eth_dev);
+		if (ret)
+			return ret;
+	}
+
+	/* free ether device */
+	rte_eth_dev_release_port(eth_dev);
+
+	if (rte_eal_process_type() == RTE_PROC_PRIMARY)
+		rte_free(eth_dev->data->dev_private);
+
+	eth_dev->platform_dev = NULL;
+	eth_dev->driver = NULL;
+	eth_dev->data = NULL;
+
+	return 0;
+}
+
 /**
  * Register an Ethernet [Poll Mode] driver.
  *
@@ -360,6 +444,13 @@ rte_eth_driver_register(struct eth_driver *eth_drv)
 	eth_drv->pci_drv.devinit = rte_eth_dev_init;
 	eth_drv->pci_drv.devuninit = rte_eth_dev_uninit;
 	rte_eal_pci_register(&eth_drv->pci_drv);
+}
+void
+rte_eth_platform_driver_register(struct eth_driver *eth_drv)
+{
+	eth_drv->platform_drv.devinit = rte_eth_platform_dev_init;
+	eth_drv->platform_drv.devuninit = rte_eth_platform_dev_uninit;
+	rte_eal_platform_register(&eth_drv->platform_drv);
 }
 
 int

@@ -97,6 +97,7 @@ dep_eal.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal.c \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
  /root/lixu/lib/librte_eal/common/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_version.h \

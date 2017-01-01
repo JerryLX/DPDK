@@ -53,6 +53,7 @@ dep_eal_common_pci.o = /root/lixu/lib/librte_eal/common/eal_common_pci.c \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /root/lixu/build/include/rte_pci.h \
+ /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
