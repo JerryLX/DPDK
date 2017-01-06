@@ -54,6 +54,8 @@ dep_virtio_ethdev.o = /root/lixu/drivers/net/virtio/virtio_ethdev.c \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_memcpy.h \

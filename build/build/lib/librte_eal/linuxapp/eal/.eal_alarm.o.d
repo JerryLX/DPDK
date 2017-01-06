@@ -84,5 +84,5 @@ dep_eal_alarm.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_alarm.c \
  /root/lixu/build/include/generic/rte_spinlock.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h

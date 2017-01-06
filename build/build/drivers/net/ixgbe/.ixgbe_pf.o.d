@@ -86,6 +86,8 @@ dep_ixgbe_pf.o = /root/lixu/drivers/net/ixgbe/ixgbe_pf.c \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
  /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

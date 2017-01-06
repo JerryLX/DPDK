@@ -84,6 +84,8 @@ dep_virtio_rxtx.o = /root/lixu/drivers/net/virtio/virtio_rxtx.c \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

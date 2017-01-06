@@ -76,6 +76,7 @@ dep_sge.o = /root/lixu/drivers/net/cxgbe/sge.c /usr/include/stdc-predef.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
@@ -101,6 +102,7 @@ dep_sge.o = /root/lixu/drivers/net/cxgbe/sge.c /usr/include/stdc-predef.h \
  /root/lixu/build/include/rte_prefetch_64.h \
  /root/lixu/build/include/generic/rte_prefetch.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

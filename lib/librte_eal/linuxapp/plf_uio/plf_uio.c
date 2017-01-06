@@ -18,6 +18,10 @@ struct rte_uio_plf_dev {
 	struct platform_device *pdev;
 };
 
+
+/**
+ * Template to r/w something
+ */
 static ssize_t
 show_something(struct device *dev, struct device_attribute *attr,
                  char *buf)

@@ -59,13 +59,15 @@ dep_enic_res.o = /root/lixu/drivers/net/enic/enic_res.c \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
- /root/lixu/build/include/rte_devargs.h \
- /root/lixu/build/include/rte_ether.h \
- /root/lixu/build/include/rte_memcpy.h \
- /root/lixu/build/include/rte_memcpy_64.h /usr/include/string.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h /usr/include/string.h \
  /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
+ /root/lixu/build/include/rte_devargs.h \
+ /root/lixu/build/include/rte_ether.h \
+ /root/lixu/build/include/rte_memcpy.h \
+ /root/lixu/build/include/rte_memcpy_64.h \
  /root/lixu/build/include/generic/rte_memcpy.h \
  /root/lixu/build/include/rte_random.h \
  /root/lixu/build/include/rte_mbuf.h \

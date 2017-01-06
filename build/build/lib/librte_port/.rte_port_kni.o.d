@@ -52,6 +52,7 @@ dep_rte_port_kni.o = /root/lixu/lib/librte_port/rte_port_kni.c \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_mempool.h \
  /root/lixu/build/include/rte_spinlock.h \
  /root/lixu/build/include/generic/rte_spinlock.h \

@@ -74,11 +74,11 @@ void rte_eal_platform_register(struct rte_platform_driver *driver)
         RTE_LOG(ERR,EAL,"driver is null!\n");
         return;
     }
-    if(!(driver->dev_init)) {
+    if(!(driver->devinit)) {
         RTE_LOG(ERR,EAL,"dev_init is null\n");
         return;
     }
-    if(!(driver->dev_uninit)) {
+    if(!(driver->devuninit)) {
         RTE_LOG(ERR,EAL,"dev_uninit is null\n");
         return;
     }
@@ -254,7 +254,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 		dev->driver = dr;
 
 		/* call the driver devinit() function */
-		return dr->dev_init(dr, dev);
+		return dr->devinit(dr, dev);
 	}
 	/* return positive value if driver doesn't support this device */
 	return 1;

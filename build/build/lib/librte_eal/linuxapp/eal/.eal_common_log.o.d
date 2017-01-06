@@ -53,8 +53,8 @@ dep_eal_common_log.o = /root/lixu/lib/librte_eal/common/eal_common_log.c \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h \
- /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h

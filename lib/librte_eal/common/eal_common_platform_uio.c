@@ -28,7 +28,7 @@ platform_uio_map_secondary(struct rte_platform_device *dev)
 	TAILQ_FOREACH(uio_res, uio_res_list, next) {
 
 		/* skip this element if it doesn't match our platform name */
-        if(strlen(uio_res->name)!=dev->name || 
+        if(strlen(uio_res->name)!=strlen(dev->name) || 
                 strncmp(uio_res->name,dev->name,strlen(uio_res->name)))
             continue;
 
@@ -79,10 +79,9 @@ platform_uio_map_resource(struct rte_platform_device *dev)
 {
     int i,map_idx=0, ret;
     uint64_t phaddr;
-    struct mapped_platform_resource *uio_res = NULL;
-    struct mapped_platform_resource *uio_res_list = 
-        RTE_TAILQ_CAST(rte_uio_tailq.head, mapped_platform_res_list);
-
+	struct mapped_platform_resource *uio_res;
+	struct mapped_platform_res_list *uio_res_list =
+			RTE_TAILQ_CAST(rte_platform_uio_tailq.head, mapped_platform_res_list);
     dev->intr_handle.fd = -1;
     dev->intr_handle.uio_cfg_fd = -1;
     dev->intr_handle.type = RTE_INTR_HANDLE_UNKNOWN;
@@ -151,7 +150,7 @@ platform_uio_find_resource(struct rte_platform_device *dev)
 		return NULL;
 
 	TAILQ_FOREACH(uio_res, uio_res_list, next) {
-        int len = strlen(uio_res->name);
+        uint64_t len = strlen(uio_res->name);
         if(strlen(dev->name) == len && 
                 strncmp(dev->name, uio_res->name, len) == 0)
 			return uio_res;

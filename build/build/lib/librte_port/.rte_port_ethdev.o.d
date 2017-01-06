@@ -76,6 +76,8 @@ dep_rte_port_ethdev.o = /root/lixu/lib/librte_port/rte_port_ethdev.c \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_random.h \

@@ -107,7 +107,7 @@ struct mapped_platform_resource {
 };
 
 /** mapped platform device list */
-TAILQ_HEAD(mapped_platform_res_list, mapped_pci_resource);
+TAILQ_HEAD(mapped_platform_res_list, mapped_platform_resource);
 
 /**
  * A structure describing an ID for a platform device
@@ -123,8 +123,8 @@ struct rte_platform_driver {
     TAILQ_ENTRY(rte_platform_driver) next;        /**< Next in list. */
     
     char                 *name;                      /**< Driver name. */
-    platform_devinit_t   *dev_init;                  /**< Device init. funcion. */
-    platform_devuninit_t *dev_uninit;                /**< Device uninit. function. */
+    platform_devinit_t   *devinit;                  /**< Device init. funcion. */
+    platform_devuninit_t *devuninit;                /**< Device uninit. function. */
 	uint32_t drv_flags;                              /**< Flags contolling handling of device. */
 
     const struct rte_platform_id *id_table;          /**< ID table. */

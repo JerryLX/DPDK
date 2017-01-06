@@ -63,7 +63,9 @@ dep_vmxnet3_rxtx.o = /root/lixu/drivers/net/vmxnet3/vmxnet3_rxtx.c \
  /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/build/include/rte_pci.h /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_memzone.h \
  /root/lixu/build/include/rte_launch.h /root/lixu/build/include/rte_eal.h \
@@ -87,6 +89,7 @@ dep_vmxnet3_rxtx.o = /root/lixu/drivers/net/vmxnet3/vmxnet3_rxtx.c \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_random.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

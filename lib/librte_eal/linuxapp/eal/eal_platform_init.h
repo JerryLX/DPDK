@@ -44,7 +44,7 @@
  * Helper function to map PCI resources right after hugepages in virtual memory
  */
 extern void *platform_map_addr;
-//void *pci_find_max_end_va(void);
+void *platform_find_max_end_va(void);
 
 /* parse one line of the "resource" sysfs file (note that the 'line'
  * string is modified)

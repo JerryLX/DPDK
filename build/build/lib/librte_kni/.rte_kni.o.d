@@ -74,6 +74,8 @@ dep_rte_kni.o = /root/lixu/lib/librte_kni/rte_kni.c /usr/include/stdc-predef.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_memcpy.h \

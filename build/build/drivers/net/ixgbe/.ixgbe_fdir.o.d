@@ -49,6 +49,7 @@ dep_ixgbe_fdir.o = /root/lixu/drivers/net/ixgbe/ixgbe_fdir.c \
  /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_memcpy.h \
  /root/lixu/build/include/rte_memcpy_64.h /usr/include/string.h \
@@ -81,6 +82,7 @@ dep_ixgbe_fdir.o = /root/lixu/drivers/net/ixgbe/ixgbe_fdir.c \
  /root/lixu/build/include/rte_byteorder.h \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

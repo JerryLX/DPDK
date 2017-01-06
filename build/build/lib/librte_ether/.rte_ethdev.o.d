@@ -65,7 +65,9 @@ dep_rte_ethdev.o = /root/lixu/lib/librte_ether/rte_ethdev.c \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/build/include/rte_pci.h /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /root/lixu/build/include/rte_memcpy.h \
@@ -96,6 +98,7 @@ dep_rte_ethdev.o = /root/lixu/lib/librte_ether/rte_ethdev.c \
  /root/lixu/build/include/rte_random.h \
  /root/lixu/lib/librte_ether/rte_ethdev.h \
  /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/lib/librte_ether/rte_eth_ctrl.h \
  /root/lixu/lib/librte_ether/rte_dev_info.h

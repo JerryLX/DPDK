@@ -54,6 +54,7 @@ dep_test_devargs.o = /root/lixu/app/test/test_devargs.c \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/app/test/test.h /root/lixu/build/include/rte_log.h \
+ /root/lixu/build/include/rte_pci_platform.h /root/lixu/app/test/test.h \
+ /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/cmdline_parse.h \
  /root/lixu/build/include/cmdline_parse_string.h

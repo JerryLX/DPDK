@@ -54,6 +54,7 @@ dep_null_crypto_pmd.o = /root/lixu/drivers/crypto/null/null_crypto_pmd.c \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_malloc.h \
  /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \

@@ -1,6 +1,5 @@
-dep_cmdline_test.o = /root/dpdk-stable-16.07.1/app/cmdline_test/cmdline_test.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_cmdline_test.o = /root/lixu/app/cmdline_test/cmdline_test.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/string.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -42,10 +41,10 @@ dep_cmdline_test.o = /root/dpdk-stable-16.07.1/app/cmdline_test/cmdline_test.c \
  /usr/include/termios.h /usr/include/aarch64-linux-gnu/bits/termios.h \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h /usr/include/ctype.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_rdline.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_vt100.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_socket.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline.h \
- /root/dpdk-stable-16.07.1/app/cmdline_test/cmdline_test.h
+ /root/lixu/build/include/cmdline_rdline.h \
+ /root/lixu/build/include/cmdline_cirbuf.h \
+ /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_socket.h \
+ /root/lixu/build/include/cmdline.h \
+ /root/lixu/app/cmdline_test/cmdline_test.h

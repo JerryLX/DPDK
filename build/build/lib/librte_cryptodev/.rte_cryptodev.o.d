@@ -66,7 +66,9 @@ dep_rte_cryptodev.o = /root/lixu/lib/librte_cryptodev/rte_cryptodev.c \
  /root/lixu/build/include/rte_dev.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/build/include/rte_pci.h /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /root/lixu/build/include/rte_memcpy.h \

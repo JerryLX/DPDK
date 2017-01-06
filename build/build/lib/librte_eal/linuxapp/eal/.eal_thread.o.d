@@ -73,9 +73,9 @@ dep_eal_thread.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_thread.c \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h \
- /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
  /root/lixu/lib/librte_eal/common/eal_thread.h

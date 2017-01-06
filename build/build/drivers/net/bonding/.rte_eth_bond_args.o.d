@@ -45,6 +45,7 @@ dep_rte_eth_bond_args.o = /root/lixu/drivers/net/bonding/rte_eth_bond_args.c \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/inttypes.h /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_kvargs.h \
  /root/lixu/build/include/cmdline_parse.h \
  /root/lixu/build/include/cmdline_parse_etheraddr.h \
@@ -85,6 +86,7 @@ dep_rte_eth_bond_args.o = /root/lixu/drivers/net/bonding/rte_eth_bond_args.c \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/drivers/net/bonding/rte_eth_bond_private.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \
  /root/lixu/build/include/rte_dev_info.h \

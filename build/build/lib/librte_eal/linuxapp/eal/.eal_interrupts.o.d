@@ -84,13 +84,13 @@ dep_eal_interrupts.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_interrupts.c \
  /root/lixu/build/include/rte_common.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_pci.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_malloc.h \
  /root/lixu/build/include/rte_errno.h \
  /root/lixu/build/include/rte_spinlock.h \
  /root/lixu/build/include/generic/rte_spinlock.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/lib/librte_eal/linuxapp/eal/eal_vfio.h \
  /usr/include/linux/version.h /usr/include/linux/vfio.h \
  /usr/include/linux/types.h /usr/include/aarch64-linux-gnu/asm/types.h \

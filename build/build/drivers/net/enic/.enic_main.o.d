@@ -53,6 +53,7 @@ dep_enic_main.o = /root/lixu/drivers/net/enic/enic_main.c \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/inttypes.h /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_memzone.h \
  /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
@@ -86,6 +87,7 @@ dep_enic_main.o = /root/lixu/drivers/net/enic/enic_main.c \
  /root/lixu/build/include/generic/rte_prefetch.h \
  /root/lixu/build/include/rte_string_fns.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_random.h \

@@ -346,7 +346,7 @@ rte_eth_platform_dev_init(struct rte_platform_driver *platform_drv,
 {
 	struct eth_driver    *eth_drv;
 	struct rte_eth_dev *eth_dev;
-	char ethdev_name[RTE_ETH_NAME_MAX_LEN];
+//	char ethdev_name[RTE_ETH_NAME_MAX_LEN];
 
 	int diag;
 

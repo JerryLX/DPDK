@@ -52,7 +52,9 @@ dep_em_rxtx.o = /root/lixu/drivers/net/e1000/em_rxtx.c \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
  /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_branch_prediction.h \
- /root/lixu/build/include/rte_pci.h /root/lixu/build/include/rte_memory.h \
+ /root/lixu/build/include/rte_pci.h \
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_memory.h \
  /root/lixu/build/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_memcpy.h \
  /root/lixu/build/include/rte_memcpy_64.h \
@@ -79,6 +81,7 @@ dep_em_rxtx.o = /root/lixu/drivers/net/e1000/em_rxtx.c \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_random.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

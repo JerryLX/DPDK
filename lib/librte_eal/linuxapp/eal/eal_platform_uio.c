@@ -223,3 +223,65 @@ error:
     platform_uio_free_resource(dev, *uio_res);
     return -1;
 }
+
+int
+platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
+		struct mapped_platform_resource *uio_res, int map_idx)
+{
+	int fd;
+	char devname[PATH_MAX];
+	void *mapaddr;
+	struct platform_map *maps;
+
+	maps = uio_res->maps;
+
+	/* update devname for mmap  */
+	snprintf(devname, sizeof(devname),
+			"%s/%s/resource%d",
+			platform_get_sysfs_path(),
+			dev->name, res_idx);
+
+	/* allocate memory to keep path */
+	maps[map_idx].path = rte_malloc(NULL, strlen(devname) + 1, 0);
+	if (maps[map_idx].path == NULL) {
+		RTE_LOG(ERR, EAL, "Cannot allocate memory for path: %s\n",
+				strerror(errno));
+		return -1;
+	}
+
+	/*
+	 * open resource file, to mmap it
+	 */
+	fd = open(devname, O_RDWR);
+	if (fd < 0) {
+		RTE_LOG(ERR, EAL, "Cannot open %s: %s\n",
+				devname, strerror(errno));
+		goto error;
+	}
+
+	/* try mapping somewhere close to the end of hugepages */
+	if (platform_map_addr == NULL)
+		platform_map_addr = platform_find_max_end_va();
+	
+    mapaddr = platform_map_resource(platform_map_addr, fd, 0,
+			(size_t)dev->mem_resource[res_idx].len, 0);
+	close(fd);
+	if (mapaddr == MAP_FAILED)
+		goto error;
+
+	platform_map_addr = RTE_PTR_ADD(mapaddr,
+			(size_t)dev->mem_resource[res_idx].len);
+
+	maps[map_idx].phaddr = dev->mem_resource[res_idx].phys_addr;
+	maps[map_idx].size = dev->mem_resource[res_idx].len;
+	maps[map_idx].addr = mapaddr;
+	maps[map_idx].offset = 0;
+	strcpy(maps[map_idx].path, devname);
+	dev->mem_resource[res_idx].addr = mapaddr;
+
+	return 0;
+
+error:
+	rte_free(maps[map_idx].path);
+	return -1;
+}

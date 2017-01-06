@@ -56,5 +56,6 @@ dep_pmdinfogen.o = /root/lixu/buildtools/pmdinfogen/pmdinfogen.c \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_byteorder.h \
  /root/lixu/build/include/generic/rte_byteorder.h

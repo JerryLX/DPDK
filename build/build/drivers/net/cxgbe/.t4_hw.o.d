@@ -61,6 +61,7 @@ dep_t4_hw.o = /root/lixu/drivers/net/cxgbe/base/t4_hw.c \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_atomic.h \
  /root/lixu/build/include/rte_atomic_64.h \
  /root/lixu/build/include/generic/rte_atomic.h \
@@ -95,6 +96,7 @@ dep_t4_hw.o = /root/lixu/drivers/net/cxgbe/base/t4_hw.c \
  /root/lixu/build/include/rte_byteorder.h \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

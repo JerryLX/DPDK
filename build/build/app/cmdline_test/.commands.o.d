@@ -1,6 +1,5 @@
-dep_commands.o = /root/dpdk-stable-16.07.1/app/cmdline_test/commands.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/build/include/rte_config.h \
+dep_commands.o = /root/lixu/app/cmdline_test/commands.c \
+ /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -35,11 +34,11 @@ dep_commands.o = /root/dpdk-stable-16.07.1/app/cmdline_test/commands.c \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h /usr/include/inttypes.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_rdline.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_cirbuf.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_vt100.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_string.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline_parse_num.h \
- /root/dpdk-stable-16.07.1/build/include/cmdline.h \
- /root/dpdk-stable-16.07.1/app/cmdline_test/cmdline_test.h
+ /root/lixu/build/include/cmdline_rdline.h \
+ /root/lixu/build/include/cmdline_cirbuf.h \
+ /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/build/include/cmdline_parse.h \
+ /root/lixu/build/include/cmdline_parse_string.h \
+ /root/lixu/build/include/cmdline_parse_num.h \
+ /root/lixu/build/include/cmdline.h \
+ /root/lixu/app/cmdline_test/cmdline_test.h

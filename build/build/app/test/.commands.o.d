@@ -96,6 +96,7 @@ dep_commands.o = /root/lixu/app/test/commands.c /usr/include/stdc-predef.h \
  /root/lixu/build/include/rte_pci.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/cmdline_rdline.h \
  /root/lixu/build/include/cmdline_cirbuf.h \
  /root/lixu/build/include/cmdline_vt100.h \

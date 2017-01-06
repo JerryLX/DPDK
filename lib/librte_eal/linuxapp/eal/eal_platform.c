@@ -11,6 +11,7 @@
 
 #include "eal_filesystem.h"
 #include "eal_private.h"
+#include "eal_platform_init.h"
 
 static int
 platform_get_kernel_driver_by_path(const char *filename, char *dri_name)
@@ -146,6 +147,24 @@ platform_scan_one(const char *dirname, const char *dev_name)
 	}
 
 	return 0;
+}
+
+void *
+platform_find_max_end_va(void)
+{
+	const struct rte_memseg *seg = rte_eal_get_physmem_layout();
+	const struct rte_memseg *last = seg;
+	unsigned i = 0;
+
+	for (i = 0; i < RTE_MAX_MEMSEG; i++, seg++) {
+		if (seg->addr == NULL)
+			break;
+
+		if (seg->addr > last->addr)
+			last = seg;
+
+	}
+	return RTE_PTR_ADD(last->addr, last->len);
 }
 
 /*

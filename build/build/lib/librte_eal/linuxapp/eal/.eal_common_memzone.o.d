@@ -80,5 +80,5 @@ dep_eal_common_memzone.o = \
  /root/lixu/build/include/rte_pci.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h

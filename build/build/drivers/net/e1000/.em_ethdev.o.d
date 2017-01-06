@@ -51,6 +51,7 @@ dep_em_ethdev.o = /root/lixu/drivers/net/e1000/em_ethdev.c \
  /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
+ /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_memcpy.h \
  /root/lixu/build/include/rte_memcpy_64.h /usr/include/string.h \
@@ -80,6 +81,7 @@ dep_em_ethdev.o = /root/lixu/drivers/net/e1000/em_ethdev.c \
  /root/lixu/build/include/rte_prefetch_64.h \
  /root/lixu/build/include/generic/rte_prefetch.h \
  /root/lixu/build/include/rte_ethdev.h /root/lixu/build/include/rte_dev.h \
+ /root/lixu/build/include/rte_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_ether.h \
  /root/lixu/build/include/rte_eth_ctrl.h \

@@ -67,5 +67,5 @@ dep_eal_log.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_log.c \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
  /root/lixu/build/include/exec-env/rte_interrupts.h \
- /root/lixu/lib/librte_eal/common/include/rte_pci_platform.h \
- /root/lixu/lib/librte_eal/common/include/rte_platform.h
+ /root/lixu/build/include/rte_pci_platform.h \
+ /root/lixu/build/include/rte_platform.h
