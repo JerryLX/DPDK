@@ -56,7 +56,7 @@ dep_eal_alarm.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_alarm.c \
  /usr/include/aarch64-linux-gnu/sys/timerfd.h \
  /usr/include/aarch64-linux-gnu/bits/timerfd.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
@@ -71,7 +71,7 @@ dep_eal_alarm.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_alarm.c \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /root/lixu/build/include/rte_memzone.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_alarm.h \
  /root/lixu/build/include/rte_per_lcore.h /usr/include/pthread.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \

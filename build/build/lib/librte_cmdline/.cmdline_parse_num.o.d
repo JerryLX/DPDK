@@ -29,4 +29,4 @@ dep_cmdline_parse_num.o = /root/lixu/lib/librte_cmdline/cmdline_parse_num.c \
  /root/lixu/build/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse_num.h \
- /root/lixu/build/include/cmdline_parse.h
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h

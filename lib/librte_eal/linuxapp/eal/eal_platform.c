@@ -28,8 +28,10 @@ platform_get_kernel_driver_by_path(const char *filename, char *dri_name)
 		return -1;
 
 	/* For device does not have a driver */
-	if (count < 0)
-		return 1;
+	if (count < 0){
+//		RTE_LOG(INFO, EAL, "there is no driver in %s\n", filename);
+        return 1;
+    }
 
 	path[count] = '\0';
 
@@ -110,8 +112,8 @@ platform_scan_one(const char *dirname, const char *dev_name)
 
 	memset(dev, 0, sizeof(*dev));
 
-    len = strlen(dev_name);
-    dev->name = malloc(len);
+    len = strlen(dev_name)+1;
+    dev->name = malloc(len+1);
     memset(dev->name,0,len);
     snprintf(dev->name, len, "%s", dev_name);
 
@@ -123,6 +125,7 @@ platform_scan_one(const char *dirname, const char *dev_name)
 		free(dev);
 		return -1;
 	}
+//  RTE_LOG(INFO, EAL, "%s has driver: %s\n", dev_name, driver);
 
 	/* device is valid, add in list (sorted) */
 	if (TAILQ_EMPTY(&platform_device_list)) {
@@ -133,16 +136,18 @@ platform_scan_one(const char *dirname, const char *dev_name)
 
 		TAILQ_FOREACH(dev2, &platform_device_list, next) {
 			ret = rte_eal_compare_platform_name(dev, dev2);
-			if (ret > 0)
+			if (ret != 0)
 				continue;
 
 			else { /* already registered */
+//              RTE_LOG(INFO, EAL, "%s already registered, %s\n", dev_name, dev2->name);
 				memmove(dev2->mem_resource, dev->mem_resource,
 					sizeof(dev->mem_resource));
 				free(dev);
 			    return 0;
 			}
 		}
+        
 		TAILQ_INSERT_TAIL(&platform_device_list, dev, next);
 	}
 
@@ -180,7 +185,6 @@ rte_eal_platform_scan(void)
 	DIR *dir;
 	char dirname[PATH_MAX];
     char devname[PATH_MAX];
-//    uint16_t domain;
 
 	dir = opendir(platform_get_sysfs_path());
 	if (dir == NULL) {
@@ -196,7 +200,11 @@ rte_eal_platform_scan(void)
 		snprintf(dirname, sizeof(dirname), "%s/%s",
 				platform_get_sysfs_path(), e->d_name);
 
-		if (platform_scan_one(dirname, devname) < 0)
+        snprintf(devname, sizeof(devname), "%s", e->d_name);
+
+        //for debug
+//	    RTE_LOG(INFO, EAL, "scanning dir: %s\n", dirname);	
+        if (platform_scan_one(dirname, devname) < 0)
 			goto error;
 	}
 	closedir(dir);
@@ -222,6 +230,14 @@ rte_eal_platform_init(void)
     if (rte_eal_platform_scan() < 0){
         RTE_LOG(ERR, EAL, "%s(): Cannnot scan platform vbus", __func__);
     }
+
+//for debug
+//  struct rte_platform_device* dev;
+//  if(TAILQ_EMPTY(&platform_device_list)) RTE_LOG(ERR, EAL, "no platform device found!\n");
+//  TAILQ_FOREACH(dev, &platform_device_list, next) {
+//     RTE_LOG(INFO, EAL,"dev: %s\n", dev->name);
+//  }
+ 
     return 0;
 }
 

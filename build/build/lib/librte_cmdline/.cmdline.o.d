@@ -66,7 +66,7 @@ dep_cmdline.o = /root/lixu/lib/librte_cmdline/cmdline.c \
  /root/lixu/build/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
- /root/lixu/build/include/cmdline_cirbuf.h \
- /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
+ /root/lixu/lib/librte_cmdline/cmdline_vt100.h \
  /root/lixu/lib/librte_cmdline/cmdline.h \
- /root/lixu/build/include/cmdline_rdline.h
+ /root/lixu/lib/librte_cmdline/cmdline_rdline.h

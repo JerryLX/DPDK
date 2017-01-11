@@ -78,14 +78,14 @@ dep_eal_pci_vfio.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_pci_vfio.c \
  /root/lixu/build/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_eal_memconfig.h \
  /root/lixu/build/include/rte_tailq.h \
  /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /root/lixu/build/include/rte_memzone.h \
  /root/lixu/build/include/rte_malloc_heap.h \

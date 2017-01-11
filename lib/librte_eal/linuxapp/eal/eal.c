@@ -744,7 +744,7 @@ rte_eal_init(int argc, char **argv)
 	if (!rte_atomic32_test_and_set(&run_once))
 		return -1;
     //for debug by lixu
-    /*
+    /*  
     for(i=0;i<argc;i++){
 	    printf("arg %d: %s",i+1,argv[i]);
     }

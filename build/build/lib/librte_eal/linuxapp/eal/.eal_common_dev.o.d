@@ -50,7 +50,7 @@ dep_eal_common_dev.o = /root/lixu/lib/librte_eal/common/eal_common_dev.c \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/build/include/rte_pci.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_debug.h /root/lixu/build/include/rte_log.h \
  /root/lixu/build/include/rte_branch_prediction.h \

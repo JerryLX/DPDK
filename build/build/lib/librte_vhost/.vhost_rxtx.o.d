@@ -100,7 +100,7 @@ dep_vhost_rxtx.o = /root/lixu/lib/librte_vhost/vhost_rxtx.c \
  /usr/include/asm-generic/sockios.h \
  /usr/include/aarch64-linux-gnu/bits/socket2.h \
  /usr/include/aarch64-linux-gnu/bits/in.h \
- /root/lixu/build/include/rte_virtio_net.h /usr/include/linux/vhost.h \
+ /root/lixu/lib/librte_vhost/rte_virtio_net.h /usr/include/linux/vhost.h \
  /usr/include/linux/ioctl.h /usr/include/aarch64-linux-gnu/asm/ioctl.h \
  /usr/include/asm-generic/ioctl.h /usr/include/linux/virtio_ring.h \
  /usr/include/aarch64-linux-gnu/sys/eventfd.h \

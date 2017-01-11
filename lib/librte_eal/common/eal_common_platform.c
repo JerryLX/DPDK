@@ -274,6 +274,9 @@ platform_probe_all_drivers(struct rte_platform_device *dev)
 		return -1;
 
 	TAILQ_FOREACH(dr, &platform_driver_list, next) {
+        //for debug
+        RTE_LOG(INFO, EAL, "probing driver: %s\n", dr->name);
+
 		rc = rte_eal_platform_probe_one_driver(dr, dev);
 		if (rc < 0)
 			/* negative value is an error */

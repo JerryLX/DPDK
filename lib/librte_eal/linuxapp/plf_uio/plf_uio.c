@@ -3,17 +3,18 @@
 
 #include <linux/device.h>
 #include <linux/module.h>
-#include <linux/pci.h>
 #include <linux/platform_device.h>
 #include <linux/uio_driver.h>
 #include <linux/io.h>
 #include <linux/version.h>
 #include <linux/slab.h>
-
+#include <linux/acpi.h>
+#include <linux/dma-mapping.h>
+#include <linux/string.h>
 
 #include "compat.h"
 
-struct rte_uio_plf_dev {
+struct rte_uio_platform_dev {
 	struct uio_info info;
 	struct platform_device *pdev;
 };
@@ -22,11 +23,12 @@ struct rte_uio_plf_dev {
 /**
  * Template to r/w something
  */
+
 static ssize_t
 show_something(struct device *dev, struct device_attribute *attr,
                  char *buf)
 {
-    return snprintf(buf, 10, "%u\n", dev_num_vf(dev));
+    return 0;
 }
 
 static ssize_t
@@ -38,7 +40,7 @@ store_something(struct device *dev, struct device_attribute *attr,
     return err ? err : count;
 }
 
-static DEVICE_ATTR(max_vfs, S_IRUGO | S_IWUSR, show_something, store_something);
+static DEVICE_ATTR(something, S_IRUGO | S_IWUSR, show_something, store_something);
 
 static struct attribute *dev_attrs[] = {
     &dev_attr_something.attr,
@@ -49,71 +51,275 @@ static const struct attribute_group dev_attr_grp = {
     .attrs = dev_attrs,
 };
 
-static int plf_uio_probe(struct platform_device *pdev)
+/* Remap platform resources described by index in uio resource n. */
+static int
+plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
+		       int n, int index, const char *name)
 {
-   struct rte_uio_plf_dev *udev;
-   int err;
+	unsigned long addr, len;
+	void *internal_addr;
 
-   udev = kzalloc(sizeof(struct rte_uio_plf_dev),GFP_KERNEL);
-   if(!udev)
-       return -ENOMEM;
+	if (n >= ARRAY_SIZE(info->mem))
+		return -EINVAL;
 
-   udev->info.name = "plf_uio";
-   udev->info.version = "0.1";
-   udev->info.handler = plf_uio_irqhandler;
-   udev->info.irqcontrol = plf_uio_irqcontrol;
-
-   udev->info.priv = udev;
-   udev->pdev = dev;
-
-   err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
-   if (err != 0)
-       goto fail_free;
-
-   err = uio_register_device(&dev->dev, &udev->info);
-   if(err != 0)
-       goto fail_remove_group;
-
-   platform_set_drvdata(dev,udev);
-   return 0;
-
-fail_remove_group:
-   sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
-fail_free:
-   kfree(udev);
-   return err;
+	addr = platform_resource_start(dev, index);
+	len = platform_resource_len(dev, index);
+	if (len == 0)
+		return -EINVAL;
+	
+    internal_addr = ioremap(addr, len);
+	if (internal_addr == NULL)
+		return -1;
+	info->mem[n].name = name;
+	info->mem[n].addr = addr;
+	info->mem[n].internal_addr = internal_addr;
+	info->mem[n].size = len;
+	info->mem[n].memtype = UIO_MEM_PHYS;
+	return 0;
 }
 
+/* Get platform port io resources described by index in uio resource n. */
+static int
+plfuio_setup_ioport(struct platform_device *dev, struct uio_info *info,
+		int n, int index, const char *name)
+{
+	unsigned long addr, len;
+
+	if (n >= ARRAY_SIZE(info->port))
+		return -EINVAL;
+
+	addr = platform_resource_start(dev, index);
+	len = platform_resource_len(dev, index);
+	if (len == 0)
+		return -EINVAL;
+
+	info->port[n].name = name;
+	info->port[n].start = addr;
+	info->port[n].size = len;
+	
+    /* what porttype it should be? */
+    info->port[n].porttype = UIO_PORT_OTHER;
+
+	return 0;
+}
+
+/* Unmap previously ioremap'd resources */
 static void
+plfuio_release_iomem(struct uio_info *info)
+{
+	int i;
+
+	for (i = 0; i < MAX_UIO_MAPS; i++) {
+		if (info->mem[i].internal_addr)
+			iounmap(info->mem[i].internal_addr);
+	}
+}
+
+static int
+plfuio_remap_memory(struct platform_device *dev, struct uio_info *info)
+{
+    int i, ret, iom, iop;
+    unsigned long flags;
+    unsigned int num_res = dev->num_resources;
+	static const char *bar_names[PLATFORM_MAX_RESOURCE + 1]  = {
+		"BAR0",
+		"BAR1",
+		"BAR2",
+		"BAR3",
+		"BAR4",
+		"BAR5",
+	};
+    
+    /* resources are more than we thought */
+    if(num_res > PLATFORM_MAX_RESOURCE){
+        printk(KERN_EMERG "Too many resource in device: %s\n", dev->name);
+        return -ENOENT; 
+    }
+
+    iom = 0;
+    iop = 0;
+
+    printk(KERN_DEBUG "There is %d resources\n", num_res);
+    for(i=0; i<num_res; i++) {
+        if(platform_resource_len(dev, i)!=0 &&
+                platform_resource_start(dev, i)!=0) {
+            flags = platform_resource_flags(dev, i);
+
+            printk(KERN_DEBUG "resource %d has flag %d\n", i, (int)flags);
+            if(flags & IORESOURCE_MEM){
+                ret = plfuio_setup_iomem(dev, info, iom, i, bar_names[i]);
+                if(ret!=0)
+                    return ret;
+                iom++;
+            }
+            
+            
+            else if(flags & IORESOURCE_IO) {
+                ret = plfuio_setup_ioport(dev, info, iop, i, bar_names[i]);
+                if(ret!=0)
+                    return ret;
+                iop++;
+            }
+           
+        }
+    }
+    return 0;
+}
+
+
+/**
+ * This is the irqcontrol callback to be registered to uio_info.
+ * It can be used to disable/enable interrupt from user space processes.
+ *
+ * @param info
+ *  pointer to uio_info.
+ * @param irq_state
+ *  state value. 1 to enable interrupt, 0 to disable interrupt.
+ *
+ * @return
+ *  - On success, 0.
+ *  - On failure, a negative value.
+ */
+static int
+plfuio_irqcontrol(struct uio_info *info, s32 irq_state)
+{
+	//Do something here.
+    return 0;
+}
+
+/**
+ * This is interrupt handler which will check if the interrupt is for the right device.
+ * If yes, disable it here and will be enable later.
+ */
+static irqreturn_t
+plfuio_irqhandler(int irq, struct uio_info *info)
+{
+	struct rte_uio_platform_dev *udev = info->priv;
+    (void) udev;
+    //Do something here.
+
+	/* Message signal mode, no share IRQ and automasked */
+	return IRQ_HANDLED;
+}
+
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
+static int __devinit
+#else
+static int
+#endif
+plf_uio_probe(struct platform_device *dev)
+{
+/*
+    (void) plfuio_irqcontrol;
+    (void) plfuio_irqhandler;
+*/    
+    struct rte_uio_platform_dev *udev;
+    int err;
+
+    printk(KERN_EMERG "hello world!\n");    
+    udev = kzalloc(sizeof(struct rte_uio_platform_dev),GFP_KERNEL);
+    if(!udev)
+        return -ENOMEM;
+
+    /* remap IO memory */
+    err = plfuio_remap_memory(dev, &udev->info);
+    if(err){
+		printk(KERN_EMERG "REMAP FAILED\n");
+        goto fail_release_iomem;
+    }
+
+    (void) plfuio_remap_memory;
+    udev->info.name = "plf_uio";
+    udev->info.version = "0.1";
+    udev->info.handler = plfuio_irqhandler;
+    udev->info.irqcontrol = plfuio_irqcontrol;
+    udev->info.priv = udev;
+    udev->pdev = dev;
+
+//    err = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64));
+//    if(err != 0)
+//		goto fail_release_iomem; 
+
+    err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
+    if (err != 0)
+		goto fail_release_iomem;  
+
+    err = uio_register_device(&dev->dev, &udev->info);
+    if(err != 0)
+        goto fail_remove_group;
+
+    platform_set_drvdata(dev,udev);
+    return 0;
+
+fail_remove_group:
+    sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
+
+fail_release_iomem:
+	plfuio_release_iomem(&udev->info);
+    kfree(udev);
+    return err;
+    
+    return 0;
+}
+
+static int
 plf_uio_remove(struct platform_device *dev)
 {
-    struct rte_uio_plf_dev *udev = platform_get_drvdata(dev);
+ 
+    struct rte_uio_platform_dev *udev = platform_get_drvdata(dev);
 
     sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
     uio_unregister_device(&udev->info);
     platform_set_drvdata(dev,NULL);
     kfree(udev);
+
+    return 0;
 }
+
+static const struct acpi_device_id hns_enet_acpi_match[] = {
+    {"HISI00C1", 0 },
+    {"HISI00C2", 0 },
+    {},
+};
+
+MODULE_DEVICE_TABLE(acpi, hns_enet_acpi_match);
+
+
+static const struct of_device_id hns_enet_of_match[] = {
+    {.compatible = "hisilicon,hns-nic-v1",},
+    {.compatible = "hisilicon,hns-nic-v2",},
+    {},
+};
+
+MODULE_DEVICE_TABLE(of, hns_enet_of_match);
+
 
 static struct platform_driver plf_uio_driver = {
     .probe = plf_uio_probe,
     .remove = plf_uio_remove,
-}
+    .driver = 
+    {
+        .name = "plf_uio",
+        .of_match_table = hns_enet_of_match,
+        .acpi_match_table = ACPI_PTR(hns_enet_acpi_match),
+    },
+};
 
 static int __init
-plfuio_plf_init_module(void)
+plfuio_init_module(void)
 {
     return platform_driver_register(&plf_uio_driver);
 }
 
 static void __exit
-plfuio_plf_exit_module(void)
+plfuio_exit_module(void)
 {
     platform_driver_unregister(&plf_uio_driver);
 }
 
-module_init(pltuio_plf_init_module);
-module_exit(pltuio_plf_exit_module);
+module_init(plfuio_init_module);
+module_exit(plfuio_exit_module);
 
 MODULE_DESCRIPTION("UIO driver for Arm platform");
 MODULE_LICENSE("GPL");

@@ -24,7 +24,7 @@ dep_eal_common_tailqs.o = /root/lixu/lib/librte_eal/common/eal_common_tailqs.c \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
@@ -73,6 +73,6 @@ dep_eal_common_tailqs.o = /root/lixu/lib/librte_eal/common/eal_common_tailqs.c \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/build/include/rte_pci.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_platform.h

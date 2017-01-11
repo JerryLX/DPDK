@@ -116,4 +116,4 @@ virtio-net-user.o: \
  /root/lixu/build/include/rte_byteorder.h \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/lib/librte_vhost/vhost_user/vhost-net-user.h \
- /root/lixu/build/include/rte_virtio_net.h
+ /root/lixu/lib/librte_vhost/rte_virtio_net.h

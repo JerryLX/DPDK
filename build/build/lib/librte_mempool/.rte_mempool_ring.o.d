@@ -60,7 +60,7 @@ dep_rte_mempool_ring.o = /root/lixu/lib/librte_mempool/rte_mempool_ring.c \
  /root/lixu/build/include/generic/rte_atomic.h \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_memzone.h \
- /root/lixu/build/include/rte_mempool.h /usr/include/inttypes.h \
+ /root/lixu/lib/librte_mempool/rte_mempool.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_spinlock.h \
  /root/lixu/build/include/generic/rte_spinlock.h \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \

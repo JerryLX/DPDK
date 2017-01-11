@@ -48,7 +48,7 @@ dep_eal_common_devargs.o = \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/inttypes.h /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_devargs.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \

@@ -68,11 +68,11 @@ dep_eal_common_pci_uio.o = \
  /root/lixu/build/include/rte_branch_prediction.h \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_malloc.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/build/include/rte_pci.h /usr/include/inttypes.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_platform.h

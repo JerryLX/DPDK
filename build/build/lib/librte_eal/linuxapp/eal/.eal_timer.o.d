@@ -75,12 +75,12 @@ dep_eal_timer.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_timer.c \
  /root/lixu/build/include/rte_per_lcore.h \
  /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_memzone.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/build/include/rte_pci.h \
  /root/lixu/build/include/rte_interrupts.h \
- /root/lixu/build/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/build/include/rte_pci_platform.h \
  /root/lixu/build/include/rte_platform.h \
  /root/lixu/lib/librte_eal/common/eal_internal_cfg.h \

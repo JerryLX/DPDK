@@ -55,4 +55,4 @@ dep_cmdline_parse_ipaddr.o = \
  /root/lixu/build/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse_ipaddr.h \
- /root/lixu/build/include/cmdline_parse.h
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h

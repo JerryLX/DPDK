@@ -1,7 +1,7 @@
 dep_acl_run_scalar.o = /root/lixu/lib/librte_acl/acl_run_scalar.c \
  /usr/include/stdc-predef.h /root/lixu/build/include/rte_config.h \
- /root/lixu/lib/librte_acl/acl_run.h /root/lixu/build/include/rte_acl.h \
- /root/lixu/build/include/rte_acl_osdep.h \
+ /root/lixu/lib/librte_acl/acl_run.h /root/lixu/lib/librte_acl/rte_acl.h \
+ /root/lixu/lib/librte_acl/rte_acl_osdep.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \

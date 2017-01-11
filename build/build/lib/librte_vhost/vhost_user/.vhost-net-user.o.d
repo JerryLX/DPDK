@@ -69,7 +69,7 @@ vhost-net-user.o: /root/lixu/lib/librte_vhost/vhost_user/vhost-net-user.c \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
  /root/lixu/build/include/rte_log.h /root/lixu/build/include/rte_common.h \
- /usr/include/ctype.h /root/lixu/build/include/rte_virtio_net.h \
+ /usr/include/ctype.h /root/lixu/lib/librte_vhost/rte_virtio_net.h \
  /usr/include/linux/vhost.h /usr/include/linux/types.h \
  /usr/include/aarch64-linux-gnu/asm/types.h \
  /usr/include/asm-generic/types.h /usr/include/asm-generic/int-ll64.h \

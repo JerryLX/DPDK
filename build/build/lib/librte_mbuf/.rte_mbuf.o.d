@@ -69,7 +69,7 @@ dep_rte_mbuf.o = /root/lixu/lib/librte_mbuf/rte_mbuf.c \
  /root/lixu/build/include/rte_memcpy.h \
  /root/lixu/build/include/rte_memcpy_64.h \
  /root/lixu/build/include/generic/rte_memcpy.h \
- /root/lixu/build/include/rte_mbuf.h \
+ /root/lixu/lib/librte_mbuf/rte_mbuf.h \
  /root/lixu/build/include/rte_prefetch.h \
  /root/lixu/build/include/rte_prefetch_64.h \
  /root/lixu/build/include/generic/rte_prefetch.h \

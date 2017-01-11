@@ -1,6 +1,5 @@
-dep_main.o = /root/dpdk-stable-16.07.1/examples/helloworld/main.c \
- /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
+dep_main.o = /root/lixu/examples/helloworld/main.c /usr/include/stdc-predef.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -24,10 +23,10 @@ dep_main.o = /root/dpdk-stable-16.07.1/examples/helloworld/main.c \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -50,13 +49,13 @@ dep_main.o = /root/dpdk-stable-16.07.1/examples/helloworld/main.c \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
  /usr/include/pthread.h /usr/include/aarch64-linux-gnu/bits/setjmp.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_lcore.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h

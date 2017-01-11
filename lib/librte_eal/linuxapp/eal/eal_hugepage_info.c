@@ -283,7 +283,6 @@ eal_hugepage_info_init(void)
 	struct dirent *dirent;
 
 	dir = opendir(sys_dir_path);
-printf("sys_dir:%s\n",sys_dir_path);
 	if (dir == NULL)
 		rte_panic("Cannot open directory %s to read system hugepage "
 			  "info\n", sys_dir_path);
@@ -291,7 +290,6 @@ printf("sys_dir:%s\n",sys_dir_path);
 	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
 		struct hugepage_info *hpi;
 
-printf("dir:%s\n",dirent->d_name);
 		if (strncmp(dirent->d_name, dirent_start_text,
 			    dirent_start_len) != 0)
 			continue;
@@ -346,14 +344,11 @@ printf("dir:%s\n",dirent->d_name);
 	}
 	closedir(dir);
 
-    printf("log works by lixu\n");
 	/* something went wrong, and we broke from the for loop above */
 	if (dirent != NULL)
 		return -1;
-    printf("At least we get here! by lixu\n");
 	internal_config.num_hugepage_sizes = num_sizes;
 
-    printf("num_page_sizes:%d\n",num_sizes);
 	/* sort the page directory entries by size, largest to smallest */
 	qsort(&internal_config.hugepage_info[0], num_sizes,
 	      sizeof(internal_config.hugepage_info[0]), compare_hpi);

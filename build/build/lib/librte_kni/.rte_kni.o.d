@@ -101,6 +101,7 @@ dep_rte_kni.o = /root/lixu/lib/librte_kni/rte_kni.c /usr/include/stdc-predef.h \
  /root/lixu/build/include/generic/rte_byteorder.h \
  /root/lixu/build/include/rte_eth_ctrl.h \
  /root/lixu/build/include/rte_dev_info.h \
- /root/lixu/build/include/rte_malloc.h /root/lixu/build/include/rte_kni.h \
+ /root/lixu/build/include/rte_malloc.h \
+ /root/lixu/lib/librte_kni/rte_kni.h \
  /root/lixu/build/include/exec-env/rte_kni_common.h \
  /root/lixu/lib/librte_kni/rte_kni_fifo.h

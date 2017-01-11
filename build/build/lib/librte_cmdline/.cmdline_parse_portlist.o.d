@@ -43,4 +43,4 @@ dep_cmdline_parse_portlist.o = \
  /root/lixu/build/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse_portlist.h \
- /root/lixu/build/include/cmdline_parse.h
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h

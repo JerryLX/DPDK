@@ -46,7 +46,7 @@ dep_eal_common_thread.o = /root/lixu/lib/librte_eal/common/eal_common_thread.c \
  /root/lixu/build/include/rte_per_lcore.h \
  /root/lixu/build/include/rte_eal.h /root/lixu/build/include/rte_launch.h \
  /root/lixu/build/include/rte_memory.h \
- /root/lixu/build/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/build/include/rte_common.h /usr/include/ctype.h \
  /usr/include/errno.h /usr/include/aarch64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \

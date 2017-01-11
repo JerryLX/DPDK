@@ -17,7 +17,7 @@ dep_rte_mempool_ops.o = /root/lixu/lib/librte_mempool/rte_mempool_ops.c \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/string3.h \
- /root/lixu/build/include/rte_mempool.h \
+ /root/lixu/lib/librte_mempool/rte_mempool.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \

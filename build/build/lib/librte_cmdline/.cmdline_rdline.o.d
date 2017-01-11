@@ -40,5 +40,5 @@ dep_cmdline_rdline.o = /root/lixu/lib/librte_cmdline/cmdline_rdline.c \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/ctype.h /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
  /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
- /root/lixu/build/include/cmdline_cirbuf.h \
- /root/lixu/build/include/cmdline_vt100.h
+ /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
+ /root/lixu/lib/librte_cmdline/cmdline_vt100.h

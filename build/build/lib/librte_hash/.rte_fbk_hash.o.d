@@ -76,6 +76,6 @@ dep_rte_fbk_hash.o = /root/lixu/lib/librte_hash/rte_fbk_hash.c \
  /root/lixu/build/include/generic/rte_cpuflags.h \
  /root/lixu/build/include/rte_log.h \
  /root/lixu/lib/librte_hash/rte_fbk_hash.h \
- /root/lixu/build/include/rte_hash_crc.h \
+ /root/lixu/lib/librte_hash/rte_hash_crc.h \
  /root/lixu/build/include/rte_branch_prediction.h \
- /root/lixu/build/include/rte_crc_arm64.h
+ /root/lixu/lib/librte_hash/rte_crc_arm64.h

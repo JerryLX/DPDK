@@ -48,8 +48,8 @@ dep_cmdline_socket.o = /root/lixu/lib/librte_cmdline/cmdline_socket.c \
  /usr/include/aarch64-linux-gnu/sys/ttydefaults.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
- /root/lixu/build/include/cmdline_cirbuf.h \
- /root/lixu/build/include/cmdline_vt100.h \
+ /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
+ /root/lixu/lib/librte_cmdline/cmdline_vt100.h \
  /root/lixu/lib/librte_cmdline/cmdline_socket.h \
  /root/lixu/lib/librte_cmdline/cmdline.h \
- /root/lixu/build/include/cmdline_rdline.h
+ /root/lixu/lib/librte_cmdline/cmdline_rdline.h
