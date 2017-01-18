@@ -1,25 +1,19 @@
-cmd_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o := gcc -Wp,-MD,/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/.hns_uio.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/lixu/lib/librte_eal/linuxapp/hns_uio --param max-inline-insns-single=100   -I/root/lixu/arm64-armv8a-linuxapp-gcc/include -Winline -Wall -Werror -include /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(hns_uio)"  -D"KBUILD_MODNAME=KBUILD_STR(hns_uio)" -c -o /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/.tmp_hns_uio.o /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.c
+cmd_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o := gcc -Wp,-MD,/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/.hnae.o.d  -nostdinc -isystem /usr/lib/gcc/aarch64-linux-gnu/4.9/include -I/root/open-estuary/kernel/arch/arm64/include -Iarch/arm64/include/generated/uapi -Iarch/arm64/include/generated  -I/root/open-estuary/kernel/include -Iinclude -I/root/open-estuary/kernel/arch/arm64/include/uapi -Iarch/arm64/include/generated/uapi -I/root/open-estuary/kernel/include/uapi -Iinclude/generated/uapi -include /root/open-estuary/kernel/include/linux/kconfig.h   -I/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -mgeneral-regs-only -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -gdwarf-4 -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO   -I/root/lixu/lib/librte_eal/linuxapp/hns_uio --param max-inline-insns-single=100   -I/root/lixu/arm64-armv8a-linuxapp-gcc/include -Winline -Wall -Werror -include /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h  -DMODULE -mcmodel=large  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(hnae)"  -D"KBUILD_MODNAME=KBUILD_STR(hns_uio)" -c -o /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/.tmp_hnae.o /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.c
 
-source_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o := /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.c
+source_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o := /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.c
 
-deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o := \
+deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o := \
+    $(wildcard include/config/of.h) \
   /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
     $(wildcard include/config/h.h) \
-  /root/open-estuary/kernel/include/linux/device.h \
-    $(wildcard include/config/debug/devres.h) \
-    $(wildcard include/config/generic/msi/irq/domain.h) \
-    $(wildcard include/config/pinctrl.h) \
-    $(wildcard include/config/generic/msi/irq.h) \
-    $(wildcard include/config/numa.h) \
-    $(wildcard include/config/dma/cma.h) \
-    $(wildcard include/config/pm/sleep.h) \
-    $(wildcard include/config/of.h) \
-    $(wildcard include/config/devtmpfs.h) \
-    $(wildcard include/config/printk.h) \
-    $(wildcard include/config/dynamic/debug.h) \
-    $(wildcard include/config/sysfs/deprecated.h) \
-  /root/open-estuary/kernel/include/linux/ioport.h \
-    $(wildcard include/config/memory/hotremove.h) \
+  /root/open-estuary/kernel/include/linux/dma-mapping.h \
+    $(wildcard include/config/has/dma.h) \
+    $(wildcard include/config/arch/has/dma/set/coherent/mask.h) \
+    $(wildcard include/config/have/dma/attrs.h) \
+    $(wildcard include/config/need/dma/map/state.h) \
+  /root/open-estuary/kernel/include/linux/sizes.h \
+  /root/open-estuary/kernel/include/linux/string.h \
+    $(wildcard include/config/binary/printf.h) \
   /root/open-estuary/kernel/include/linux/compiler.h \
     $(wildcard include/config/sparse/rcu/pointer.h) \
     $(wildcard include/config/trace/branch/profiling.h) \
@@ -53,6 +47,23 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/lbdaf.h) \
     $(wildcard include/config/arch/dma/addr/t/64bit.h) \
     $(wildcard include/config/phys/addr/t/64bit.h) \
+  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
+  /root/open-estuary/kernel/include/uapi/linux/string.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/string.h \
+  /root/open-estuary/kernel/include/linux/device.h \
+    $(wildcard include/config/debug/devres.h) \
+    $(wildcard include/config/generic/msi/irq/domain.h) \
+    $(wildcard include/config/pinctrl.h) \
+    $(wildcard include/config/generic/msi/irq.h) \
+    $(wildcard include/config/numa.h) \
+    $(wildcard include/config/dma/cma.h) \
+    $(wildcard include/config/pm/sleep.h) \
+    $(wildcard include/config/devtmpfs.h) \
+    $(wildcard include/config/printk.h) \
+    $(wildcard include/config/dynamic/debug.h) \
+    $(wildcard include/config/sysfs/deprecated.h) \
+  /root/open-estuary/kernel/include/linux/ioport.h \
+    $(wildcard include/config/memory/hotremove.h) \
   /root/open-estuary/kernel/include/linux/kobject.h \
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/debug/kobject/release.h) \
@@ -69,7 +80,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/panic/timeout.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
   /root/open-estuary/kernel/include/linux/linkage.h \
   /root/open-estuary/kernel/include/linux/stringify.h \
   /root/open-estuary/kernel/include/linux/export.h \
@@ -154,7 +164,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/arm64/va/bits.h) \
   arch/arm64/include/generated/asm/sizes.h \
   /root/open-estuary/kernel/include/asm-generic/sizes.h \
-  /root/open-estuary/kernel/include/linux/sizes.h \
   /root/open-estuary/kernel/include/asm-generic/memory_model.h \
     $(wildcard include/config/flatmem.h) \
     $(wildcard include/config/discontigmem.h) \
@@ -194,10 +203,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/debug/virtual.h) \
   /root/open-estuary/kernel/include/asm-generic/atomic-long.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/processor.h \
-  /root/open-estuary/kernel/include/linux/string.h \
-    $(wildcard include/config/binary/printf.h) \
-  /root/open-estuary/kernel/include/uapi/linux/string.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/string.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/fpsimd.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/hw_breakpoint.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/cpufeature.h \
@@ -583,115 +588,59 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/iommu/api.h) \
     $(wildcard include/config/arm64/dma/use/iommu.h) \
   /root/open-estuary/kernel/include/linux/pm_wakeup.h \
-  /root/open-estuary/kernel/include/linux/module.h \
-    $(wildcard include/config/module/sig.h) \
-    $(wildcard include/config/modules/tree/lookup.h) \
-    $(wildcard include/config/kallsyms.h) \
-    $(wildcard include/config/tracepoints.h) \
-    $(wildcard include/config/event/tracing.h) \
-    $(wildcard include/config/livepatch.h) \
-    $(wildcard include/config/module/unload.h) \
-    $(wildcard include/config/constructors.h) \
-    $(wildcard include/config/debug/set/module/ronx.h) \
-  /root/open-estuary/kernel/include/linux/kmod.h \
-  /root/open-estuary/kernel/include/linux/elf.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/elf.h \
-  arch/arm64/include/generated/asm/user.h \
-  /root/open-estuary/kernel/include/asm-generic/user.h \
-  /root/open-estuary/kernel/include/uapi/linux/elf.h \
-  /root/open-estuary/kernel/include/uapi/linux/elf-em.h \
-  /root/open-estuary/kernel/include/linux/moduleparam.h \
-    $(wildcard include/config/alpha.h) \
+  /root/open-estuary/kernel/include/linux/dma-attrs.h \
+  /root/open-estuary/kernel/include/linux/dma-direction.h \
+  /root/open-estuary/kernel/include/linux/scatterlist.h \
+    $(wildcard include/config/debug/sg.h) \
+    $(wildcard include/config/need/sg/dma/length.h) \
+  /root/open-estuary/kernel/include/linux/mm.h \
+    $(wildcard include/config/mem/soft/dirty.h) \
+    $(wildcard include/config/x86.h) \
+    $(wildcard include/config/ppc.h) \
+    $(wildcard include/config/parisc.h) \
+    $(wildcard include/config/metag.h) \
     $(wildcard include/config/ia64.h) \
-    $(wildcard include/config/ppc64.h) \
-  /root/open-estuary/kernel/include/linux/jump_label.h \
-    $(wildcard include/config/jump/label.h) \
-  /root/open-estuary/kernel/arch/arm64/include/asm/jump_label.h \
-  /root/open-estuary/kernel/include/linux/rbtree_latch.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/module.h \
-  /root/open-estuary/kernel/include/asm-generic/module.h \
-    $(wildcard include/config/have/mod/arch/specific.h) \
-    $(wildcard include/config/modules/use/elf/rel.h) \
-    $(wildcard include/config/modules/use/elf/rela.h) \
-  /root/open-estuary/kernel/include/linux/platform_device.h \
-    $(wildcard include/config/suspend.h) \
-    $(wildcard include/config/hibernate/callbacks.h) \
-  /root/open-estuary/kernel/include/linux/mod_devicetable.h \
-  /root/open-estuary/kernel/include/linux/uuid.h \
-  /root/open-estuary/kernel/include/uapi/linux/uuid.h \
-  /root/open-estuary/kernel/include/linux/uio_driver.h \
-  /root/open-estuary/kernel/include/linux/fs.h \
-    $(wildcard include/config/fs/posix/acl.h) \
-    $(wildcard include/config/cgroup/writeback.h) \
-    $(wildcard include/config/ima.h) \
-    $(wildcard include/config/fsnotify.h) \
-    $(wildcard include/config/file/locking.h) \
-    $(wildcard include/config/quota.h) \
-    $(wildcard include/config/fs/dax.h) \
-    $(wildcard include/config/migration.h) \
-  /root/open-estuary/kernel/include/linux/kdev_t.h \
-  /root/open-estuary/kernel/include/uapi/linux/kdev_t.h \
-  /root/open-estuary/kernel/include/linux/dcache.h \
-  /root/open-estuary/kernel/include/linux/rculist_bl.h \
-  /root/open-estuary/kernel/include/linux/list_bl.h \
+    $(wildcard include/config/shmem.h) \
+    $(wildcard include/config/debug/vm/rb.h) \
+    $(wildcard include/config/debug/pagealloc.h) \
+    $(wildcard include/config/hibernation.h) \
+    $(wildcard include/config/hugetlbfs.h) \
+  /root/open-estuary/kernel/include/linux/debug_locks.h \
+    $(wildcard include/config/debug/locking/api/selftests.h) \
+  /root/open-estuary/kernel/include/linux/range.h \
   /root/open-estuary/kernel/include/linux/bit_spinlock.h \
-  /root/open-estuary/kernel/include/linux/lockref.h \
-    $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
-  /root/open-estuary/kernel/include/linux/path.h \
-  /root/open-estuary/kernel/include/linux/list_lru.h \
   /root/open-estuary/kernel/include/linux/shrinker.h \
-  /root/open-estuary/kernel/include/linux/radix-tree.h \
-  /root/open-estuary/kernel/include/linux/semaphore.h \
-  /root/open-estuary/kernel/include/uapi/linux/fiemap.h \
-  /root/open-estuary/kernel/include/linux/migrate_mode.h \
-  /root/open-estuary/kernel/include/linux/blk_types.h \
-    $(wildcard include/config/blk/dev/integrity.h) \
-  /root/open-estuary/kernel/include/uapi/linux/fs.h \
-  /root/open-estuary/kernel/include/uapi/linux/ioctl.h \
-  arch/arm64/include/generated/asm/ioctl.h \
-  /root/open-estuary/kernel/include/asm-generic/ioctl.h \
-  /root/open-estuary/kernel/include/uapi/asm-generic/ioctl.h \
-  /root/open-estuary/kernel/include/linux/quota.h \
-    $(wildcard include/config/quota/netlink/interface.h) \
-  /root/open-estuary/kernel/include/uapi/linux/dqblk_xfs.h \
-  /root/open-estuary/kernel/include/linux/dqblk_v1.h \
-  /root/open-estuary/kernel/include/linux/dqblk_v2.h \
-  /root/open-estuary/kernel/include/linux/dqblk_qtree.h \
-  /root/open-estuary/kernel/include/linux/projid.h \
-  /root/open-estuary/kernel/include/uapi/linux/quota.h \
-  /root/open-estuary/kernel/include/linux/nfs_fs_i.h \
-  /root/open-estuary/kernel/include/linux/fcntl.h \
-  /root/open-estuary/kernel/include/uapi/linux/fcntl.h \
-  /root/open-estuary/kernel/arch/arm64/include/uapi/asm/fcntl.h \
-  /root/open-estuary/kernel/include/uapi/asm-generic/fcntl.h \
-  /root/open-estuary/kernel/include/linux/interrupt.h \
-    $(wildcard include/config/irq/forced/threading.h) \
-    $(wildcard include/config/generic/irq/probe.h) \
-  /root/open-estuary/kernel/include/linux/irqreturn.h \
-  /root/open-estuary/kernel/include/linux/irqnr.h \
-  /root/open-estuary/kernel/include/uapi/linux/irqnr.h \
-  /root/open-estuary/kernel/include/linux/hardirq.h \
-  /root/open-estuary/kernel/include/linux/ftrace_irq.h \
-    $(wildcard include/config/ftrace/nmi/enter.h) \
-  /root/open-estuary/kernel/include/linux/vtime.h \
-  /root/open-estuary/kernel/include/linux/context_tracking_state.h \
-    $(wildcard include/config/context/tracking.h) \
-  /root/open-estuary/kernel/include/linux/static_key.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/hardirq.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/irq.h \
-  /root/open-estuary/kernel/include/asm-generic/irq.h \
-  /root/open-estuary/kernel/include/linux/irq_cpustat.h \
-  /root/open-estuary/kernel/include/linux/io.h \
-    $(wildcard include/config/have/arch/huge/vmap.h) \
-    $(wildcard include/config/has/ioport/map.h) \
-  /root/open-estuary/kernel/arch/arm64/include/asm/io.h \
-    $(wildcard include/config/arm64/indirect/pio.h) \
+  /root/open-estuary/kernel/include/linux/page_ext.h \
+    $(wildcard include/config/idle/page/tracking.h) \
+    $(wildcard include/config/page/owner.h) \
+  /root/open-estuary/kernel/include/linux/stacktrace.h \
+    $(wildcard include/config/stacktrace.h) \
+    $(wildcard include/config/user/stacktrace/support.h) \
   /root/open-estuary/kernel/arch/arm64/include/asm/pgtable.h \
     $(wildcard include/config/arm64/hw/afdbm.h) \
     $(wildcard include/config/have/rcu/table/free.h) \
   /root/open-estuary/kernel/arch/arm64/include/asm/proc-fns.h \
   /root/open-estuary/kernel/include/asm-generic/pgtable.h \
     $(wildcard include/config/have/arch/soft/dirty.h) \
+    $(wildcard include/config/have/arch/huge/vmap.h) \
+  /root/open-estuary/kernel/include/linux/page-flags.h \
+    $(wildcard include/config/arch/uses/pg/uncached.h) \
+    $(wildcard include/config/memory/failure.h) \
+    $(wildcard include/config/swap.h) \
+    $(wildcard include/config/ksm.h) \
+  /root/open-estuary/kernel/include/linux/huge_mm.h \
+  /root/open-estuary/kernel/include/linux/vmstat.h \
+    $(wildcard include/config/vm/event/counters.h) \
+    $(wildcard include/config/debug/tlbflush.h) \
+    $(wildcard include/config/debug/vm/vmacache.h) \
+  /root/open-estuary/kernel/include/linux/vm_event_item.h \
+    $(wildcard include/config/migration.h) \
+    $(wildcard include/config/memory/balloon.h) \
+    $(wildcard include/config/balloon/compaction.h) \
+  /root/open-estuary/kernel/arch/arm64/include/asm/io.h \
+    $(wildcard include/config/arm64/indirect/pio.h) \
+  /root/open-estuary/kernel/include/linux/blk_types.h \
+    $(wildcard include/config/blk/dev/integrity.h) \
   arch/arm64/include/generated/asm/early_ioremap.h \
   /root/open-estuary/kernel/include/asm-generic/early_ioremap.h \
     $(wildcard include/config/generic/early/ioremap.h) \
@@ -708,13 +657,79 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
   /root/open-estuary/kernel/arch/arm64/include/../../arm/include/asm/xen/hypervisor.h \
   /root/open-estuary/kernel/include/asm-generic/io.h \
     $(wildcard include/config/generic/iomap.h) \
+    $(wildcard include/config/has/ioport/map.h) \
     $(wildcard include/config/virt/to/bus.h) \
   /root/open-estuary/kernel/include/asm-generic/pci_iomap.h \
     $(wildcard include/config/pci.h) \
     $(wildcard include/config/no/generic/pci/ioport/map.h) \
     $(wildcard include/config/generic/pci/iomap.h) \
   /root/open-estuary/kernel/include/linux/vmalloc.h \
-  include/generated/uapi/linux/version.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/dma-mapping.h \
+    $(wildcard include/config/iommu/dma.h) \
+  /root/open-estuary/kernel/include/asm-generic/dma-mapping-common.h \
+  /root/open-estuary/kernel/include/linux/kmemcheck.h \
+  /root/open-estuary/kernel/include/linux/dma-debug.h \
+    $(wildcard include/config/dma/api/debug.h) \
+  /root/open-estuary/kernel/include/asm-generic/dma-coherent.h \
+    $(wildcard include/config/have/generic/dma/coherent.h) \
+  /root/open-estuary/kernel/include/linux/interrupt.h \
+    $(wildcard include/config/irq/forced/threading.h) \
+    $(wildcard include/config/generic/irq/probe.h) \
+  /root/open-estuary/kernel/include/linux/irqreturn.h \
+  /root/open-estuary/kernel/include/linux/irqnr.h \
+  /root/open-estuary/kernel/include/uapi/linux/irqnr.h \
+  /root/open-estuary/kernel/include/linux/hardirq.h \
+  /root/open-estuary/kernel/include/linux/ftrace_irq.h \
+    $(wildcard include/config/ftrace/nmi/enter.h) \
+  /root/open-estuary/kernel/include/linux/vtime.h \
+  /root/open-estuary/kernel/include/linux/context_tracking_state.h \
+    $(wildcard include/config/context/tracking.h) \
+  /root/open-estuary/kernel/include/linux/static_key.h \
+  /root/open-estuary/kernel/include/linux/jump_label.h \
+    $(wildcard include/config/jump/label.h) \
+  /root/open-estuary/kernel/arch/arm64/include/asm/jump_label.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/hardirq.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/irq.h \
+  /root/open-estuary/kernel/include/asm-generic/irq.h \
+  /root/open-estuary/kernel/include/linux/irq_cpustat.h \
+  /root/open-estuary/kernel/include/linux/skbuff.h \
+    $(wildcard include/config/nf/conntrack.h) \
+    $(wildcard include/config/bridge/netfilter.h) \
+    $(wildcard include/config/xfrm.h) \
+    $(wildcard include/config/ipv6/ndisc/nodetype.h) \
+    $(wildcard include/config/net/sched.h) \
+    $(wildcard include/config/net/cls/act.h) \
+    $(wildcard include/config/net/rx/busy/poll.h) \
+    $(wildcard include/config/xps.h) \
+    $(wildcard include/config/network/secmark.h) \
+    $(wildcard include/config/net/switchdev.h) \
+    $(wildcard include/config/network/phy/timestamping.h) \
+    $(wildcard include/config/netfilter/xt/target/trace.h) \
+    $(wildcard include/config/nf/tables.h) \
+  /root/open-estuary/kernel/include/linux/socket.h \
+  arch/arm64/include/generated/asm/socket.h \
+  /root/open-estuary/kernel/include/uapi/asm-generic/socket.h \
+  arch/arm64/include/generated/asm/sockios.h \
+  /root/open-estuary/kernel/include/uapi/asm-generic/sockios.h \
+  /root/open-estuary/kernel/include/uapi/linux/sockios.h \
+  /root/open-estuary/kernel/include/linux/uio.h \
+  /root/open-estuary/kernel/include/uapi/linux/uio.h \
+  /root/open-estuary/kernel/include/uapi/linux/socket.h \
+  /root/open-estuary/kernel/include/linux/net.h \
+  /root/open-estuary/kernel/include/linux/random.h \
+    $(wildcard include/config/arch/random.h) \
+  /root/open-estuary/kernel/include/linux/once.h \
+  /root/open-estuary/kernel/include/uapi/linux/random.h \
+  /root/open-estuary/kernel/include/uapi/linux/ioctl.h \
+  arch/arm64/include/generated/asm/ioctl.h \
+  /root/open-estuary/kernel/include/asm-generic/ioctl.h \
+  /root/open-estuary/kernel/include/uapi/asm-generic/ioctl.h \
+  /root/open-estuary/kernel/include/linux/fcntl.h \
+  /root/open-estuary/kernel/include/uapi/linux/fcntl.h \
+  /root/open-estuary/kernel/arch/arm64/include/uapi/asm/fcntl.h \
+  /root/open-estuary/kernel/include/uapi/asm-generic/fcntl.h \
+  /root/open-estuary/kernel/include/uapi/linux/net.h \
+  /root/open-estuary/kernel/include/linux/textsearch.h \
   /root/open-estuary/kernel/include/linux/slab.h \
     $(wildcard include/config/debug/slab.h) \
     $(wildcard include/config/failslab.h) \
@@ -724,10 +739,25 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
   /root/open-estuary/kernel/include/linux/kmemleak.h \
     $(wildcard include/config/debug/kmemleak.h) \
   /root/open-estuary/kernel/include/linux/kasan.h \
+  /root/open-estuary/kernel/include/net/checksum.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/uaccess.h \
+    $(wildcard include/config/arm64/pan.h) \
+  /root/open-estuary/kernel/arch/arm64/include/asm/compiler.h \
+  arch/arm64/include/generated/asm/checksum.h \
+  /root/open-estuary/kernel/include/asm-generic/checksum.h \
+  /root/open-estuary/kernel/include/linux/netdev_features.h \
+  /root/open-estuary/kernel/include/net/flow_dissector.h \
+  /root/open-estuary/kernel/include/linux/in6.h \
+  /root/open-estuary/kernel/include/uapi/linux/in6.h \
+  /root/open-estuary/kernel/include/uapi/linux/libc-compat.h \
+  /root/open-estuary/kernel/include/uapi/linux/if_ether.h \
+  /root/open-estuary/kernel/include/linux/splice.h \
+  /root/open-estuary/kernel/include/linux/pipe_fs_i.h \
+  /root/open-estuary/kernel/include/net/flow.h \
+  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hnae.h \
   /root/open-estuary/kernel/include/linux/acpi.h \
     $(wildcard include/config/acpi.h) \
     $(wildcard include/config/acpi/initrd/table/override.h) \
-    $(wildcard include/config/x86.h) \
     $(wildcard include/config/arm64.h) \
     $(wildcard include/config/acpi/has/numa/arch/fixup.h) \
     $(wildcard include/config/acpi/hotplug/cpu.h) \
@@ -735,7 +765,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/x86/io/apic.h) \
     $(wildcard include/config/acpi/wmi.h) \
     $(wildcard include/config/acpi/numa.h) \
-    $(wildcard include/config/hibernation.h) \
     $(wildcard include/config/support.h) \
     $(wildcard include/config/acpi/hotplug/memory.h) \
     $(wildcard include/config/acpi/container.h) \
@@ -772,54 +801,83 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
   /root/open-estuary/kernel/include/acpi/acbuffer.h \
   /root/open-estuary/kernel/include/acpi/platform/acenvex.h \
   /root/open-estuary/kernel/include/acpi/platform/aclinuxex.h \
+  /root/open-estuary/kernel/include/linux/mod_devicetable.h \
+  /root/open-estuary/kernel/include/linux/uuid.h \
+  /root/open-estuary/kernel/include/uapi/linux/uuid.h \
   /root/open-estuary/kernel/include/acpi/acpi_bus.h \
     $(wildcard include/config/acpi/sleep.h) \
   /root/open-estuary/kernel/include/linux/proc_fs.h \
+  /root/open-estuary/kernel/include/linux/fs.h \
+    $(wildcard include/config/fs/posix/acl.h) \
+    $(wildcard include/config/cgroup/writeback.h) \
+    $(wildcard include/config/ima.h) \
+    $(wildcard include/config/fsnotify.h) \
+    $(wildcard include/config/file/locking.h) \
+    $(wildcard include/config/quota.h) \
+    $(wildcard include/config/fs/dax.h) \
+  /root/open-estuary/kernel/include/linux/kdev_t.h \
+  /root/open-estuary/kernel/include/uapi/linux/kdev_t.h \
+  /root/open-estuary/kernel/include/linux/dcache.h \
+  /root/open-estuary/kernel/include/linux/rculist_bl.h \
+  /root/open-estuary/kernel/include/linux/list_bl.h \
+  /root/open-estuary/kernel/include/linux/lockref.h \
+    $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
+  /root/open-estuary/kernel/include/linux/path.h \
+  /root/open-estuary/kernel/include/linux/list_lru.h \
+  /root/open-estuary/kernel/include/linux/radix-tree.h \
+  /root/open-estuary/kernel/include/linux/semaphore.h \
+  /root/open-estuary/kernel/include/uapi/linux/fiemap.h \
+  /root/open-estuary/kernel/include/linux/migrate_mode.h \
+  /root/open-estuary/kernel/include/uapi/linux/fs.h \
+  /root/open-estuary/kernel/include/linux/quota.h \
+    $(wildcard include/config/quota/netlink/interface.h) \
+  /root/open-estuary/kernel/include/uapi/linux/dqblk_xfs.h \
+  /root/open-estuary/kernel/include/linux/dqblk_v1.h \
+  /root/open-estuary/kernel/include/linux/dqblk_v2.h \
+  /root/open-estuary/kernel/include/linux/dqblk_qtree.h \
+  /root/open-estuary/kernel/include/linux/projid.h \
+  /root/open-estuary/kernel/include/uapi/linux/quota.h \
+  /root/open-estuary/kernel/include/linux/nfs_fs_i.h \
   /root/open-estuary/kernel/include/acpi/acpi_drivers.h \
     $(wildcard include/config/acpi/dock.h) \
   /root/open-estuary/kernel/include/acpi/acpi_numa.h \
   /root/open-estuary/kernel/include/acpi/acpi_io.h \
+  /root/open-estuary/kernel/include/linux/io.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/acpi.h \
     $(wildcard include/config/acpi/apei.h) \
-  /root/open-estuary/kernel/include/linux/mm.h \
-    $(wildcard include/config/mem/soft/dirty.h) \
-    $(wildcard include/config/ppc.h) \
-    $(wildcard include/config/parisc.h) \
-    $(wildcard include/config/metag.h) \
-    $(wildcard include/config/shmem.h) \
-    $(wildcard include/config/debug/vm/rb.h) \
-    $(wildcard include/config/debug/pagealloc.h) \
-    $(wildcard include/config/hugetlbfs.h) \
-  /root/open-estuary/kernel/include/linux/debug_locks.h \
-    $(wildcard include/config/debug/locking/api/selftests.h) \
-  /root/open-estuary/kernel/include/linux/range.h \
-  /root/open-estuary/kernel/include/linux/page_ext.h \
-    $(wildcard include/config/idle/page/tracking.h) \
-    $(wildcard include/config/page/owner.h) \
-  /root/open-estuary/kernel/include/linux/stacktrace.h \
-    $(wildcard include/config/stacktrace.h) \
-    $(wildcard include/config/user/stacktrace/support.h) \
-  /root/open-estuary/kernel/include/linux/page-flags.h \
-    $(wildcard include/config/arch/uses/pg/uncached.h) \
-    $(wildcard include/config/memory/failure.h) \
-    $(wildcard include/config/swap.h) \
-    $(wildcard include/config/ksm.h) \
-  /root/open-estuary/kernel/include/linux/huge_mm.h \
-  /root/open-estuary/kernel/include/linux/vmstat.h \
-    $(wildcard include/config/vm/event/counters.h) \
-    $(wildcard include/config/debug/tlbflush.h) \
-    $(wildcard include/config/debug/vm/vmacache.h) \
-  /root/open-estuary/kernel/include/linux/vm_event_item.h \
-    $(wildcard include/config/memory/balloon.h) \
-    $(wildcard include/config/balloon/compaction.h) \
   /root/open-estuary/kernel/include/linux/psci.h \
     $(wildcard include/config/arm/psci/fw.h) \
   /root/open-estuary/kernel/arch/arm64/include/asm/smp_plat.h \
   /root/open-estuary/kernel/arch/arm64/include/asm/tlbflush.h \
-  /root/open-estuary/kernel/include/linux/clk.h \
-    $(wildcard include/config/common/clk.h) \
-    $(wildcard include/config/have/clk/prepare.h) \
-    $(wildcard include/config/have/clk.h) \
+  /root/open-estuary/kernel/include/linux/delay.h \
+  arch/arm64/include/generated/asm/delay.h \
+  /root/open-estuary/kernel/include/asm-generic/delay.h \
+  /root/open-estuary/kernel/include/linux/module.h \
+    $(wildcard include/config/module/sig.h) \
+    $(wildcard include/config/modules/tree/lookup.h) \
+    $(wildcard include/config/kallsyms.h) \
+    $(wildcard include/config/tracepoints.h) \
+    $(wildcard include/config/event/tracing.h) \
+    $(wildcard include/config/livepatch.h) \
+    $(wildcard include/config/module/unload.h) \
+    $(wildcard include/config/constructors.h) \
+    $(wildcard include/config/debug/set/module/ronx.h) \
+  /root/open-estuary/kernel/include/linux/kmod.h \
+  /root/open-estuary/kernel/include/linux/elf.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/elf.h \
+  arch/arm64/include/generated/asm/user.h \
+  /root/open-estuary/kernel/include/asm-generic/user.h \
+  /root/open-estuary/kernel/include/uapi/linux/elf.h \
+  /root/open-estuary/kernel/include/uapi/linux/elf-em.h \
+  /root/open-estuary/kernel/include/linux/moduleparam.h \
+    $(wildcard include/config/alpha.h) \
+    $(wildcard include/config/ppc64.h) \
+  /root/open-estuary/kernel/include/linux/rbtree_latch.h \
+  /root/open-estuary/kernel/arch/arm64/include/asm/module.h \
+  /root/open-estuary/kernel/include/asm-generic/module.h \
+    $(wildcard include/config/have/mod/arch/specific.h) \
+    $(wildcard include/config/modules/use/elf/rel.h) \
+    $(wildcard include/config/modules/use/elf/rela.h) \
   /root/open-estuary/kernel/include/linux/netdevice.h \
     $(wildcard include/config/dcb.h) \
     $(wildcard include/config/wlan.h) \
@@ -831,101 +889,35 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/ipv6/tunnel.h) \
     $(wildcard include/config/rps.h) \
     $(wildcard include/config/netpoll.h) \
-    $(wildcard include/config/xps.h) \
     $(wildcard include/config/bql.h) \
     $(wildcard include/config/rfs/accel.h) \
     $(wildcard include/config/fcoe.h) \
     $(wildcard include/config/net/poll/controller.h) \
-    $(wildcard include/config/net/rx/busy/poll.h) \
     $(wildcard include/config/libfcoe.h) \
     $(wildcard include/config/wireless/ext.h) \
-    $(wildcard include/config/net/switchdev.h) \
     $(wildcard include/config/net/l3/master/dev.h) \
     $(wildcard include/config/vlan/8021q.h) \
     $(wildcard include/config/net/dsa.h) \
     $(wildcard include/config/tipc.h) \
     $(wildcard include/config/mpls/routing.h) \
-    $(wildcard include/config/net/cls/act.h) \
     $(wildcard include/config/netfilter/ingress.h) \
     $(wildcard include/config/net/flow/limit.h) \
-  /root/open-estuary/kernel/include/linux/delay.h \
-  arch/arm64/include/generated/asm/delay.h \
-  /root/open-estuary/kernel/include/asm-generic/delay.h \
   /root/open-estuary/kernel/include/linux/prefetch.h \
   /root/open-estuary/kernel/include/linux/dmaengine.h \
     $(wildcard include/config/async/tx/enable/channel/switch.h) \
     $(wildcard include/config/dma/engine.h) \
     $(wildcard include/config/rapidio/dma/engine.h) \
     $(wildcard include/config/async/tx/dma.h) \
-  /root/open-estuary/kernel/include/linux/uio.h \
-  /root/open-estuary/kernel/include/uapi/linux/uio.h \
-  /root/open-estuary/kernel/include/linux/scatterlist.h \
-    $(wildcard include/config/debug/sg.h) \
-    $(wildcard include/config/need/sg/dma/length.h) \
   /root/open-estuary/kernel/include/linux/dynamic_queue_limits.h \
   /root/open-estuary/kernel/include/linux/ethtool.h \
   /root/open-estuary/kernel/include/linux/compat.h \
     $(wildcard include/config/compat/old/sigaction.h) \
     $(wildcard include/config/odd/rt/sigaction.h) \
-  /root/open-estuary/kernel/include/linux/socket.h \
-  arch/arm64/include/generated/asm/socket.h \
-  /root/open-estuary/kernel/include/uapi/asm-generic/socket.h \
-  arch/arm64/include/generated/asm/sockios.h \
-  /root/open-estuary/kernel/include/uapi/asm-generic/sockios.h \
-  /root/open-estuary/kernel/include/uapi/linux/sockios.h \
-  /root/open-estuary/kernel/include/uapi/linux/socket.h \
   /root/open-estuary/kernel/include/uapi/linux/if.h \
-  /root/open-estuary/kernel/include/uapi/linux/libc-compat.h \
   /root/open-estuary/kernel/include/uapi/linux/hdlc/ioctl.h \
   /root/open-estuary/kernel/include/uapi/linux/aio_abi.h \
   /root/open-estuary/kernel/include/uapi/linux/ethtool.h \
   /root/open-estuary/kernel/include/linux/if_ether.h \
-  /root/open-estuary/kernel/include/linux/skbuff.h \
-    $(wildcard include/config/nf/conntrack.h) \
-    $(wildcard include/config/bridge/netfilter.h) \
-    $(wildcard include/config/xfrm.h) \
-    $(wildcard include/config/ipv6/ndisc/nodetype.h) \
-    $(wildcard include/config/net/sched.h) \
-    $(wildcard include/config/network/secmark.h) \
-    $(wildcard include/config/network/phy/timestamping.h) \
-    $(wildcard include/config/netfilter/xt/target/trace.h) \
-    $(wildcard include/config/nf/tables.h) \
-  /root/open-estuary/kernel/include/linux/kmemcheck.h \
-  /root/open-estuary/kernel/include/linux/net.h \
-  /root/open-estuary/kernel/include/linux/random.h \
-    $(wildcard include/config/arch/random.h) \
-  /root/open-estuary/kernel/include/linux/once.h \
-  /root/open-estuary/kernel/include/uapi/linux/random.h \
-  /root/open-estuary/kernel/include/uapi/linux/net.h \
-  /root/open-estuary/kernel/include/linux/textsearch.h \
-  /root/open-estuary/kernel/include/net/checksum.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/uaccess.h \
-    $(wildcard include/config/arm64/pan.h) \
-  /root/open-estuary/kernel/arch/arm64/include/asm/compiler.h \
-  arch/arm64/include/generated/asm/checksum.h \
-  /root/open-estuary/kernel/include/asm-generic/checksum.h \
-  /root/open-estuary/kernel/include/linux/dma-mapping.h \
-    $(wildcard include/config/has/dma.h) \
-    $(wildcard include/config/arch/has/dma/set/coherent/mask.h) \
-    $(wildcard include/config/have/dma/attrs.h) \
-    $(wildcard include/config/need/dma/map/state.h) \
-  /root/open-estuary/kernel/include/linux/dma-attrs.h \
-  /root/open-estuary/kernel/include/linux/dma-direction.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/dma-mapping.h \
-    $(wildcard include/config/iommu/dma.h) \
-  /root/open-estuary/kernel/include/asm-generic/dma-mapping-common.h \
-  /root/open-estuary/kernel/include/linux/dma-debug.h \
-    $(wildcard include/config/dma/api/debug.h) \
-  /root/open-estuary/kernel/include/asm-generic/dma-coherent.h \
-    $(wildcard include/config/have/generic/dma/coherent.h) \
-  /root/open-estuary/kernel/include/linux/netdev_features.h \
-  /root/open-estuary/kernel/include/net/flow_dissector.h \
-  /root/open-estuary/kernel/include/linux/in6.h \
-  /root/open-estuary/kernel/include/uapi/linux/in6.h \
-  /root/open-estuary/kernel/include/uapi/linux/if_ether.h \
-  /root/open-estuary/kernel/include/linux/splice.h \
-  /root/open-estuary/kernel/include/linux/pipe_fs_i.h \
-  /root/open-estuary/kernel/include/net/flow.h \
   /root/open-estuary/kernel/include/net/net_namespace.h \
     $(wildcard include/config/ipv6.h) \
     $(wildcard include/config/ieee802154/6lowpan.h) \
@@ -1024,63 +1016,7 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
   /root/open-estuary/kernel/include/uapi/linux/if_link.h \
     $(wildcard include/config/pending.h) \
   /root/open-estuary/kernel/include/uapi/linux/if_bonding.h \
-  /root/open-estuary/kernel/include/linux/etherdevice.h \
-    $(wildcard include/config/have/efficient/unaligned/access.h) \
-  arch/arm64/include/generated/asm/unaligned.h \
-  /root/open-estuary/kernel/include/asm-generic/unaligned.h \
-  /root/open-estuary/kernel/include/linux/unaligned/access_ok.h \
-  /root/open-estuary/kernel/include/linux/unaligned/generic.h \
-  /root/open-estuary/kernel/include/linux/iommu.h \
-    $(wildcard include/config/of/iommu.h) \
-  /root/open-estuary/kernel/include/trace/events/iommu.h \
-  /root/open-estuary/kernel/include/linux/tracepoint.h \
-    $(wildcard include/config/have/syscall/tracepoints.h) \
-    $(wildcard include/config/tracepoint.h) \
-  /root/open-estuary/kernel/include/linux/pci.h \
-    $(wildcard include/config/pci/iov.h) \
-    $(wildcard include/config/pcieaspm.h) \
-    $(wildcard include/config/pci/msi.h) \
-    $(wildcard include/config/pci/ats.h) \
-    $(wildcard include/config/pci/domains/generic.h) \
-    $(wildcard include/config/pci/bus/addr/t/64bit.h) \
-    $(wildcard include/config/pcieportbus.h) \
-    $(wildcard include/config/pcieaer.h) \
-    $(wildcard include/config/pcie/ecrc.h) \
-    $(wildcard include/config/ht/irq.h) \
-    $(wildcard include/config/pci/domains.h) \
-    $(wildcard include/config/pci/quirks.h) \
-    $(wildcard include/config/pci/mmconfig.h) \
-    $(wildcard include/config/hotplug/pci.h) \
-    $(wildcard include/config/eeh.h) \
-  /root/open-estuary/kernel/include/uapi/linux/pci.h \
-  /root/open-estuary/kernel/include/uapi/linux/pci_regs.h \
-  /root/open-estuary/kernel/include/linux/pci_ids.h \
-  /root/open-estuary/kernel/include/linux/pci-dma.h \
-  /root/open-estuary/kernel/include/linux/dmapool.h \
-  /root/open-estuary/kernel/arch/arm64/include/asm/pci.h \
-  /root/open-estuary/kernel/include/asm-generic/pci-bridge.h \
-  /root/open-estuary/kernel/include/asm-generic/pci-dma-compat.h \
-  /root/open-estuary/kernel/include/trace/define_trace.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hnae.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_uio.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hnae.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_mac.h \
-  /root/open-estuary/kernel/include/linux/if_vlan.h \
-  /root/open-estuary/kernel/include/linux/rtnetlink.h \
-    $(wildcard include/config/net/ingress.h) \
-  /root/open-estuary/kernel/include/uapi/linux/rtnetlink.h \
-  /root/open-estuary/kernel/include/uapi/linux/if_addr.h \
-  /root/open-estuary/kernel/include/uapi/linux/if_vlan.h \
-  /root/open-estuary/kernel/include/linux/regmap.h \
-    $(wildcard include/config/regmap.h) \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_main.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_reg.h \
-    $(wildcard include/config/reg.h) \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/compat.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_reg.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_main.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_rcb.h \
 
-/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o: $(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o)
+/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o: $(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o)
 
-$(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o):
+$(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hnae.o):

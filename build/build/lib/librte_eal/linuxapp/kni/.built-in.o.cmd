@@ -1,1 +1,0 @@
-cmd_/root/lixu/build/build/lib/librte_eal/linuxapp/kni/built-in.o :=  rm -f /root/lixu/build/build/lib/librte_eal/linuxapp/kni/built-in.o; ar rcsD /root/lixu/build/build/lib/librte_eal/linuxapp/kni/built-in.o

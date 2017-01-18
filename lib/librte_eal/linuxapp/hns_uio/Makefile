@@ -49,5 +49,14 @@ MODULE_CFLAGS += -include $(RTE_OUTPUT)/include/rte_config.h
 # all source are stored in SRCS-y
 #
 SRCS-y := hns_uio.c
+#SRCS-y += hns_ethtool.c
+#SRCS-y += hns_ae_adapt.c
+#SRCS-y += hns_dsaf_gmac.c
+#SRCS-y += hns_dsaf_main.c
+#SRCS-y += hns_dsaf_mac.c
+#SRCS-y += hns_dsaf_misc.c
+#SRCS-y += hns_dsaf_ppe.c
+#SRCS-y += hns_dsaf_ppe.c
+#SRCS-y += hns_dsaf_rcb.c
 
 include $(RTE_SDK)/mk/rte.module.mk
