@@ -50,7 +50,6 @@ const char *platform_get_sysfs_path(void);
 /** Maximum length of platform device name. */
 #define PLATFORM_NAME_MAX_LEN (32)
 
-
 /** Calculate offset. */
 #define UIO_OFFSET(n) ((n) * PAGE_SIZE)
 
@@ -61,7 +60,7 @@ struct rte_platform_device {
     TAILQ_ENTRY(rte_platform_device) next; /**< Next probed UIO device. */
 
     char *name;      /**< device name. */
-
+    int uio_num;     /**< uio device number */
     /**< UIO Memory Resource. */
     struct rte_platform_resource mem_resource[PLATFORM_MAX_RESOURCE];
     struct rte_platform_driver  *driver;      /**< Associated driver */
@@ -129,6 +128,15 @@ struct rte_platform_driver {
 
     const struct rte_platform_id *id_table;          /**< ID table. */
 };
+/** Device needs Platform mapping  */
+#define RTE_PLATFORM_DRV_NEED_MAPPING 0x0001
+/** Device needs to be unbound even if no module is provided */
+#define RTE_PLATFORM_DRV_FORCE_UNBIND 0x0004
+/** Device driver supports link state interrupt */
+#define RTE_PLATFORM_DRV_INTR_LSC	0x0008
+/** Device driver supports detaching capability */
+#define RTE_PLATFORM_DRV_DETACHABLE	0x0010
+
 
 /**
  * A structure describing a platform data.
@@ -161,7 +169,7 @@ static inline int
 rte_eal_compare_platform_name(const struct rte_platform_device* d1, 
         const struct rte_platform_device *d2)
 {
-    return rte_eal_compare_name(d1->name, d2->name);
+    return d1->uio_num - d2->uio_num;
 }
 
 

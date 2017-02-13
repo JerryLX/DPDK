@@ -12,9 +12,9 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
-
 #include <rte_log.h>
 #include <rte_platform.h>
+#include <rte_pci_platform.h>
 #include <rte_eal_memconfig.h>
 #include <rte_common.h>
 #include <rte_malloc.h>
@@ -24,120 +24,124 @@
 
 void *platform_map_addr = NULL;
 
-static int
-platform_mknod_uio_dev(const char *sysfs_uio_path, unsigned uio_num)
-{
-	FILE *f;
-	char filename[PATH_MAX];
-	int ret;
-	unsigned major, minor;
-	dev_t dev;
-
-	/* get the name of the sysfs file that contains the major and minor
-	 * of the uio device and read its content */
-	snprintf(filename, sizeof(filename), "%s/dev", sysfs_uio_path);
-
-	f = fopen(filename, "r");
-	if (f == NULL) {
-		RTE_LOG(ERR, EAL, "%s(): cannot open sysfs to get major:minor\n",
-			__func__);
-		return -1;
-	}
-
-	ret = fscanf(f, "%u:%u", &major, &minor);
-	if (ret != 2) {
-		RTE_LOG(ERR, EAL, "%s(): cannot parse sysfs to get major:minor\n",
-			__func__);
-		fclose(f);
-		return -1;
-	}
-	fclose(f);
-
-	/* create the char device "mknod /dev/uioX c major minor" */
-	snprintf(filename, sizeof(filename), "/dev/uio%u", uio_num);
-	dev = makedev(major, minor);
-	ret = mknod(filename, S_IFCHR | S_IRUSR | S_IWUSR, dev);
-	if (f == NULL) {
-		RTE_LOG(ERR, EAL, "%s(): mknod() failed %s\n",
-			__func__, strerror(errno));
-		return -1;
-	}
-
-	return ret;
-}
+/**
+ * hns_uio has already create char dev(nic_uio) 
+ *
+ */
+//static int
+//platform_mknod_uio_dev(const char *sysfs_uio_path, unsigned uio_num)
+//{
+//	FILE *f;
+//	char filename[PATH_MAX];
+//	int ret;
+//	unsigned major, minor;
+//	dev_t dev;
+//
+//	/* get the name of the sysfs file that contains the major and minor
+//	 * of the uio device and read its content */
+//	snprintf(filename, sizeof(filename), "%s/dev", sysfs_uio_path);
+//
+//	f = fopen(filename, "r");
+//	if (f == NULL) {
+//		RTE_LOG(ERR, EAL, "%s(): cannot open sysfs to get major:minor\n",
+//			__func__);
+//		return -1;
+//	}
+//
+//	ret = fscanf(f, "%u:%u", &major, &minor);
+//	if (ret != 2) {
+//		RTE_LOG(ERR, EAL, "%s(): cannot parse sysfs to get major:minor\n",
+//			__func__);
+//		fclose(f);
+//		return -1;
+//	}
+//	fclose(f);
+//
+//	/* create the char device "mknod /dev/uioX c major minor" */
+//	snprintf(filename, sizeof(filename), "/dev/uio%u", uio_num);
+//	dev = makedev(major, minor);
+//	ret = mknod(filename, S_IFCHR | S_IRUSR | S_IWUSR, dev);
+//	if (f == NULL) {
+//		RTE_LOG(ERR, EAL, "%s(): mknod() failed %s\n",
+//			__func__, strerror(errno));
+//		return -1;
+//	}
+//
+//	return ret;
+//}
 
 /*
  * Return the uioX char device used for a platform device.
  * On success, return the UIO number.
  */
-static int
-platform_get_uio_dev(struct rte_platform_device *dev, char *dstbuf,
-        unsigned int buflen, int create)
-{
-    unsigned int uio_num;
-    struct dirent *e;
-    DIR *dir;
-    char dirname[PATH_MAX];
-
-    snprintf(dirname, sizeof(dirname),
-            "%s/%s/uio",platform_get_sysfs_path(),
-            dev->name);
-
-    /* need to fullfill */
-	dir = opendir(dirname);
-	if (dir == NULL) {
-		/* retry with the parent directory */
-		snprintf(dirname, sizeof(dirname),
-				"%s/%s", platform_get_sysfs_path(),
-				dev->name);
-		dir = opendir(dirname);
-
-		if (dir == NULL) {
-			RTE_LOG(ERR, EAL, "Cannot opendir %s\n", dirname);
-			return -1;
-		}
-	}
-
-	/* take the first file starting with "uio" */
-	while ((e = readdir(dir)) != NULL) {
-		/* format could be uio%d ...*/
-		int shortprefix_len = sizeof("uio") - 1;
-		/* ... or uio:uio%d */
-		int longprefix_len = sizeof("uio:uio") - 1;
-		char *endptr;
-
-		if (strncmp(e->d_name, "uio", 3) != 0)
-			continue;
-
-		/* first try uio%d */
-		errno = 0;
-		uio_num = strtoull(e->d_name + shortprefix_len, &endptr, 10);
-		if (errno == 0 && endptr != (e->d_name + shortprefix_len)) {
-			snprintf(dstbuf, buflen, "%s/uio%u", dirname, uio_num);
-			break;
-		}
-
-		/* then try uio:uio%d */
-		errno = 0;
-		uio_num = strtoull(e->d_name + longprefix_len, &endptr, 10);
-		if (errno == 0 && endptr != (e->d_name + longprefix_len)) {
-			snprintf(dstbuf, buflen, "%s/uio:uio%u", dirname, uio_num);
-			break;
-		}
-	}
-	closedir(dir);
-
-	/* No uio resource found */
-	if (e == NULL)
-		return -1;
-
-	/* create uio device if we've been asked to */
-	if (internal_config.create_uio_dev && create &&
-			platform_mknod_uio_dev(dstbuf, uio_num) < 0)
-		RTE_LOG(WARNING, EAL, "Cannot create /dev/uio%u\n", uio_num);
-
-    return uio_num;
-}
+//static int
+//platform_get_uio_dev(struct rte_platform_device *dev, char *dstbuf,
+//        unsigned int buflen, int create)
+//{
+//    unsigned int uio_num;
+//    struct dirent *e;
+//    DIR *dir;
+//    char dirname[PATH_MAX];
+//
+//    snprintf(dirname, sizeof(dirname),
+//            "%s/%s/uio",platform_get_sysfs_path(),
+//            dev->name);
+//
+//    /* need to fullfill */
+//	dir = opendir(dirname);
+//	if (dir == NULL) {
+//		/* retry with the parent directory */
+//		snprintf(dirname, sizeof(dirname),
+//				"%s/%s", platform_get_sysfs_path(),
+//				dev->name);
+//		dir = opendir(dirname);
+//
+//		if (dir == NULL) {
+//			RTE_LOG(ERR, EAL, "Cannot opendir %s\n", dirname);
+//			return -1;
+//		}
+//	}
+//
+//	/* take the first file starting with "uio" */
+//	while ((e = readdir(dir)) != NULL) {
+//		/* format could be uio%d ...*/
+//		int shortprefix_len = sizeof("uio") - 1;
+//		/* ... or uio:uio%d */
+//		int longprefix_len = sizeof("uio:uio") - 1;
+//		char *endptr;
+//
+//		if (strncmp(e->d_name, "uio", 3) != 0)
+//			continue;
+//
+//		/* first try uio%d */
+//		errno = 0;
+//		uio_num = strtoull(e->d_name + shortprefix_len, &endptr, 10);
+//		if (errno == 0 && endptr != (e->d_name + shortprefix_len)) {
+//			snprintf(dstbuf, buflen, "%s/uio%u", dirname, uio_num);
+//			break;
+//		}
+//
+//		/* then try uio:uio%d */
+//		errno = 0;
+//		uio_num = strtoull(e->d_name + longprefix_len, &endptr, 10);
+//		if (errno == 0 && endptr != (e->d_name + longprefix_len)) {
+//			snprintf(dstbuf, buflen, "%s/uio:uio%u", dirname, uio_num);
+//			break;
+//		}
+//	}
+//	closedir(dir);
+//
+//	/* No uio resource found */
+//	if (e == NULL)
+//		return -1;
+//
+//	/* create uio device if we've been asked to */
+//	if (internal_config.create_uio_dev && create &&
+//			platform_mknod_uio_dev(dstbuf, uio_num) < 0)
+//		RTE_LOG(WARNING, EAL, "Cannot create /dev/uio%u\n", uio_num);
+//
+//    return uio_num;
+//}
 
 /*
  * Free uio resource for platform device.
@@ -160,6 +164,66 @@ platform_uio_free_resource(struct rte_platform_device *dev,
 	} 
 }
 
+//static int
+//platform_uio_parse_one_map(struct rte_platform_device *dev,
+//        int index, const char *parent_dirname)
+//{
+//    int addr_fd, size_fd;
+//    char addr_name[PATH_MAX];
+//    char size_name[PATH_MAX];
+//    char addr_buf[32], size_buf[32];
+//    uint64_t uio_addr, uio_size;
+//
+//    snprintf(addr_name, sizeof(addr_name), "%s/%s", parent_dirname, "addr");
+//    snprintf(size_name, sizeof(addr_name), "%s/%s", parent_dirname, "size");
+//
+//    addr_fd = open(addr_name, O_RDONLY);
+//    if(!addr_fd || !read(addr_fd, addr_buf, sizeof(addr_buf))){
+//        RTE_LOG(ERR, EAL, "open dir %s failed!\n", addr_name);
+//        return -1;
+//    }
+//    uio_addr = (uint64_t)strtoull(addr_buf, NULL, 0);
+//    close(addr_fd);
+//
+//    size_fd = open(addr_name, O_RDONLY);
+//    if(!size_fd || !read(size_fd, size_buf, sizeof(size_buf))){
+//        RTE_LOG(ERR, EAL, "open dir %s failed!\n", size_name);
+//        return -1;
+//    }
+//    uio_size = (uint64_t)strtol(size_buf, NULL, 0);
+//    close(size_fd);
+//    dev->mem_resource[index].phys_addr = uio_addr;
+//    dev->mem_resource[index].len = uio_size;
+//    return 0;
+//}
+//
+//static int
+//platform_uio_parse_map(struct rte_platform_device *dev,
+//        const char *filename)
+//{
+//    char dirname[PATH_MAX]; /* contains the /dev/uioX/maps */
+//    DIR *dir;
+//    struct dirent *file;
+//    int index = 0;
+//    
+//    snprintf(dirname, sizeof(dirname), "%s/%s", filename, "maps");
+//    
+//    dir = opendir(dirname);
+//    if(!dir) {
+//        RTE_LOG(ERR, EAL, "open dir %s failed!\n", dirname);
+//        return -1;
+//    }
+//
+//    while ((file = readdir(dir))!=NULL){
+//        if (strncmp(file->d_name, "map", 3) != 0)
+//            continue;
+//        if(!platform_uio_parse_one_map(dev,index,dirname))
+//            return -1;
+//        index++;
+//    }
+//    return 0;
+//}
+
 /*
  * Alloc uio resource for platform device.
  */
@@ -167,13 +231,11 @@ int
 platform_uio_alloc_resource(struct rte_platform_device *dev,
         struct mapped_platform_resource **uio_res)
 {
-    char dirname[PATH_MAX];
-//    char cfgname[PATH_MAX];
     char devname[PATH_MAX]; /* contains the /dev/uioX */
     int uio_num;
     
     /* find uio resource */
-    uio_num = platform_get_uio_dev(dev, dirname, sizeof(dirname), 1);
+    uio_num = dev->uio_num;
     if(uio_num < 0){
         RTE_LOG(WARNING, EAL, "platform dev %s not managed by UIO driver, "
                 "skipping\n", dev->name);
@@ -188,7 +250,14 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
         goto error;
     }
 
-    /* platform device has no config */
+    /*
+    if(platform_uio_parse_map(dev, devname))
+    {
+        RTE_LOG(ERR, EAL, "parse map error!\n");
+        goto error;
+    }
+    */
+    /* this platform device has no config */
     /*
     snprintf(cfgname, sizeof(cfgname),
         "/sys/class/uio/uio%u/device/config", uio_num);
@@ -199,7 +268,7 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     }
     */
 
-    if (dev->kdrv == RTE_KDRV_PLF_UIO)
+    if (dev->kdrv == RTE_KDRV_HNS_UIO)
         dev->intr_handle.type = RTE_INTR_HANDLE_UIO;
     else{
         RTE_LOG(ERR, EAL, "not implement yet\n");
@@ -237,9 +306,8 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 
 	/* update devname for mmap  */
 	snprintf(devname, sizeof(devname),
-			"%s/%s/resource%d",
-			platform_get_sysfs_path(),
-			dev->name, res_idx);
+			"/dev/uio%d",
+			dev->uio_num);
 
 	/* allocate memory to keep path */
 	maps[map_idx].path = rte_malloc(NULL, strlen(devname) + 1, 0);

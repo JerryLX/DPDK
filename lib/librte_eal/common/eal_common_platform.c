@@ -1,4 +1,3 @@
-
 #include <string.h>
 #include <inttypes.h>
 #include <stdint.h>
@@ -243,7 +242,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
                 strncmp(id->name, dev->name, len)) 
             continue;
 
-		if (dr->drv_flags & RTE_PCI_DRV_NEED_MAPPING) {
+		if (dr->drv_flags & RTE_PLATFORM_DRV_NEED_MAPPING) {
 			/* map resources for devices that use plf_uio */
 			ret = rte_eal_platform_map_device(dev);
 			if (ret != 0)

@@ -18,9 +18,9 @@
 #include "hnae.h"
 #include "hns_uio.h"
 #include "compat.h"
-#include "hns_dsaf_reg.h"
-#include "hns_dsaf_main.h"
-#include "hns_dsaf_rcb.h"
+//#include "hns_dsaf_reg.h"
+//#include "hns_dsaf_main.h"
+//#include "hns_dsaf_rcb.h"
 
 #ifndef UIO_OK
 #define UIO_OK 0
@@ -57,7 +57,7 @@ struct tast_struct *ring_task;
 unsigned int kthread_stop_flag;
 
 static int port_vf[] = {
-    0, 0, 0, 8, 16, 32, 128, 0, 0, 8, 16, 64, 1, 2, 4, 16
+    0, 0, 0, 8, 16, 32, 128, 0, 0, 0, 8, 16, 64, 1, 2, 4, 16, 0
 };
 
 #define HNS_PHY_PAGE_MDIX   0
@@ -238,6 +238,7 @@ void hns_ethtool_set_ops(struct net_device *ndev)
 {
 	ndev->ethtool_ops = &hns_ethtool_ops;
 }
+
 static int netdev_open(struct net_device *netdev){
     (void)netdev;
     return 0;
@@ -695,9 +696,8 @@ static int hns_uio_nic_irqcontrol(struct uio_info *dev_info, s32 irq_state)
 static irqreturn_t hns_uio_nic_irqhandler(int irq,
 					  struct uio_info *dev_info)
 {
-	struct rte_uio_platform_dev *priv = NULL;
+	struct rte_uio_platform_dev *priv = dev_info->priv;
 
-	priv = uio_dev_info[dev_info->mem[3].addr];
 	uio_event_notify(&priv->info);
 	PRINT(KERN_ERR, "hns_uio_nic_open = %d\n", irq);
 	return IRQ_HANDLED;
@@ -938,7 +938,7 @@ int hns_user_queue_malloc(struct hnae_handle *handle)
     if(dma_mapping_error(ring_to_dev(rx_ring), base_rx_dma))
         goto fail_unmap_tx_dma;
 
-    for(i = 1; i < handle->q_num; i++){
+    for(i = 0; i < handle->q_num; i++){
         tx_ring = (struct hnae_ring *)&handle->qs[i]->tx_ring;
         rx_ring = (struct hnae_ring *)&handle->qs[i]->rx_ring;
         tx_ring->q = handle->qs[i];
@@ -949,7 +949,11 @@ int hns_user_queue_malloc(struct hnae_handle *handle)
         tx_ring->desc_cb = 
             (struct hnae_desc_cb *)(base_tx_cb + cb_size *i);
         rx_ring->desc_cb = 
-            (struct hnae_desc_cb *)(base_tx_cb + cb_size * i);
+            (struct hnae_desc_cb *)(base_rx_cb + cb_size * i);
+        tx_ring->desc = 
+            (struct hnae_desc *)(base_tx_desc + desc_size *i);
+        rx_ring->desc = 
+            (struct hnae_desc *)(base_rx_desc + desc_size * i);
         tx_ring->desc_dma_addr = base_tx_dma + desc_size * i;
         rx_ring->desc_dma_addr = base_rx_dma + desc_size * i;
 
@@ -1030,6 +1034,31 @@ void hns_user_put_handle(struct hnae_handle *h)
 	module_put(dev->owner);
 }
 
+static int hns_uio_alloc(struct hnae_ring *ring, struct hnae_desc_cb *cb)
+{
+	return UIO_OK;
+}
+
+static void hns_uio_free(struct hnae_ring *ring, struct hnae_desc_cb *cb)
+{
+}
+
+static int hns_uio_map(struct hnae_ring *ring, struct hnae_desc_cb *cb)
+{
+	return UIO_OK;
+}
+
+static void hns_uio_unmap(struct hnae_ring *ring, struct hnae_desc_cb *cb)
+{
+}
+
+static struct hnae_buf_ops hns_uio_nic_bops = {
+	.alloc_buffer = hns_uio_alloc,
+	.free_buffer  = hns_uio_free,
+	.map_buffer   = hns_uio_map,
+	.unmap_buffer = hns_uio_unmap,
+};
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 static int __devinit
 #else
@@ -1073,19 +1102,23 @@ hns_uio_probe(struct platform_device *pdev)
             return err;
     }
    
-//    do {
+    do {
     /* get handle */
-    handle = hnae_get_handle(dev, fwnode, port, NULL);
+    handle = hnae_get_handle(dev, fwnode, port, &hns_uio_nic_bops);
     PRINT(KERN_DEBUG,"get handle: %lx\n", (unsigned long)handle);
+
     if(IS_ERR_OR_NULL(handle)){
         dev_dbg(dev, "get handle error");
         goto fail_free_dev;
     }
 
+//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
     hns_kernel_queue_free(handle);
-    PRINT(KERN_DEBUG,"After hns_kernel_queue_free\n");
-    hns_user_queue_malloc(handle);
-    PRINT(KERN_DEBUG,"After hns_user_queue_malloc\n");
+//    PRINT(KERN_DEBUG,"After hns_kernel_queue_free\n");
+//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
+    err = hns_user_queue_malloc(handle);
+//    PRINT(KERN_DEBUG,"After hns_user_queue_malloc, err: %d\n", err);
+//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
 
     vf_cb = (struct hnae_vf_cb *)container_of(
             handle, struct hnae_vf_cb, ae_handle);
@@ -1109,6 +1142,11 @@ hns_uio_probe(struct platform_device *pdev)
     udev->port = port;
     udev->vf_sum = port_vf[vf_cb->dsaf_dev->dsaf_mode];
     udev->vf_id = handle->vf_id;
+   
+    //PRINT(KERN_ERR,"dsaf_mode: %d\n", vf_cb->dsaf_dev->dsaf_mode);
+    //PRINT(KERN_ERR,"vf_sum: %d\n", udev->vf_sum);
+    //PRINT(KERN_ERR,"vf_id: %d\n", udev->vf_id);
+    
     udev->q_num = handle->q_num;
     udev->uio_start = uio_start;
 
@@ -1123,6 +1161,7 @@ hns_uio_probe(struct platform_device *pdev)
     
     udev->info.mem[1].name = "tx_bd";
     udev->info.mem[1].addr = (unsigned long)queue->tx_ring.desc;
+//    PRINT(KERN_ERR,"tx_bd addr: %lx\n", (unsigned long)udev->info.mem[1].addr);
     udev->info.mem[1].size = queue->tx_ring.desc_num * 
                         sizeof(queue->tx_ring.desc[0]) *
                         handle->q_num;
@@ -1166,7 +1205,15 @@ hns_uio_probe(struct platform_device *pdev)
 
     uio_index++;
     PRINT(KERN_DEBUG,"uio_index now is %d\n",uio_index);
-//    } while (handle->vf_id < (port_vf[vf_cb->dsaf_dev->dsaf_mode] - 1));
+    } while(handle->vf_id < (port_vf[vf_cb->dsaf_dev->dsaf_mode]-1));
+    //for test==========================================================
+    //i = 0;
+    //do {
+    //    test = hnae_get_handle(dev, fwnode, port, &hns_uio_nic_bops);
+    //    PRINT(KERN_DEBUG, "get handle: %lx\n", (unsigned long)test);
+    //    i++;
+    //} while (i<10 && handle->vf_id < (port_vf[vf_cb->dsaf_dev->dsaf_mode] - 1));
+    //-----------------------------------------------------------------
 
     err = hns_uio_register_cdev();
     if(err){
@@ -1303,6 +1350,7 @@ static int __init
 hnsuio_init_module(void)
 {
     uio_index = 0;
+    char_dev_flag = 0; 
     return platform_driver_register(&hns_uio_driver);
 }
 

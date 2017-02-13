@@ -109,6 +109,6 @@ dep_rte_kni.o = /root/lixu/lib/librte_kni/rte_kni.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eth_ctrl.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_dev_info.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
- /root/lixu/lib/librte_kni/rte_kni.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_kni.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_kni_common.h \
  /root/lixu/lib/librte_kni/rte_kni_fifo.h

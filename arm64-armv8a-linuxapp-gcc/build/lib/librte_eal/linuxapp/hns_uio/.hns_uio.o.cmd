@@ -1077,9 +1077,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
   /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_reg.h \
     $(wildcard include/config/reg.h) \
   /root/lixu/lib/librte_eal/linuxapp/hns_uio/compat.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_reg.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_main.h \
-  /root/lixu/lib/librte_eal/linuxapp/hns_uio/hns_dsaf_rcb.h \
 
 /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o: $(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o)
 

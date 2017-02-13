@@ -20,8 +20,8 @@ __attribute__((section("__versions"))) = {
 	{ 0x879e21b6, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x6f5b2f3c, __VMLINUX_SYMBOL_STR(platform_driver_unregister) },
 	{ 0x444894b0, __VMLINUX_SYMBOL_STR(__platform_driver_register) },
-	{ 0xbe08b37a, __VMLINUX_SYMBOL_STR(__dynamic_dev_dbg) },
 	{ 0xdcb764ad, __VMLINUX_SYMBOL_STR(memset) },
+	{ 0xbe08b37a, __VMLINUX_SYMBOL_STR(__dynamic_dev_dbg) },
 	{ 0xe3e48c52, __VMLINUX_SYMBOL_STR(register_netdev) },
 	{ 0xc919abf4, __VMLINUX_SYMBOL_STR(__uio_register_device) },
 	{ 0xce4be0fd, __VMLINUX_SYMBOL_STR(alloc_etherdev_mqs) },
@@ -73,4 +73,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "37D5A4626658E3DAB267C34");
+MODULE_INFO(srcversion, "B90E514B429083EECAB841C");

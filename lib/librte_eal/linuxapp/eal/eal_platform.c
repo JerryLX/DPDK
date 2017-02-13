@@ -1,13 +1,15 @@
 
 #include <string.h>
 #include <dirent.h>
-
+#include <fcntl.h>
 #include <rte_log.h>
 #include <rte_platform.h>
+#include <rte_pci_platform.h>
 #include <rte_eal_memconfig.h>
 #include <rte_malloc.h>
 #include <rte_devargs.h>
 #include <rte_memcpy.h>
+#include <sys/stat.h>
 
 #include "eal_filesystem.h"
 #include "eal_private.h"
@@ -92,13 +94,91 @@ rte_eal_platform_map_device(struct rte_platform_device *dev)
 {
     int ret = -1;
 
-    ret = platform_uio_map_resource(dev);
+	switch (dev->kdrv) {
+    case RTE_KDRV_HNS_UIO:
+        ret = platform_uio_map_resource(dev);
+        break;
+    default:
+		RTE_LOG(DEBUG, EAL,
+			"  Not managed by a supported kernel driver, skipped\n");
+		ret = 1;
+		break;
+    }
     return ret;
+}
+
+
+static int
+platform_uio_parse_one_map(struct rte_platform_device *dev,
+        int index, const char *parent_dirname)
+{
+    int addr_fd, size_fd;
+    char addr_name[PATH_MAX];
+    char size_name[PATH_MAX];
+    char addr_buf[32], size_buf[32];
+    uint64_t uio_addr, uio_size;
+
+    RTE_LOG(DEBUG,EAL, "parsing one map: %s\n", parent_dirname);
+    
+    snprintf(addr_name, sizeof(addr_name), "%s/%s", parent_dirname, "addr");
+    snprintf(size_name, sizeof(addr_name), "%s/%s", parent_dirname, "size");
+
+    addr_fd = open(addr_name, O_RDONLY);
+    if(!addr_fd || !read(addr_fd, addr_buf, sizeof(addr_buf))){
+        RTE_LOG(ERR, EAL, "open dir %s failed!\n", addr_name);
+        return -1;
+    }
+    uio_addr = (uint64_t)strtoull(addr_buf, NULL, 0);
+    close(addr_fd);
+
+    size_fd = open(addr_name, O_RDONLY);
+    if(!size_fd || !read(size_fd, size_buf, sizeof(size_buf))){
+        RTE_LOG(ERR, EAL, "open dir %s failed!\n", size_name);
+        return -1;
+    }
+    uio_size = (uint64_t)strtol(size_buf, NULL, 0);
+    close(size_fd);
+    dev->mem_resource[index].phys_addr = uio_addr;
+    dev->mem_resource[index].len = uio_size;
+    
+    RTE_LOG(DEBUG, EAL, "parsing map, index: %d, phaddr: %lx, size: %lu\n", 
+            index,uio_addr,uio_size);
+    
+    return 0;
+}
+
+static int
+platform_uio_parse_map(struct rte_platform_device *dev,
+        const char *filename)
+{
+    char dirname[PATH_MAX]; /* contains the /.../maps */
+    char child_dir[PATH_MAX];
+    DIR *dir;
+    struct dirent *file;
+    int index = 0;
+    
+    snprintf(dirname, sizeof(dirname), "%s/%s", filename, "maps");
+    
+    dir = opendir(dirname);
+    if(!dir) {
+        RTE_LOG(ERR, EAL, "open dir %s failed!\n", dirname);
+        return -1;
+    }
+
+    while ((file = readdir(dir))!=NULL){
+        if (strncmp(file->d_name, "map", 3) != 0)
+            continue;
+        snprintf(child_dir, sizeof(child_dir), "%s/%s", dirname, file->d_name);
+        if(platform_uio_parse_one_map(dev,index,child_dir))
+            return -1;
+        index++;
+    }
+    return 0;
 }
 
 /* Scan one platform sysfs entry, and fill the devices list from it. */
 static int
-platform_scan_one(const char *dirname, const char *dev_name)
+platform_scan_one(const char *dirname, const char *dev_name, int uio_num)
 {
 	char filename[PATH_MAX];
 //	unsigned long tmp;
@@ -117,6 +197,19 @@ platform_scan_one(const char *dirname, const char *dev_name)
     memset(dev->name,0,len);
     snprintf(dev->name, len, "%s", dev_name);
 
+    //set uio_num
+    dev->uio_num = uio_num;
+        
+    RTE_LOG(ERR, EAL, "scaning device %s, uio_num: %d\n", dev_name, uio_num);
+    snprintf(filename, sizeof(filename), "%s/uio/uio%u", 
+            dirname, uio_num);
+    
+    if(platform_uio_parse_map(dev, filename))
+    {
+        RTE_LOG(ERR, EAL, "parse map error!\n");
+        return -1;
+    }
+
 	/* parse driver */
 	snprintf(filename, sizeof(filename), "%s/driver", dirname);
 	ret = platform_get_kernel_driver_by_path(filename, driver);
@@ -125,7 +218,18 @@ platform_scan_one(const char *dirname, const char *dev_name)
 		free(dev);
 		return -1;
 	}
-//  RTE_LOG(INFO, EAL, "%s has driver: %s\n", dev_name, driver);
+    RTE_LOG(INFO, EAL, "%s has driver: %s\n", dev_name, driver);
+
+	if (!ret) {
+		if (!strcmp(driver, "hns_uio"))
+			dev->kdrv = RTE_KDRV_HNS_UIO;
+        else{
+            dev->kdrv = RTE_KDRV_UNKNOWN;
+            RTE_LOG(INFO, EAL, "%s has a unknown driver: %s\n", dev_name, driver);
+        }
+    }
+    else
+       dev->kdrv = RTE_KDRV_NONE;
 
 	/* device is valid, add in list (sorted) */
 	if (TAILQ_EMPTY(&platform_device_list)) {
@@ -140,7 +244,7 @@ platform_scan_one(const char *dirname, const char *dev_name)
 				continue;
 
 			else { /* already registered */
-//              RTE_LOG(INFO, EAL, "%s already registered, %s\n", dev_name, dev2->name);
+              RTE_LOG(INFO, EAL, "%s already registered, %s\n", dev_name, dev2->name);
 				memmove(dev2->mem_resource, dev->mem_resource,
 					sizeof(dev->mem_resource));
 				free(dev);
@@ -152,6 +256,46 @@ platform_scan_one(const char *dirname, const char *dev_name)
 	}
 
 	return 0;
+}
+
+static int
+platform_scan_uio(const char *dirname, const char *dev_name)
+{
+    char filename[PATH_MAX];
+    DIR *dir;
+    struct dirent *e;
+    int ret = 0;
+    int uio_num;
+
+    snprintf(filename, sizeof(filename), "%s/uio", dirname);
+    dir = opendir(filename);
+    
+    //no uio device in this platform device
+    //ignore this platform device
+    if(dir == NULL)
+        return 0;
+
+	/* take the first file starting with "uio" */
+	while ((e = readdir(dir)) != NULL) {
+		/* format uio%d ...*/
+		int shortprefix_len = sizeof("uio") - 1;
+		char *endptr;
+
+		if (strncmp(e->d_name, "uio", 3) != 0)
+			continue;
+
+		uio_num = strtoull(e->d_name + shortprefix_len, &endptr, 10);
+		if ( endptr != (e->d_name + shortprefix_len)) {
+            ret = platform_scan_one(dirname, dev_name, uio_num);
+            if(ret){
+                RTE_LOG(ERR, EAL, "scan one failed!, err code: %d\n", ret);
+                return ret;
+            }
+        }
+
+	}
+	closedir(dir);
+    return 0;
 }
 
 void *
@@ -204,7 +348,7 @@ rte_eal_platform_scan(void)
 
         //for debug
 //	    RTE_LOG(INFO, EAL, "scanning dir: %s\n", dirname);	
-        if (platform_scan_one(dirname, devname) < 0)
+        if (platform_scan_uio(dirname, devname) < 0)
 			goto error;
 	}
 	closedir(dir);
