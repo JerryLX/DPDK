@@ -349,13 +349,11 @@ rte_eth_platform_dev_init(struct rte_platform_driver *platform_drv,
 //	char ethdev_name[RTE_ETH_NAME_MAX_LEN];
 
 	int diag;
-
-	eth_drv = (struct eth_driver *)platform_drv;
-
+    int pci_drv_size = sizeof(struct rte_pci_driver);
+	eth_drv = (struct eth_driver *)((unsigned long)platform_drv - pci_drv_size);
 	eth_dev = rte_eth_dev_allocate(platform_dev->name, RTE_ETH_DEV_PLATFORM);
 	if (eth_dev == NULL)
 		return -ENOMEM;
-
 	if (rte_eal_process_type() == RTE_PROC_PRIMARY) {
 		eth_dev->data->dev_private = rte_zmalloc("ethdev private structure",
 				  eth_drv->dev_private_size,

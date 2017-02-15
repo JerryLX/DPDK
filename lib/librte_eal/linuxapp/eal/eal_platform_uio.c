@@ -330,7 +330,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 	/* try mapping somewhere close to the end of hugepages */
 	if (platform_map_addr == NULL)
 		platform_map_addr = platform_find_max_end_va();
-	
+
     mapaddr = platform_map_resource(platform_map_addr, fd, 0,
 			(size_t)dev->mem_resource[res_idx].len, 0);
 	close(fd);

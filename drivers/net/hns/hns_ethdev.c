@@ -22,7 +22,8 @@
 
 
 static struct rte_platform_id platform_id_hns_map[]={
-    {.name = "hns_nic"},
+    {.name = "HISI00C2:03"},
+    {0}
 };
 
 static int func(struct hns_adapter * hns){
@@ -74,7 +75,6 @@ static struct eth_driver rte_hnsvf_pmd ={
 static int
 rte_hns_pmd_init(const char *name __rte_unused, const char *params __rte_unused)
 {
-    printf("get here!\n");
     rte_eth_platform_driver_register(&rte_hns_pmd);
     return 0;
 }

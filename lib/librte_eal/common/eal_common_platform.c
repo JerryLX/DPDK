@@ -120,11 +120,10 @@ platform_map_resource(void *requested_addr, int fd, off_t offset, size_t size,
         int additional_flags)
 {
     void *mapaddr;
-
     mapaddr = mmap(requested_addr, size, PROT_READ | PROT_WRITE,
             MAP_SHARED | additional_flags, fd, offset);
     if(mapaddr == MAP_FAILED){
-     RTE_LOG(ERR, EAL, "%s(): cannot mmap(%d, %p, 0x%lx, 0x%lx): %s (%p)\n",
+        RTE_LOG(ERR, EAL, "%s(): cannot mmap(%d, %p, 0x%lx, 0x%lx): %s (%p)\n",
                __func__, fd, requested_addr,
               (unsigned long)size, (unsigned long)offset,
                strerror(errno), mapaddr);
@@ -234,9 +233,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 	int ret;
     unsigned int len;
     const struct rte_platform_id *id;
-printf("platform driver: %s\n", dr->name);
-	for (id = dr->id_table; id != NULL; id++) {
-printf("id: %s\n", id->name);
+	for (id = dr->id_table; id->name != NULL; id++) {
 		/* check if device's identifiers match the driver's ones */
         len = strlen(id->name);
         if(len != strlen(dev->name) ||

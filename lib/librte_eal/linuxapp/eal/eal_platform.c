@@ -131,7 +131,7 @@ platform_uio_parse_one_map(struct rte_platform_device *dev,
     uio_addr = (uint64_t)strtoull(addr_buf, NULL, 0);
     close(addr_fd);
 
-    size_fd = open(addr_name, O_RDONLY);
+    size_fd = open(size_name, O_RDONLY);
     if(!size_fd || !read(size_fd, size_buf, sizeof(size_buf))){
         RTE_LOG(ERR, EAL, "open dir %s failed!\n", size_name);
         return -1;
