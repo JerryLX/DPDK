@@ -68,7 +68,7 @@ dep_eal_thread.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_thread.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
@@ -78,7 +78,7 @@ dep_eal_thread.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_thread.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h \
  /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \

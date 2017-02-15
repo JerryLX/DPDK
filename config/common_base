@@ -400,6 +400,12 @@ CONFIG_RTE_LIBRTE_PMD_KASUMI_DEBUG=n
 CONFIG_RTE_LIBRTE_PMD_NULL_CRYPTO=y
 
 #
+# Compile PMD for HNS device
+# by lixu
+#
+CONFIG_RTE_LIBRTE_PMD_HNS=n
+
+#
 # Compile librte_ring
 #
 CONFIG_RTE_LIBRTE_RING=y
