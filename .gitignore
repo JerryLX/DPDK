@@ -6,3 +6,4 @@
 /autotest_*/*
 /dpdkinstall/*
 /build/*
+*.ko
