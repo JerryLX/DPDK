@@ -7,3 +7,6 @@
 /dpdkinstall/*
 /build/*
 *.ko
+/app/*
+*.cmd
+
