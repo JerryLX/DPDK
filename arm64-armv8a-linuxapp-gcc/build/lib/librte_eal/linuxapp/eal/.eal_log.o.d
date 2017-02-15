@@ -36,7 +36,7 @@ dep_eal_log.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_log.c \
  /usr/include/aarch64-linux-gnu/bits/syslog.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
@@ -69,6 +69,6 @@ dep_eal_log.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_log.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h

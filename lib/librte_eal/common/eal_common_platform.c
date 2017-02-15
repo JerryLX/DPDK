@@ -49,7 +49,7 @@ struct dev_file_info {
 struct dev_file_info dev_file[FILE_MAX];
 
 
-static struct rte_platform_driver *rte_check_platform_drv_is_reg(char *drv_name)
+static struct rte_platform_driver *rte_check_platform_drv_is_reg(const char *drv_name)
 {
     struct rte_platform_driver *acc_drv;
     int len;
@@ -234,8 +234,9 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 	int ret;
     unsigned int len;
     const struct rte_platform_id *id;
+printf("platform driver: %s\n", dr->name);
 	for (id = dr->id_table; id != NULL; id++) {
-
+printf("id: %s\n", id->name);
 		/* check if device's identifiers match the driver's ones */
         len = strlen(id->name);
         if(len != strlen(dev->name) ||

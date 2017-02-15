@@ -188,6 +188,7 @@ __attribute__((used)) = RTE_STR(name)
 void devinitfn_ ##drv(void);\
 void __attribute__((constructor, used)) devinitfn_ ##drv(void)\
 {\
+    printf("register! %s\n", RTE_STR(nm)); \
 	(drv).name = RTE_STR(nm);\
 	rte_eal_driver_register(&drv);\
 } \

@@ -25,6 +25,16 @@ extern "C" {
 #include <rte_interrupts.h>
 #include <rte_pci_platform.h>
 
+
+#ifdef __cplusplus
+#define RTE_PLATFORM_DEVICE(name) \
+        (*name)                   
+#else
+#define RTE_PLATFORM_DEVICE(name)          \
+        .name = (*name)           
+#endif
+
+
 TAILQ_HEAD(platform_driver_list, rte_platform_driver); /**< Platform drivers in D-linked Q. */
 TAILQ_HEAD(platform_device_list, rte_platform_device); /**< Platform devices in D-linked Q. */
 //TAILQ_HEAD(platform_data_list, rte_platform_data); /**< Platform data in D-linked Q. */
@@ -112,7 +122,7 @@ TAILQ_HEAD(mapped_platform_res_list, mapped_platform_resource);
  * A structure describing an ID for a platform device
  */
 struct rte_platform_id {
-    char *name;    
+    const char *name;    
 };
 
 /**
@@ -121,7 +131,7 @@ struct rte_platform_id {
 struct rte_platform_driver {
     TAILQ_ENTRY(rte_platform_driver) next;        /**< Next in list. */
     
-    char                 *name;                      /**< Driver name. */
+    const char                 *name;                      /**< Driver name. */
     platform_devinit_t   *devinit;                  /**< Device init. funcion. */
     platform_devuninit_t *devuninit;                /**< Device uninit. function. */
 	uint32_t drv_flags;                              /**< Flags contolling handling of device. */

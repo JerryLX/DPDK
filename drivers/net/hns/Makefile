@@ -59,5 +59,6 @@ DEPDIRS-$(CONFIG_RTE_LIBRTE_PMD_NULL) += lib/librte_mbuf
 DEPDIRS-$(CONFIG_RTE_LIBRTE_PMD_NULL) += lib/librte_mempool
 DEPDIRS-$(CONFIG_RTE_LIBRTE_PMD_NULL) += lib/librte_ether
 DEPDIRS-$(CONFIG_RTE_LIBRTE_PMD_NULL) += lib/librte_kvargs
+#DEPDIRS-$(CONFIG_RTE_LIBRTE_PMD_NULL) += lib/librte_net
 
 include $(RTE_SDK)/mk/rte.lib.mk
