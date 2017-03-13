@@ -34,7 +34,9 @@ enum  {
 	HNS_UIO_IOCTL_REG_READ,
 	HNS_UIO_IOCTL_REG_WRITE,
 	HNS_UIO_IOCTL_SET_PAUSE,
-	HNS_UIO_IOCTL_NUM
+	HNS_UIO_IOCTL_NUM,
+    HNS_UIO_IOCTL_LINK_UPDATE,
+    HNS_UIO_IOCTL_INIT_MAC
 };
 
 struct char_device {
@@ -48,6 +50,7 @@ struct rte_uio_platform_dev {
 	struct device *dev;
     struct hnae_handle *ae_handle;
     struct net_device *netdev;
+    struct phy_device *phy;
     struct device_node *ae_node;
     struct hnae_vf_cb *vf_cb;
     struct uio_info info;

@@ -3,6 +3,7 @@ cmd_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/h
 source_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o := /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.c
 
 deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/hns_uio.o := \
+    $(wildcard include/config/of.h) \
   /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
     $(wildcard include/config/h.h) \
   /root/open-estuary/kernel/include/linux/device.h \
@@ -13,7 +14,6 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/hns_uio/
     $(wildcard include/config/numa.h) \
     $(wildcard include/config/dma/cma.h) \
     $(wildcard include/config/pm/sleep.h) \
-    $(wildcard include/config/of.h) \
     $(wildcard include/config/devtmpfs.h) \
     $(wildcard include/config/printk.h) \
     $(wildcard include/config/dynamic/debug.h) \

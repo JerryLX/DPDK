@@ -352,7 +352,8 @@ rte_eth_platform_dev_init(struct rte_platform_driver *platform_drv,
     int pci_drv_size = sizeof(struct rte_pci_driver);
 	eth_drv = (struct eth_driver *)((unsigned long)platform_drv - pci_drv_size);
 	eth_dev = rte_eth_dev_allocate(platform_dev->name, RTE_ETH_DEV_PLATFORM);
-	if (eth_dev == NULL)
+	
+    if (eth_dev == NULL)
 		return -ENOMEM;
 	if (rte_eal_process_type() == RTE_PROC_PRIMARY) {
 		eth_dev->data->dev_private = rte_zmalloc("ethdev private structure",
@@ -1014,7 +1015,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 	}
 
 	dev = &rte_eth_devices[port_id];
-
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->dev_infos_get, -ENOTSUP);
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->dev_configure, -ENOTSUP);
 
@@ -1023,7 +1023,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 		    "port %d must be stopped to allow configuration\n", port_id);
 		return -EBUSY;
 	}
-
 	/* Copy the dev_conf parameter into the dev structure */
 	memcpy(&dev->data->dev_conf, dev_conf, sizeof(dev->data->dev_conf));
 
@@ -1033,7 +1032,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 	 * configured device.
 	 */
 	(*dev->dev_ops->dev_infos_get)(dev, &dev_info);
-
 	if (nb_rx_q == 0 && nb_tx_q == 0) {
 		RTE_PMD_DEBUG_TRACE("ethdev port_id=%d both rx and tx queue cannot be 0\n", port_id);
 		return -EINVAL;
@@ -1196,7 +1194,6 @@ rte_eth_dev_start(uint8_t port_id)
 		return diag;
 
 	rte_eth_dev_config_restore(port_id);
-
 	if (dev->data->dev_conf.intr_conf.lsc == 0) {
 		RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->link_update, -ENOTSUP);
 		(*dev->dev_ops->link_update)(dev, 0);
@@ -1861,10 +1858,11 @@ void
 rte_eth_macaddr_get(uint8_t port_id, struct ether_addr *mac_addr)
 {
 	struct rte_eth_dev *dev;
-
+    printf("get in macaddr get\n");
 	RTE_ETH_VALID_PORTID_OR_RET(port_id);
 	dev = &rte_eth_devices[port_id];
-	ether_addr_copy(&dev->data->mac_addrs[0], mac_addr);
+    ether_addr_copy(&dev->data->mac_addrs[0], mac_addr);
+	printf("out eth mac get\n");
 }
 
 

@@ -9,4 +9,4 @@
 *.ko
 /app/*
 *.cmd
-
+/arm64-armv8a-linuxapp-gcc/*

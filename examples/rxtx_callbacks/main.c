@@ -107,7 +107,9 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 	if (port >= rte_eth_dev_count())
 		return -1;
 
-	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
+
+    printf("init port: %d\n", port);
+    retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0)
 		return retval;
 
@@ -117,7 +119,6 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 		if (retval < 0)
 			return retval;
 	}
-
 	for (q = 0; q < tx_rings; q++) {
 		retval = rte_eth_tx_queue_setup(port, q, TX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL);
@@ -125,10 +126,11 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 			return retval;
 	}
 
-	retval  = rte_eth_dev_start(port);
-	if (retval < 0)
+	retval  = rte_eth_dev_start(port);	
+    if (retval < 0)
 		return retval;
-
+    printf("after start port\n");
+    
 	struct ether_addr addr;
 
 	rte_eth_macaddr_get(port, &addr);
@@ -200,6 +202,7 @@ main(int argc, char *argv[])
 	argv += ret;
 
 	nb_ports = rte_eth_dev_count();
+    printf("num of ports: %d\n", nb_ports);
 	if (nb_ports < 2 || (nb_ports & 1))
 		rte_exit(EXIT_FAILURE, "Error: number of ports must be even\n");
 
@@ -214,6 +217,8 @@ main(int argc, char *argv[])
 		if (port_init(portid, mbuf_pool) != 0)
 			rte_exit(EXIT_FAILURE, "Cannot init port %"PRIu8"\n",
 					portid);
+
+    printf("after port init\n");
 
 	if (rte_lcore_count() > 1)
 		printf("\nWARNING: Too much enabled lcores - "

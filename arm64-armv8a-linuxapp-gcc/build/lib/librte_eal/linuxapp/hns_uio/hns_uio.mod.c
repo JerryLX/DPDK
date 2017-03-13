@@ -20,9 +20,12 @@ __attribute__((section("__versions"))) = {
 	{ 0x879e21b6, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x6f5b2f3c, __VMLINUX_SYMBOL_STR(platform_driver_unregister) },
 	{ 0x444894b0, __VMLINUX_SYMBOL_STR(__platform_driver_register) },
+	{ 0x684a84d, __VMLINUX_SYMBOL_STR(phy_attach_direct) },
 	{ 0xdcb764ad, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0xbe08b37a, __VMLINUX_SYMBOL_STR(__dynamic_dev_dbg) },
 	{ 0xe3e48c52, __VMLINUX_SYMBOL_STR(register_netdev) },
+	{ 0xfbc824b6, __VMLINUX_SYMBOL_STR(put_device) },
+	{ 0xa25d2547, __VMLINUX_SYMBOL_STR(phy_connect_direct) },
 	{ 0xc919abf4, __VMLINUX_SYMBOL_STR(__uio_register_device) },
 	{ 0xce4be0fd, __VMLINUX_SYMBOL_STR(alloc_etherdev_mqs) },
 	{ 0xc34cc567, __VMLINUX_SYMBOL_STR(hnae_get_handle) },
@@ -32,6 +35,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xa2a47e45, __VMLINUX_SYMBOL_STR(unregister_netdev) },
 	{ 0x69f5e730, __VMLINUX_SYMBOL_STR(uio_unregister_device) },
 	{ 0x70f49738, __VMLINUX_SYMBOL_STR(free_netdev) },
+	{ 0x420aa57f, __VMLINUX_SYMBOL_STR(phy_disconnect) },
 	{ 0x3c3b3bdf, __VMLINUX_SYMBOL_STR(module_put) },
 	{ 0x97fdbab9, __VMLINUX_SYMBOL_STR(_raw_spin_unlock_irqrestore) },
 	{ 0x96220280, __VMLINUX_SYMBOL_STR(_raw_spin_lock_irqsave) },
@@ -47,8 +51,10 @@ __attribute__((section("__versions"))) = {
 	{ 0x94117ad8, __VMLINUX_SYMBOL_STR(iommu_attach_device) },
 	{ 0x4c40a246, __VMLINUX_SYMBOL_STR(iommu_domain_alloc) },
 	{ 0x361c2a17, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
 	{ 0x315b022d, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0x98082893, __VMLINUX_SYMBOL_STR(__copy_to_user) },
+	{ 0x3a5801b4, __VMLINUX_SYMBOL_STR(device_get_mac_address) },
 	{ 0x17a142df, __VMLINUX_SYMBOL_STR(__copy_from_user) },
 	{ 0x8f678b07, __VMLINUX_SYMBOL_STR(__stack_chk_guard) },
 	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
@@ -59,6 +65,8 @@ __attribute__((section("__versions"))) = {
 	{ 0x9f45be4, __VMLINUX_SYMBOL_STR(device_create) },
 	{ 0xeaf043dd, __VMLINUX_SYMBOL_STR(__class_create) },
 	{ 0x6393dc27, __VMLINUX_SYMBOL_STR(__register_chrdev) },
+	{ 0x5178a3c7, __VMLINUX_SYMBOL_STR(mdio_bus_type) },
+	{ 0x4377d72d, __VMLINUX_SYMBOL_STR(bus_find_device) },
 	{ 0xdd329fd, __VMLINUX_SYMBOL_STR(uio_event_notify) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x9166fada, __VMLINUX_SYMBOL_STR(strncpy) },
@@ -73,4 +81,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "B4199CE3F38A7969308A713");
+MODULE_INFO(srcversion, "E9F3A3FCE81336CE69872B9");

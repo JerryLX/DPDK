@@ -83,6 +83,24 @@ static int port_vf[] = {
 #define PHY_SPEED_DUP_RESOLVE_B	(11)
 #define SOC_NET			(1)
 
+int hns_uio_get_queue_mode(enum dsaf_mode dsaf_mode)
+{
+    switch(dsaf_mode){
+        case DSAF_MODE_DISABLE_6PORT_0VM:
+        case DSAF_MODE_DISABLE_FIX:
+        case DSAF_MODE_DISABLE_SP:
+            return 1;
+        case DSAF_MODE_DISABLE_2PORT_64VM:
+            return 64;
+        case DSAF_MODE_DISABLE_6PORT_16VM:
+        case DSAF_MODE_DISABLE_2PORT_16VM:
+            return 16;
+        default:
+            return 1;
+    }
+    return 1;
+}
+
 /**
  * hns_nic_get_drvinfo - get net driver info
  * @dev: net device
@@ -291,7 +309,7 @@ static int netdev_xmit(struct sk_buff *skb, struct net_device *netdev)
 /* A native net_device_ops struct to get the interface visible to the OS */
 static const struct net_device_ops netdev_ops = {
     .ndo_open = netdev_open,
-    .ndo_stop = netdev_open, //?
+    .ndo_stop = netdev_open, 
     .ndo_start_xmit = netdev_xmit,
     .ndo_set_rx_mode = netdev_no_ret,
     .ndo_validate_addr = netdev_open,
@@ -475,7 +493,9 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	handle = priv->ae_handle;
 	index  = uio_para.index;
 
-	switch (cmd) {
+	PRINT(KERN_ERR, "cmd: %d\n", cmd);
+	
+    switch (cmd) {
 	case HNS_UIO_IOCTL_MAC:
 	{
 		memcpy((void *)priv->netdev->dev_addr,
@@ -494,7 +514,7 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		ret = handle->dev->ops->start ? handle->dev->ops->start(handle)
 		      : 0;
 		if (ret) {
-			PRINT(KERN_ERR, "set_mac_addr fail, ret = %d.\n", ret);
+			PRINT(KERN_ERR, "start fail, ret = %d.\n", ret);
 			return UIO_ERROR;
 		}
 
@@ -608,6 +628,26 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		hns_uio_pausefrm_cfg(priv->vf_cb->mac_cb, 0, uio_para.value);
 		break;
 	}
+    case HNS_UIO_IOCTL_INIT_MAC:
+    case HNS_UIO_IOCTL_LINK_UPDATE:
+    {
+       struct net_device *ndev = priv->netdev;
+       
+       if (!device_get_mac_address(priv->dev, ndev->dev_addr, ETH_ALEN)){
+	        PRINT(KERN_ERR, "no valid mac!\n");
+            eth_hw_addr_random(ndev);
+       }
+       memcpy(uio_para.data, ndev->dev_addr, ETH_ALEN);
+	   PRINT(KERN_ERR, "MAC: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx",
+               ndev->dev_addr[0],ndev->dev_addr[1],
+               ndev->dev_addr[2],ndev->dev_addr[3],
+               ndev->dev_addr[4],ndev->dev_addr[5]);
+       if (copy_to_user((void __user *)arg, &uio_para,
+			 sizeof(struct hns_uio_ioctrl_para)) != 0)
+		    return UIO_ERROR;
+
+       break;
+    }
 
 	default:
 		PRINT(KERN_ERR, "uio ioctl cmd(%d) illegal! range:0-%d.\n", cmd,
@@ -673,6 +713,70 @@ void hns_uio_unregister_cdev(void)
 	}
 
 	char_dev_flag--;
+}
+
+static int hns_nic_phy_match(struct device *dev, void *phy_fwnode)
+{
+    if (IS_ENABLED(CONFIG_OF) && dev->of_node)
+        return &dev->of_node->fwnode == phy_fwnode;
+    else if (ACPI_COMPANION(dev))
+        return dev->fwnode == phy_fwnode;
+    else
+        return 0;
+}
+
+static
+struct phy_device *hns_nic_phy_find_device(struct fwnode_handle *phy_fwnode)
+{
+	struct device *d;
+
+	if (!phy_fwnode)
+		return NULL;
+
+	d = bus_find_device(&mdio_bus_type, NULL,
+			    phy_fwnode, hns_nic_phy_match);
+
+	return d ? to_phy_device(d) : NULL;
+}
+
+static
+struct phy_device *hns_nic_phy_attach(struct net_device *dev,
+				      struct fwnode_handle *phy_fwnode,
+				      u32 flags,
+				      phy_interface_t iface)
+{
+	struct phy_device *phy = hns_nic_phy_find_device(phy_fwnode);
+	int ret;
+
+	if (!phy)
+		return NULL;
+
+	ret = phy_attach_direct(dev, phy, flags, iface);
+
+	return ret ? NULL : phy;
+}
+
+static
+struct phy_device *hns_nic_phy_connect(struct net_device *dev,
+				       struct fwnode_handle *phy_fwnode,
+				       void (*hndlr)(struct net_device *),
+				       u32 flags,
+				       phy_interface_t iface)
+{
+	struct phy_device *phy = hns_nic_phy_find_device(phy_fwnode);
+	int ret;
+
+	if (!phy)
+		return NULL;
+
+	phy->dev_flags = flags;
+
+	ret = phy_connect_direct(dev, phy, hndlr, iface);
+
+	/* refcount is held by phy_connect_direct() on success */
+	put_device(&phy->dev);
+
+	return ret ? NULL : phy;
 }
 
 static int hns_uio_nic_open(struct uio_info *dev_info, struct inode *node)
@@ -848,6 +952,45 @@ hnsuio_remap_memory(struct platform_device *dev, struct uio_info *info)
         }
     }
     return 0;
+}
+
+static void hns_nic_adjust_link(struct net_device *ndev)
+{
+	struct rte_uio_platform_dev *priv = netdev_priv(ndev);
+	struct hnae_handle *h = priv->ae_handle;
+
+	h->dev->ops->adjust_link(h, ndev->phydev->speed, ndev->phydev->duplex);
+}
+
+static int 
+hns_nic_init_phy(struct net_device *ndev, struct hnae_handle *h)
+{
+	struct rte_uio_platform_dev *priv = netdev_priv(ndev);
+	struct phy_device *phy_dev = NULL;
+
+	if (!h->phy_fwnode)
+		return 0;
+
+	if (h->phy_if != PHY_INTERFACE_MODE_XGMII)
+		phy_dev = hns_nic_phy_connect(ndev, h->phy_fwnode,
+					      hns_nic_adjust_link,
+					      0, h->phy_if);
+	else
+		phy_dev = hns_nic_phy_attach(ndev, h->phy_fwnode,
+					     0, h->phy_if);
+
+	if (unlikely(!phy_dev) || IS_ERR(phy_dev))
+		return !phy_dev ? -ENODEV : PTR_ERR(phy_dev);
+
+	phy_dev->supported &= h->if_support;
+	phy_dev->advertising = phy_dev->supported;
+
+	if (h->phy_if == PHY_INTERFACE_MODE_XGMII)
+		phy_dev->autoneg = false;
+
+	priv->phy = phy_dev;
+
+    return 0;   
 }
 
 void hns_free_buffers(struct hnae_ring *ring)
@@ -1076,7 +1219,7 @@ hns_uio_probe(struct platform_device *pdev)
     struct acpi_reference_args args;
     const struct fwnode_handle *fwnode;
 
-    int port = 0, uio_start = 0, i;
+    int port = 0, uio_start = uio_index, i, queue_mode;
     static int cards_found;
     int err;
     (void)adev;
@@ -1103,109 +1246,122 @@ hns_uio_probe(struct platform_device *pdev)
     }
    
     do {
-    /* get handle */
-    handle = hnae_get_handle(dev, fwnode, port, &hns_uio_nic_bops);
-    PRINT(KERN_DEBUG,"get handle: %lx\n", (unsigned long)handle);
+        /* get handle */
+        handle = hnae_get_handle(dev, fwnode, port, &hns_uio_nic_bops);
+        PRINT(KERN_DEBUG,"get handle: %lx\n", (unsigned long)handle);
 
-    if(IS_ERR_OR_NULL(handle)){
-        dev_dbg(dev, "get handle error");
-        goto fail_free_dev;
-    }
+        if(IS_ERR_OR_NULL(handle)){
+            dev_dbg(dev, "get handle error");
+            goto fail_free_dev;
+        }
 
-//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
-    hns_kernel_queue_free(handle);
-//    PRINT(KERN_DEBUG,"After hns_kernel_queue_free\n");
-//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
-    err = hns_user_queue_malloc(handle);
-//    PRINT(KERN_DEBUG,"After hns_user_queue_malloc, err: %d\n", err);
-//    PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
+        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
+        hns_kernel_queue_free(handle);
+        PRINT(KERN_DEBUG,"After hns_kernel_queue_free\n");
+        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
+        err = hns_user_queue_malloc(handle);
+        PRINT(KERN_DEBUG,"After hns_user_queue_malloc, err: %d\n", err);
+        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
 
-    vf_cb = (struct hnae_vf_cb *)container_of(
-            handle, struct hnae_vf_cb, ae_handle);
+        vf_cb = (struct hnae_vf_cb *)container_of(
+                handle, struct hnae_vf_cb, ae_handle);
 
-    if(IS_ERR_OR_NULL(vf_cb)){
-        PRINT(KERN_ERR,"vf_cb error: %lx\n",(unsigned long)vf_cb);
-        goto fail_get_handle;
-    }
-    netdev = alloc_etherdev_mq(sizeof(struct rte_uio_platform_dev),
-            handle->q_num);
-    if(!netdev) {
-        printk("alloc_etherdev_mq fail\n");
-        goto fail_get_handle;
-    }
+        if(IS_ERR_OR_NULL(vf_cb)){
+            PRINT(KERN_ERR,"vf_cb error: %lx\n",(unsigned long)vf_cb);
+            goto fail_get_handle;
+        }
+        netdev = alloc_etherdev_mq(sizeof(struct rte_uio_platform_dev),
+                handle->q_num);
+        if(!netdev) {
+            printk("alloc_etherdev_mq fail\n");
+            goto fail_get_handle;
+        }
 
-    udev = netdev_priv(netdev);
-    udev->dev = dev;
-    udev->netdev = netdev;
-    udev->ae_handle = handle;
-    udev->vf_cb = vf_cb;
-    udev->port = port;
-    udev->vf_sum = port_vf[vf_cb->dsaf_dev->dsaf_mode];
-    udev->vf_id = handle->vf_id;
+        udev = netdev_priv(netdev);
+        udev->dev = dev;
+        udev->netdev = netdev;
+        udev->ae_handle = handle;
+        udev->vf_cb = vf_cb;
+        udev->port = port;
+        udev->vf_sum = port_vf[vf_cb->dsaf_dev->dsaf_mode];
+        udev->vf_id = handle->vf_id;
    
-    //PRINT(KERN_ERR,"dsaf_mode: %d\n", vf_cb->dsaf_dev->dsaf_mode);
-    //PRINT(KERN_ERR,"vf_sum: %d\n", udev->vf_sum);
-    //PRINT(KERN_ERR,"vf_id: %d\n", udev->vf_id);
-    
-    udev->q_num = handle->q_num;
-    udev->uio_start = uio_start;
+//        PRINT(KERN_ERR,"dsaf_mode: %d\n", vf_cb->dsaf_dev->dsaf_mode);
+//        PRINT(KERN_ERR,"vf_sum: %d\n", udev->vf_sum);
+//        PRINT(KERN_ERR,"vf_id: %d\n", udev->vf_id);
+        
+        udev->q_num = handle->q_num;
+        udev->uio_start = uio_start;
 
-    queue = handle->qs[0];
-    udev->info.name = DRIVER_UIO_NAME;
-    udev->info.version = "1";
-    udev->info.priv = (void *)udev;
-    udev->info.mem[0].name = "rcb ring";
-    udev->info.mem[0].addr = (unsigned long)queue->phy_base;
-    udev->info.mem[0].size = NIC_UIO_SIZE * handle->q_num;
-    udev->info.mem[0].memtype = UIO_MEM_PHYS;
-    
-    udev->info.mem[1].name = "tx_bd";
-    udev->info.mem[1].addr = (unsigned long)queue->tx_ring.desc;
-//    PRINT(KERN_ERR,"tx_bd addr: %lx\n", (unsigned long)udev->info.mem[1].addr);
-    udev->info.mem[1].size = queue->tx_ring.desc_num * 
-                        sizeof(queue->tx_ring.desc[0]) *
-                        handle->q_num;
-    udev->info.mem[1].memtype = UIO_MEM_LOGICAL;
+        queue = handle->qs[0];
+        udev->info.name = DRIVER_UIO_NAME;
+        udev->info.version = "1";
+        udev->info.priv = (void *)udev;
+        udev->info.mem[0].name = "rcb ring";
+        udev->info.mem[0].addr = (unsigned long)queue->phy_base;
+        udev->info.mem[0].size = NIC_UIO_SIZE * handle->q_num;
+        udev->info.mem[0].memtype = UIO_MEM_PHYS;
+        
+        udev->info.mem[1].name = "tx_bd";
+        udev->info.mem[1].addr = (unsigned long)queue->tx_ring.desc;
+        PRINT(KERN_ERR,"tx_bd addr: %lx\n", (unsigned long)udev->info.mem[1].addr);
+        udev->info.mem[1].size = queue->tx_ring.desc_num * 
+                            sizeof(queue->tx_ring.desc[0]) *
+                            handle->q_num;
+        udev->info.mem[1].memtype = UIO_MEM_LOGICAL;
 
-    udev->info.mem[2].name = "rx_bd";
-    udev->info.mem[2].addr = (unsigned long)queue->rx_ring.desc;
-    udev->info.mem[2].size = queue->rx_ring.desc_num * 
-                        sizeof(queue->rx_ring.desc[0]) *
-                        handle->q_num;
-    udev->info.mem[2].memtype = UIO_MEM_LOGICAL;
+        udev->info.mem[2].name = "rx_bd";
+        udev->info.mem[2].addr = (unsigned long)queue->rx_ring.desc;
+        udev->info.mem[2].size = queue->rx_ring.desc_num * 
+                            sizeof(queue->rx_ring.desc[0]) *
+                            handle->q_num;
+        udev->info.mem[2].memtype = UIO_MEM_LOGICAL;
 
-    udev->info.irq_flags = UIO_IRQ_CUSTOM;
-    udev->info.handler = hns_uio_nic_irqhandler;
-    udev->info.irqcontrol = hns_uio_nic_irqcontrol;
-    udev->info.open = hns_uio_nic_open;
-    udev->info.release = hns_uio_nic_release;
+        udev->info.mem[3].name = "nic_uio_device";
+        udev->info.mem[3].addr = (unsigned long)(uio_index);
+        udev->info.mem[3].size = sizeof(unsigned long);
+        udev->info.mem[3].memtype = UIO_MEM_LOGICAL;
 
-    err = uio_register_device(dev, &udev->info);
-    if (err) {
-        PRINT (KERN_ERR, "uio_register_device failed!\n");
-        goto fail_unregister_uio;
-    }
+        udev->info.irq_flags = UIO_IRQ_CUSTOM;
+        udev->info.handler = hns_uio_nic_irqhandler;
+        udev->info.irqcontrol = hns_uio_nic_irqcontrol;
+        udev->info.open = hns_uio_nic_open;
+        udev->info.release = hns_uio_nic_release;
+        
+        err = uio_register_device(dev, &udev->info);
+        if (err) {
+            PRINT (KERN_ERR, "uio_register_device failed!\n");
+            goto fail_unregister_uio;
+        }
 
-    platform_set_drvdata(pdev, netdev);
-    uio_dev_info[uio_index] = udev;
+        platform_set_drvdata(pdev, netdev);
+        uio_dev_info[uio_index] = udev;
 
-    netdev_assign_netdev_ops(netdev);
-    hns_ethtool_set_ops(netdev);
-    SET_NETDEV_DEV(netdev, dev);
+        netdev_assign_netdev_ops(netdev);
+        hns_ethtool_set_ops(netdev);
+        SET_NETDEV_DEV(netdev, dev);
 
-    strcpy(netdev->name, "odp");
-    udev->bd_number = cards_found;
-    netdev->ifindex = cards_found;
-    err = register_netdev(netdev);
-    if (err)
-        goto fail_unregister_uio;
+        err = hns_nic_init_phy(netdev, handle);
+        if(err){
+            PRINT(KERN_ERR, "cannot init phy");
+            goto fail_unregister_uio;
+        }
 
-    memset(&udev->nstats, 0, sizeof(struct net_device_stats));
-    udev->netdev_registered = true;
+        strcpy(netdev->name, "odp%d");
+        udev->bd_number = cards_found;
+        netdev->ifindex = cards_found;
+        err = register_netdev(netdev);
+        if (err)
+            goto fail_unregister_uio;
 
-    uio_index++;
-    PRINT(KERN_DEBUG,"uio_index now is %d\n",uio_index);
-    } while(handle->vf_id < (port_vf[vf_cb->dsaf_dev->dsaf_mode]-1));
+        memset(&udev->nstats, 0, sizeof(struct net_device_stats));
+        udev->netdev_registered = true;
+
+        uio_index++;
+        PRINT(KERN_DEBUG,"uio_index now is %d\n",uio_index);
+        queue_mode = hns_uio_get_queue_mode(vf_cb->dsaf_dev->dsaf_mode);
+        PRINT(KERN_DEBUG, "queue_mode: %d\n",queue_mode);
+    } while(handle->vf_id < (queue_mode-1));
     //for test==========================================================
     //i = 0;
     //do {
@@ -1268,6 +1424,8 @@ hns_uio_remove(struct platform_device *dev)
         if(priv->ae_handle->dev->ops->stop)
             priv->ae_handle->dev->ops->stop(priv->ae_handle);
 
+        if (priv->phy)
+            phy_disconnect(priv->phy);
         free_netdev(priv->netdev);
         hns_user_put_handle(priv->ae_handle);
         uio_dev_info[i] = NULL;

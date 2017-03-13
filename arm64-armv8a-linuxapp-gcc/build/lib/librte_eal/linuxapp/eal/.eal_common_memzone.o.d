@@ -52,7 +52,7 @@ dep_eal_common_memzone.o = \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
@@ -82,6 +82,6 @@ dep_eal_common_memzone.o = \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h
