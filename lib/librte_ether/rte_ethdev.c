@@ -1858,11 +1858,9 @@ void
 rte_eth_macaddr_get(uint8_t port_id, struct ether_addr *mac_addr)
 {
 	struct rte_eth_dev *dev;
-    printf("get in macaddr get\n");
 	RTE_ETH_VALID_PORTID_OR_RET(port_id);
 	dev = &rte_eth_devices[port_id];
     ether_addr_copy(&dev->data->mac_addrs[0], mac_addr);
-	printf("out eth mac get\n");
 }
 
 

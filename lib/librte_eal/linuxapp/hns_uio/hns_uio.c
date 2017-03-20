@@ -493,7 +493,7 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	handle = priv->ae_handle;
 	index  = uio_para.index;
 
-	PRINT(KERN_ERR, "cmd: %d\n", cmd);
+	//PRINT(KERN_ERR, "cmd: %d\n", cmd);
 	
     switch (cmd) {
 	case HNS_UIO_IOCTL_MAC:
@@ -511,13 +511,25 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	}
 	case HNS_UIO_IOCTL_UP:
 	{
-		ret = handle->dev->ops->start ? handle->dev->ops->start(handle)
+        ret = netif_set_real_num_tx_queues(priv->netdev, handle->q_num);
+        if (ret < 0){
+            PRINT(KERN_ERR, "set tx queue fail, ret=%d!\n",ret);
+        }
+        ret = netif_set_real_num_rx_queues(priv->netdev, handle->q_num);
+        if (ret < 0){
+            PRINT(KERN_ERR, "set rx queue fail, ret=%d!\n",ret);
+        }
+		
+        PRINT(KERN_ERR,"pass!\n");
+        ret = handle->dev->ops->start ? handle->dev->ops->start(handle)
 		      : 0;
 		if (ret) {
 			PRINT(KERN_ERR, "start fail, ret = %d.\n", ret);
 			return UIO_ERROR;
 		}
-
+        
+        if(priv->phy)
+            phy_start(priv->phy);
 		break;
 	}
 	case HNS_UIO_IOCTL_DOWN:
@@ -604,7 +616,7 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 		queue = handle->qs[0];
 		uio_para.value = dsaf_read_reg(queue->io_base, uio_para.cmd);
-		if (copy_to_user((void __user *)arg, &uio_para,
+        if (copy_to_user((void __user *)arg, &uio_para,
 				 sizeof(struct hns_uio_ioctrl_para)) != 0)
 			return UIO_ERROR;
 
@@ -629,7 +641,6 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		break;
 	}
     case HNS_UIO_IOCTL_INIT_MAC:
-    case HNS_UIO_IOCTL_LINK_UPDATE:
     {
        struct net_device *ndev = priv->netdev;
        
@@ -648,8 +659,12 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
        break;
     }
-
-	default:
+    case HNS_UIO_IOCTL_LINK_UPDATE:
+    {
+        break; 
+    }
+    
+    default:
 		PRINT(KERN_ERR, "uio ioctl cmd(%d) illegal! range:0-%d.\n", cmd,
 		      HNS_UIO_IOCTL_NUM - 1);
 		return UIO_ERROR;

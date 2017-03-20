@@ -33,8 +33,6 @@
 static const struct rte_platform_id platform_id_hns_map[] = {
     {.name = "HISI00C2:03"},
     {.name = "HISI00C2:02"},
-    {.name = "HISI00C2:01"},
-    {.name = "HISI00C2:00"},
     {0},
 };
 
@@ -538,11 +536,11 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
 
     //get num of packets in desc ring
     err = dsaf_reg_read(hns->uio_index, 
-            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id);
+            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id+16);
     if(err)
         return 0;
     num = value;
-
+    if(num > 0) printf("get packets: %d\n",num);
     nb_pkts = RTE_MIN(nb_pkts, num);
     while(nb_rx < nb_pkts && nb_rx < num){
 
@@ -977,7 +975,6 @@ eth_hns_dev_init (struct rte_eth_dev *dev){
         return -EIO;
     }
     hns->q_num = (unsigned int)args.value;
-    
     //set desc pointer
     tx_desc = total_tx_desc_len/(hns->q_num * desc_size);
     rx_desc = total_rx_desc_len/(hns->q_num * desc_size);
@@ -1008,6 +1005,7 @@ eth_hns_dev_init (struct rte_eth_dev *dev){
     dev->tx_pkt_burst = eth_hns_xmit_pkts;
     dev->rx_pkt_burst = eth_hns_recv_pkts;
     
+
 	/* Allocate memory for storing MAC addresses */
 	dev->data->mac_addrs = rte_zmalloc("hns-mac",ETHER_ADDR_LEN, 0);
 	if (dev->data->mac_addrs == NULL) {

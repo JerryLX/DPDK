@@ -100,7 +100,7 @@ static inline int
 port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 {
 	struct rte_eth_conf port_conf = port_conf_default;
-	const uint16_t rx_rings = 1, tx_rings = 1;
+	const uint16_t rx_rings = 16, tx_rings = 16;
 	int retval;
 	uint16_t q;
 
@@ -176,6 +176,9 @@ lcore_main(void)
 				continue;
 			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
 					bufs, nb_rx);
+            if(nb_tx > 0){
+                printf("transmit packet!\n");
+            }
 			if (unlikely(nb_tx < nb_rx)) {
 				uint16_t buf;
 

@@ -52,6 +52,9 @@ __attribute__((section("__versions"))) = {
 	{ 0x4c40a246, __VMLINUX_SYMBOL_STR(iommu_domain_alloc) },
 	{ 0x361c2a17, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
+	{ 0xcad00366, __VMLINUX_SYMBOL_STR(phy_start) },
+	{ 0xfdaecf96, __VMLINUX_SYMBOL_STR(netif_set_real_num_rx_queues) },
+	{ 0xace2708f, __VMLINUX_SYMBOL_STR(netif_set_real_num_tx_queues) },
 	{ 0x315b022d, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0x98082893, __VMLINUX_SYMBOL_STR(__copy_to_user) },
 	{ 0x3a5801b4, __VMLINUX_SYMBOL_STR(device_get_mac_address) },
@@ -81,4 +84,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "E9F3A3FCE81336CE69872B9");
+MODULE_INFO(srcversion, "0EA5EB4A1A1ED722BF830EC");
