@@ -78,6 +78,23 @@
 
 #include "xorshift128plus.h"	/* PRNG function */
 
+/*** TEST_INCLUDE_START ***/
+/* Random bitfield specification */
+typedef struct bf_spec_s {
+	uint8_t offset;	/**< Offset (in bytes) of where to apply the bitmask */
+
+	BITFIELD_T andMask;	/**< Mask to bitwise AND value with */
+	BITFIELD_T orMask;	/**< Mask to bitwise OR value with */
+	BITFIELD_T rndMask;	/**< Which bits will get random value */
+} bf_spec_t;
+
+typedef struct rnd_bits_s {
+	uint32_t active_specs;	/**< Boolean vector identifying active specs */
+
+	bf_spec_t specs[MAX_RND_BITFIELDS];	/**< Bitmask specifications */
+} rnd_bits_t;
+/*** TEST_INCLUDE_END ***/
+
 /* Allow PRNG function to be changed at runtime for testing*/
 #ifdef TESTING
 static rnd_func_t _rnd_func = NULL;
@@ -192,7 +209,6 @@ pktgen_set_random_bitfield(rnd_bits_t *rnd_bits,
 		case '0': mask0   += 1; break;
 		case '1': mask1   += 1; break;
 		case '.': /* ignore bit */ break;
-                case 'x':
 		case 'X': maskRnd += 1; break;
 		default: /* print error: "Unknown char in bitfield spec" */
 			goto
@@ -279,7 +295,13 @@ pktgen_rnd_bits_apply(port_info_t *info,
 			if (likely(active_specs & 1) ) {
 				/* Get pointer to byte <offset> in mbuf data as uint32_t*, so */
 				/* the masks can be applied. */
-				pkt_data = (uint32_t *)(&rte_pktmbuf_mtod(pkts[mbuf_cnt],uint8_t *)[bf_spec->offset]);
+				pkt_data =
+				        (uint32_t *)(&rte_pktmbuf_mtod(pkts[
+				                                               mbuf_cnt
+				                                       ],
+				                                       uint8_t
+				                                       *)
+				                     [bf_spec->offset]);
 
 				*pkt_data &= bf_spec->andMask;
 				*pkt_data |= bf_spec->orMask;
@@ -287,7 +309,8 @@ pktgen_rnd_bits_apply(port_info_t *info,
 				if (bf_spec->rndMask) {
 #ifdef TESTING
 					/* Allow PRNG to be set when testing */
-					rnd_value  = _rnd_func ? _rnd_func() :
+					rnd_value  =
+					        _rnd_func ? _rnd_func() :
 					        pktgen_default_rnd_func();
 #else
 					/* ... but allow inlining for production build */
@@ -359,8 +382,6 @@ pktgen_page_random_bitfields(uint32_t print_labels,
 	for (bitmask_idx = 0; bitmask_idx < MAX_RND_BITFIELDS; ++bitmask_idx) {
 		curr_spec = &rnd_bits->specs[bitmask_idx];
 
-                memset(mask, 0, sizeof(mask));
-                memset(mask, ' ', sizeof(mask) - 1);
 		/* Compose human readable bitmask representation */
 		for (i = 0; i < MAX_BITFIELD_SIZE; ++i) {
 			curr_bit = (uint32_t)1 << (MAX_BITFIELD_SIZE - i - 1);
@@ -368,15 +389,26 @@ pktgen_page_random_bitfields(uint32_t print_labels,
 			/* + i >> 3 for space delimiter after every 8 bits.
 			 * Need to check rndMask before andMask: for random bits, the
 			 * andMask is also 0. */
-			mask[i + (i >> 3)] =
-                                ((ntohl(curr_spec->rndMask) & curr_bit) != 0) ? 'X' :
-				((ntohl(curr_spec->andMask) & curr_bit) == 0) ? '0' :
-				((ntohl(curr_spec->orMask)  & curr_bit) != 0) ? '1' : '.';
+			mask[i +
+			     (i >>
+			      3)] =
+			        ((ntohl(curr_spec->rndMask) & curr_bit) !=
+			         0) ? 'X'
+				: ((ntohl(curr_spec->andMask) & curr_bit) ==
+			           0) ? '0'
+				: ((ntohl(curr_spec->orMask)  & curr_bit) !=
+			           0) ? '1'
+				: '.';
 		}
 
-		wr_scrn_printf(row++, 1, "%8d %8d %7s   %s",
-		        bitmask_idx, curr_spec->offset,
-		        (rnd_bits->active_specs & (1 << bitmask_idx)) ? "Yes" : "No",
+		wr_scrn_printf(
+		        row++,
+		        1,
+		        "%8d %8d %7s   %s",
+		        bitmask_idx,
+		        curr_spec->offset,
+		        (rnd_bits->active_specs &
+		                (1 << bitmask_idx)) ? "YES" : "no",
 		        mask);
 	}
 

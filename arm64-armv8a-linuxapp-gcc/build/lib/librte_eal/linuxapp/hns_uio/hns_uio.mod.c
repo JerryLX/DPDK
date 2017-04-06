@@ -52,11 +52,15 @@ __attribute__((section("__versions"))) = {
 	{ 0x4c40a246, __VMLINUX_SYMBOL_STR(iommu_domain_alloc) },
 	{ 0x361c2a17, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
+	{ 0x4d96141b, __VMLINUX_SYMBOL_STR(netif_tx_wake_queue) },
+	{ 0xdc768f6, __VMLINUX_SYMBOL_STR(netif_carrier_on) },
 	{ 0xcad00366, __VMLINUX_SYMBOL_STR(phy_start) },
-	{ 0xfdaecf96, __VMLINUX_SYMBOL_STR(netif_set_real_num_rx_queues) },
-	{ 0xace2708f, __VMLINUX_SYMBOL_STR(netif_set_real_num_tx_queues) },
+	{ 0xa87cf413, __VMLINUX_SYMBOL_STR(clear_bit) },
 	{ 0x315b022d, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0x98082893, __VMLINUX_SYMBOL_STR(__copy_to_user) },
+	{ 0x6dee52f6, __VMLINUX_SYMBOL_STR(netdev_info) },
+	{ 0x195ef6ba, __VMLINUX_SYMBOL_STR(netif_carrier_off) },
+	{ 0x38bb1bda, __VMLINUX_SYMBOL_STR(genphy_update_link) },
 	{ 0x3a5801b4, __VMLINUX_SYMBOL_STR(device_get_mac_address) },
 	{ 0x17a142df, __VMLINUX_SYMBOL_STR(__copy_from_user) },
 	{ 0x8f678b07, __VMLINUX_SYMBOL_STR(__stack_chk_guard) },
@@ -84,4 +88,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "0EA5EB4A1A1ED722BF830EC");
+MODULE_INFO(srcversion, "3D84FE478B971EB784E6414");

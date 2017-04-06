@@ -49,7 +49,7 @@
  * used to endorse or promote products derived from this software without specific
  * prior written permission.
  *
- * 4) The screens displayed by the application must contain the copyright notice as defined
+ * 4) The screens displayed by the program must contain the copyright notice as defined
  * above and can not be removed without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -65,62 +65,31 @@
  */
 /* Created 2010 by Keith Wiles @ intel.com */
 
-#ifndef _PKTGEN_RANDOM_H_
-#define _PKTGEN_RANDOM_H_
+#ifndef _LUA_SOCKET_H_
+#define _LUA_SOCKET_H_
 
-#include <stdint.h>
+#include "lua.h"
 
-#include <rte_mbuf.h>
 
-#include "pktgen-seq.h"
+#define MAX_LUA_BUFFER_SIZE		1024
 
-/* Bitfield size and max. entries */
-#define MAX_RND_BITFIELDS       32
+typedef struct luaServer_s {
+	int32_t		server_socket;			/**< Server socket descriptor */
+	int32_t		client_socket;			/**< Client socket descriptor */
+	int32_t		socket_port;
+	void	  * out, * in, * err;
+	char	  * hostname;
+	char		data[MAX_LUA_BUFFER_SIZE];
+} luaServer_t;
 
-#define BITFIELD_T              uint32_t
-#define MAX_BITFIELD_SIZE       (sizeof(BITFIELD_T) << 3)
+extern void _lua_openlib(lua_State *L);
+extern void * _get_stdout(void * arg);
+extern void * _get_stdin(void * arg);
+extern void * _get_stderr(void * arg);
+extern void _set_stdfiles(lua_State * L, luaServer_t * pServer);
+extern void _reset_stdfiles(lua_State * L);
 
-struct port_info_s;
+extern int lua_init_socket(lua_State * L, pthread_t * pthread, char * hostname, int port);
+extern void * lua_create_instance(void);
 
-/* Random bitfield specification */
-typedef struct bf_spec_s {
-        uint8_t offset; /**< Offset (in bytes) of where to apply the bitmask */
-
-        BITFIELD_T andMask;     /**< Mask to bitwise AND value with */
-        BITFIELD_T orMask;      /**< Mask to bitwise OR value with */
-        BITFIELD_T rndMask;     /**< Which bits will get random value */
-} bf_spec_t;
-
-typedef struct rnd_bits_s {
-        uint32_t active_specs;  /**< Boolean vector identifying active specs */
-
-        bf_spec_t specs[MAX_RND_BITFIELDS];     /**< Bitmask specifications */
-} rnd_bits_t;
-
-/* Data structure initialization */
-extern void pktgen_rnd_bits_init(struct rnd_bits_s **rnd_bits);
-
-/* Set random bitfield */
-extern uint32_t pktgen_set_random_bitfield(struct rnd_bits_s *rnd_bits,
-                                           uint8_t idx,
-                                           uint8_t offset,
-                                           const char *mask);
-
-/* Apply random bitfields description to packet contents */
-extern void pktgen_rnd_bits_apply(struct port_info_s *info,
-                                  struct rte_mbuf **pkt,
-                                  size_t cnt,
-                                  struct rnd_bits_s *rbits);
-
-/* Display page with random bitfield settings */
-extern void pktgen_page_random_bitfields(uint32_t print_labels,
-                                         uint16_t pid,
-                                         struct rnd_bits_s *rnd_bits);
-
-#ifdef TESTING
-/* Change PRNG function at runtime */
-typedef BITFIELD_T (*rnd_func_t)(void);
-rnd_func_t pktgen_set_rnd_func(rnd_func_t rnd_func);
-#endif
-
-#endif  /* _PKTGEN_RANDOM_H_ */
+#endif /* _LUA_SOCKET_H_ */

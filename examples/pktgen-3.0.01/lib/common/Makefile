@@ -33,30 +33,18 @@
 include $(RTE_SDK)/mk/rte.vars.mk
 
 # library name
-LIB = liblua.a
+LIB = libcommon.a
 
-# To overcome problems with FD6 more strict warnings gcc flags,
-# the following ones were removed:
-#  -Wstrict-prototypes
-#  -Wmissing-prototypes
-#  -Wold-style-definition
-#  -Wmissing-declarations
-#  -Wcast-qual
-WERROR_FLAGS := -W -Wall
-WERROR_FLAGS += -Wpointer-arith
-WERROR_FLAGS += -Wcast-align
-WERROR_FLAGS += -Wnested-externs
-WERROR_FLAGS += -Wno-cast-align
+CFLAGS += -O3 -g $(WERROR_FLAGS) -I$(RTE_SRCDIR)
 
-CFLAGS += -O3 -g -DLUA_USE_LINUX -DUSE_64_BIT $(WERROR_FLAGS) -I$(RTE_SRCDIR) -fno-stack-protector -lm
+CFLAGS_wr_scrn.o := -Wno-format-nonliteral
 
 # all source are stored in SRCS-y
-SRCS-y := \
-	lapi.c lauxlib.c lbaselib.c lbitlib.c lcode.c lcorolib.c \
-	lctype.c ldblib.c ldebug.c ldo.c ldump.c lfunc.c lgc.c \
-	linit.c liolib.c llex.c lmathlib.c lmem.c loadlib.c \
-	lobject.c lopcodes.c loslib.c lparser.c lstate.c lutf8lib.c \
-	lstring.c lstrlib.c ltable.c ltablib.c ltm.c lua_shell.c \
-	lundump.c lvm.c lzio.c lua-socket.c
+SRCS-y := wr_copyright_info.c wr_port_config.c wr_core_info.c \
+	wr_lscpu.c wr_utils.c wr_coremap.c wr_pcap.c wr_cksum.c wr_l2p.c wr_scrn.c
+
+SYMLINK-y-include := wr_cksum.h wr_copyright_info.h wr_core_info.h wr_coremap.h \
+	wr_cycles.h wr_inet.h wr_l2p.h wr_lscpu.h wr_mbuf.h wr_pcap.h wr_port_config.h \
+	wr_scrn.h wr_utils.h
 
 include $(RTE_SDK)/mk/rte.extlib.mk

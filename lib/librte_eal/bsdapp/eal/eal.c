@@ -620,7 +620,7 @@ rte_eal_init(int argc, char **argv)
 		rte_panic("Cannot probe PCI\n");
 
 	rte_eal_mcfg_complete();
-
+    
 	return fctret;
 }
 

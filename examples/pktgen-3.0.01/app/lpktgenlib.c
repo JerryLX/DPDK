@@ -2640,10 +2640,12 @@ decompile_pkt(lua_State *L, port_info_t *info, uint32_t seqnum) {
 	} else {
 		setf_string(L, "ip_dst_addr",
 		            inet_ntop6(buff, sizeof(buff),
-		                       p->ip_dst_addr.addr.ipv6.s6_addr));
+		                       p->ip_dst_addr.addr.ipv6.__in6_u.
+		                       __u6_addr8));
 		setf_string(L, "ip_src_addr",
 		            inet_ntop6(buff, sizeof(buff),
-		                       p->ip_dst_addr.addr.ipv6.s6_addr));
+		                       p->ip_dst_addr.addr.ipv6.__in6_u.
+		                       __u6_addr8));
 	}
 	setf_integer(L, "dport", p->dport);
 	setf_integer(L, "sport", p->sport);
@@ -2810,131 +2812,6 @@ pktgen_recvPkt(lua_State *L) {
 
 /**************************************************************************//**
  *
- * pktgen_rnd - Setup random bit patterns
- *
- * DESCRIPTION
- * Setup the random bit pattern support.
- *
- * RETURNS: N/A
- *
- * SEE ALSO:
- */
-
-static int
-pktgen_rnd(lua_State *L) {
-        cmdline_portlist_t portlist;
-        char mask[33] = { 0 };
-        const char * msk;
-        int i, mask_idx = 0;
-        char curr_bit;
-
-        switch (lua_gettop(L) ) {
-        default: return luaL_error(L, "rnd, wrong number of arguments");
-        case 4:
-                break;
-        }
-        parse_portlist(luaL_checkstring(L, 1), &portlist);
-        if (portlist.map == 0)
-                return 0;
-
-        msk = luaL_checkstring(L, 4);
-        if (strcmp(msk, "off"))
-                /* Filter invalid characters from provided mask. This way the user can
-                 * more easily enter long bitmasks, using for example '_' as a separator
-                 * every 8 bits. */
-                for (i = 0; (mask_idx < 32) && ((curr_bit = msk[i]) != '\0'); i++)
-                        if ((curr_bit == '0') || (curr_bit == '1') ||
-                            (curr_bit == '.') || (curr_bit == 'X') || (curr_bit == 'x'))
-                                mask[mask_idx++] = curr_bit;
-
-        foreach_port(portlist.map,
-             pktgen_set_random(info, pktgen_set_random_bitfield(info->rnd_bitfields,
-                  luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), mask) ? ENABLE_STATE : DISABLE_STATE));
-
-        return 0;
-}
-
-static void
-add_rnd_pattern(lua_State *L, port_info_t *info)
-{
-        uint32_t i, curr_bit, idx;
-        char mask[36];  /* 4*8 bits, 3 delimiter spaces, \0 */
-        bf_spec_t *curr_spec;
-        rnd_bits_t * rnd_bits = info->rnd_bitfields;
-
-        lua_pushinteger(L, info->pid);  /* Push the port number as the table index */
-        lua_newtable(L);                /* Create the structure table for a packet */
-
-        for (idx = 0; idx < MAX_RND_BITFIELDS; idx++) {
-                curr_spec = &rnd_bits->specs[idx];
-
-                memset(mask, 0, sizeof(mask));
-                memset(mask, ' ', sizeof(mask) - 1);
-                /* Compose human readable bitmask representation */
-                for (i = 0; i < MAX_BITFIELD_SIZE; ++i) {
-                        curr_bit = (uint32_t)1 << (MAX_BITFIELD_SIZE - i - 1);
-
-                        /* + i >> 3 for space delimiter after every 8 bits.
-                         * Need to check rndMask before andMask: for random bits, the
-                         * andMask is also 0. */
-                        mask[i + (i >> 3)] =
-                                ((ntohl(curr_spec->rndMask) & curr_bit) != 0) ? 'X' :
-                                ((ntohl(curr_spec->andMask) & curr_bit) == 0) ? '0' :
-                                ((ntohl(curr_spec->orMask)  & curr_bit) != 0) ? '1' : '.';
-                }
-
-                lua_pushinteger(L, idx);  /* Push the RND bit index */
-                lua_newtable(L);          /* Create the structure table for a packet */
-                setf_integer(L, "offset", curr_spec->offset);
-                setf_string(L, "mask", mask);
-                setf_string(L, "active", (rnd_bits->active_specs & (1 << idx)) ? "Yes" : "No");
-                lua_rawset(L, -3);
-        }
-
-        lua_rawset(L, -3);
-}
-
-/**************************************************************************//**
- *
- * pktgen_rnd_list - Return the random bit patterns in a table
- *
- * DESCRIPTION
- * Return a table of the random bit patterns.
- *
- * RETURNS: N/A
- *
- * SEE ALSO:
- */
-
-static int
-pktgen_rnd_list(lua_State *L) {
-        cmdline_portlist_t portlist;
-        int n;
-
-        switch (lua_gettop(L) ) {
-        default: return luaL_error(L, "rnd_list, wrong number of arguments");
-        case 1:
-        case 0:
-                break;
-        }
-        if (lua_gettop(L) == 1)
-                parse_portlist(luaL_checkstring(L, 1), &portlist);
-        else
-                portlist.map = -1;
-
-        lua_newtable(L);
-
-        n = 0;
-        foreach_port(portlist.map,
-                _do(add_rnd_pattern(L, info); n++));
-
-        setf_integer(L, "n", n);
-
-        return 1;
-}
-
-/**************************************************************************//**
- *
  * pktgen_run - Run a Lua or command script on the local disk or in a string.
  *
  * DESCRIPTION
@@ -3007,8 +2884,6 @@ static const char *lua_help_info[] = {
 	"qinq           - Enable or disable Q-in-Q header\n",
 	"gre            - Enable or disable GRE with IPv4 payload\n",
 	"gre_eth        - Enable or disable GRE with Ethernet payload\n",
-        "rnd            - Enable or disable random bit patterns for a given portlist\n",
-        "rnd_list       - List of current random bit patterns\n",
 	"\n",
 	"Range commands\n",
 	"dst_mac        - Set the destination MAC address for a port\n",
@@ -3209,9 +3084,6 @@ static const luaL_Reg pktgenlib[] = {
 	{"userPattern",   pktgen_user_pattern},	/* Set the user pattern string */
 	{"latency",       pktgen_latency},	/* Enable or disable latency testing */
 	{"gtpu_teid",     pktgen_gtpu_teid},	/* set GTP-U TEID. */
-
-        {"rnd",           pktgen_rnd},          /* Set up the rnd function on a portlist */
-        {"rnd_list",      pktgen_rnd_list},     /* Return a table of rnd bit patterns per port */
 
 	{NULL, NULL}
 };

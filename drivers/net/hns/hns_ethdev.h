@@ -4,6 +4,8 @@
 
 #include "hns_compat.h"
 
+#define HNS_RX_HEAD_SIZE 256
+#define MAX_SKB_FRAGS 18
 #define MAX_QUEUE_NUM 32
 
 #define HNS_RCB_TX_REG_OFFSET			0x40
@@ -226,8 +228,10 @@ struct hns_rx_queue{
     struct hnae_desc *rx_ring;
     struct hns_rx_entry *sw_ring;
     struct hns_adapter *hns;
+    
     struct rte_mbuf *pkt_first_seg;
     struct rte_mbuf *pkt_last_seg;
+    uint16_t current_num;
 
     uint16_t queue_id;
     uint16_t port_id;

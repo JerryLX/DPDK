@@ -55,12 +55,13 @@ struct rte_platform_resource {
 const char *platform_get_sysfs_path(void);
 
 /** Maximum number of platform resources. */
-#define PLATFORM_MAX_RESOURCE (6)
+#define PLATFORM_MAX_RESOURCE (4)
 
 /** Maximum length of platform device name. */
 #define PLATFORM_NAME_MAX_LEN (32)
 
 /** Calculate offset. */
+#define PAGE_SIZE (sysconf(_SC_PAGESIZE))
 #define UIO_OFFSET(n) ((n) * PAGE_SIZE)
 
 /**

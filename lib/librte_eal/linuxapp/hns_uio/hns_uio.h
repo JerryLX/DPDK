@@ -64,6 +64,7 @@ struct rte_uio_platform_dev {
     char netdev_registered;
     uint16_t bd_number;
     struct net_device_stats nstats;
+    int link; //link state
 
 	struct platform_device *pdev;
     const struct fwnode_handle *fwnode;

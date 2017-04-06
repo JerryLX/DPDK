@@ -493,7 +493,7 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	handle = priv->ae_handle;
 	index  = uio_para.index;
 
-	//PRINT(KERN_ERR, "cmd: %d\n", cmd);
+//PRINT(KERN_ERR, "cmd: %d\n", cmd);
 	
     switch (cmd) {
 	case HNS_UIO_IOCTL_MAC:
@@ -511,23 +511,30 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	}
 	case HNS_UIO_IOCTL_UP:
 	{
-        ret = netif_set_real_num_tx_queues(priv->netdev, handle->q_num);
-        if (ret < 0){
-            PRINT(KERN_ERR, "set tx queue fail, ret=%d!\n",ret);
-        }
-        ret = netif_set_real_num_rx_queues(priv->netdev, handle->q_num);
-        if (ret < 0){
-            PRINT(KERN_ERR, "set rx queue fail, ret=%d!\n",ret);
-        }
-		
-        PRINT(KERN_ERR,"pass!\n");
+        int k;
+        priv->link = 0;
+        //netif_carrier_off(priv->netdev);
+        //ret = netif_set_real_num_tx_queues(priv->netdev, handle->q_num);
+        //if (ret < 0){
+        //    PRINT(KERN_ERR, "set tx queue fail, ret=%d!\n",ret);
+        //}
+        //ret = netif_set_real_num_rx_queues(priv->netdev, handle->q_num);
+        //if (ret < 0){
+        //    PRINT(KERN_ERR, "set rx queue fail, ret=%d!\n",ret);
+        //}
+	    netif_start_queue(priv->netdev);	
+        //PRINT(KERN_ERR,"pass!\n");
         ret = handle->dev->ops->start ? handle->dev->ops->start(handle)
 		      : 0;
 		if (ret) {
 			PRINT(KERN_ERR, "start fail, ret = %d.\n", ret);
 			return UIO_ERROR;
 		}
-        
+       
+        for(k = 0; k< priv->q_num;k++){
+            handle->dev->ops->toggle_queue_status(handle->qs[k],1);
+        }
+
         if(priv->phy)
             phy_start(priv->phy);
 		break;
@@ -661,6 +668,26 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     }
     case HNS_UIO_IOCTL_LINK_UPDATE:
     {
+        int state = 1;
+        if (priv->phy){
+            if (!genphy_update_link(priv->phy))
+                state = priv->phy->link;
+            else
+                state = 0;
+        }
+        state = state && handle->dev->ops->get_status(handle);
+
+        if(state != priv->link){
+            if(state) {
+                netif_carrier_on(priv->netdev);
+                netif_tx_wake_all_queues(priv->netdev);
+                netdev_info(priv->netdev, "link up\n");
+            } else{
+                netif_carrier_off(priv->netdev);
+                netdev_info(priv->netdev, "link down\n");
+            }
+            priv->link = state;
+        }
         break; 
     }
     
@@ -1066,7 +1093,6 @@ int hns_user_queue_malloc(struct hnae_handle *handle)
 
     tx_ring = (struct hnae_ring *)&handle->qs[0]->tx_ring;
     rx_ring = (struct hnae_ring *)&handle->qs[0]->rx_ring;
-
     cb_size = tx_ring->desc_num * sizeof(tx_ring->desc_cb[0]);
     desc_size = tx_ring->desc_num * sizeof(tx_ring->desc[0]);
 

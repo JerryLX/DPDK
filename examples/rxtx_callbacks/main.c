@@ -174,10 +174,11 @@ lcore_main(void)
 					bufs, BURST_SIZE);
 			if (unlikely(nb_rx == 0))
 				continue;
+            printf("recv packet,%d!\n",nb_rx);
 			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
 					bufs, nb_rx);
             if(nb_tx > 0){
-                printf("transmit packet!\n");
+                printf("transmit packet,%d!\n",nb_tx);
             }
 			if (unlikely(nb_tx < nb_rx)) {
 				uint16_t buf;
@@ -203,7 +204,7 @@ main(int argc, char *argv[])
 		rte_exit(EXIT_FAILURE, "Error with EAL initialization\n");
 	argc -= ret;
 	argv += ret;
-
+    
 	nb_ports = rte_eth_dev_count();
     printf("num of ports: %d\n", nb_ports);
 	if (nb_ports < 2 || (nb_ports & 1))
