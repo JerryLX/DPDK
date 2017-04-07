@@ -66,16 +66,19 @@ get_v2rx_desc_bnum(uint32_t bnum_flag, uint16_t *out_bnum)
 
 /**
  * Read value from q->iobase
+ * rxtx:
+ *      0 for rx 1 for tx
  * @return:
  *      0 for success and negative value for fail.
  */
 static int
 dsaf_reg_read(unsigned int uio_index, unsigned long long offset, 
-        unsigned long long* value, int fd, uint16_t queue_id)
+        unsigned long long* value, int fd, uint16_t queue_id, bool rxtx)
 {
     struct hns_uio_ioctrl_para args;
     args.index = uio_index;
     args.cmd = offset + HNS_RCB_REG_OFFSET * (queue_id);
+    if(rxtx) args.cmd += HNS_RCB_TX_REG_OFFSET;
     if(ioctl(fd, HNS_UIO_IOCTL_REG_READ, &args) < 0) {
         PMD_INIT_LOG(ERR, "get value failed, offset: %llu\n!", offset);
         return -EINVAL;
@@ -86,16 +89,20 @@ dsaf_reg_read(unsigned int uio_index, unsigned long long offset,
 
 /**
  * Write value to q->iobase
+ * rxtx:
+ *      0 for rx 1 for tx
  * @return:
  *      0 for success and negative value for fail.
  */
+    
 static int
 dsaf_reg_write(unsigned int uio_index, unsigned long long offset,
-        unsigned long long value, int fd, uint16_t queue_id)
+        unsigned long long value, int fd, uint16_t queue_id, bool rxtx)
 {
     struct hns_uio_ioctrl_para args;
     args.index = uio_index;
     args.cmd = offset + HNS_RCB_REG_OFFSET * (queue_id);
+    if(rxtx) args.cmd += HNS_RCB_TX_REG_OFFSET;
     args.value = value;
     if(ioctl(fd, HNS_UIO_IOCTL_REG_WRITE, &args) < 0) {
         printf("write error!\n");
@@ -411,7 +418,7 @@ hns_clean_rx_buffers(struct hns_rx_queue *rxq, int cleand_count)
     if(rxq->next_to_use >= rxq->nb_rx_desc)
         rxq->next_to_use -= rxq->nb_rx_desc;
     err = dsaf_reg_write(hns->uio_index, RCB_REG_HEAD, 
-            cleand_count, hns->cdev_fd, rxq->queue_id);
+            cleand_count, hns->cdev_fd, rxq->queue_id,0);
     if(err)
         PMD_RX_LOG(DEBUG, "clean rx buffers error!");
 
@@ -539,10 +546,11 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     current_num = rxq->current_num;
     //get num of packets in desc ring
     err = dsaf_reg_read(hns->uio_index, 
-            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id);
+            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id,0);
     if(err)
         return 0;
     num = value;
+    if(num > 0) printf("packets in queue:%d\n",num);
     while(nb_rx < nb_pkts && nb_bn < num ){
 next_desc:
         //printf("id=%d!\n",rx_id);
@@ -674,13 +682,13 @@ hns_tx_clean(struct hns_tx_queue *txq)
 
     hns = txq->hns;
     err = dsaf_reg_read(hns->uio_index, RCB_REG_HEAD, &value, 
-            hns->cdev_fd, txq->queue_id);
+            hns->cdev_fd, txq->queue_id,1);
     if(err)
         PMD_TX_LOG(DEBUG, "get head failed!");
     rte_rmb();
 
     head = value;
-    printf("before clean,use:%d,clean:%d,head:%d",txq->next_to_use,txq->next_to_clean,head);
+//    printf("before clean,use:%d,clean:%d,head:%d\n",txq->next_to_use,txq->next_to_clean,head);
     if(txq->next_to_use == txq->next_to_clean ||
             head == txq->next_to_clean)
         return;
@@ -705,7 +713,7 @@ hns_queue_xmit(struct hns_tx_queue *txq, unsigned long long buf_num){
     unsigned int uio_index = hns->uio_index;
 
     err = dsaf_reg_write(uio_index, RCB_REG_TAIL, 
-            buf_num, hns->cdev_fd, txq->queue_id);
+            buf_num, hns->cdev_fd, txq->queue_id,1);
 
     return err;
 }
@@ -896,7 +904,6 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
     txe = &sw_ring[tx_id];
     (void) hns;
 
-    printf("need to transmit %d packets\n", nb_pkts);
     for(nb_tx = 0; nb_tx < nb_pkts; nb_tx++) {
         tx_pkt = *tx_pkts++;
 
@@ -928,7 +935,6 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
     }
 end_of_tx:
     rte_wmb();
-    printf("final transmit %d packets\n", nb_tx); 
     hns_queue_xmit(txq, (unsigned long long)nb_hold);
     hns_tx_clean(txq);
     return nb_tx;
