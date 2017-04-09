@@ -646,12 +646,12 @@ out_bnum_err:
     rxq->pkt_first_seg = first_seg;
     rxq->pkt_last_seg = last_seg;
     rxq->current_num = current_num;
-    nb_hold +=rxq->nb_rx_hold;
-    if(nb_hold > rxq->rx_free_thresh){
-        hns_clean_rx_buffers(rxq, nb_hold);
-        nb_hold = 0;
-    }   
-    rxq->nb_rx_hold = nb_hold;
+    // nb_hold +=rxq->nb_rx_hold;
+    // if(nb_hold > rxq->rx_free_thresh){
+    hns_clean_rx_buffers(rxq, nb_hold);
+    nb_hold = 0;
+    // }   
+    // rxq->nb_rx_hold = nb_hold;
     return nb_rx;
 }
 
