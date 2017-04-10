@@ -146,12 +146,8 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 	return 0;
 }
 
-/*
- * Main thread that does the work, reading from INPUT_PORT
- * and writing to OUTPUT_PORT
- */
-static  __attribute__((noreturn)) void
-lcore_main(void)
+
+static void lcore_main(void)
 {
 	uint8_t port;
     uint8_t qid;
