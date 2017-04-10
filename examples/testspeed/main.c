@@ -79,7 +79,7 @@
 #define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 256
 
-#define nTEST_CORE 4
+#define nTEST_CORE 8
 #define nQUEUE 16
 
 static volatile bool force_quit;
