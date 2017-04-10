@@ -92,12 +92,6 @@ static const struct rte_eth_conf port_conf_default = {
 
 static unsigned nb_ports;
 
-static struct {
-	uint64_t total_cycles;
-	uint64_t total_pkts;
-} latency_numbers;
-
-
 /*
  * Initialises a given port using global settings and with the rx buffers
  * coming from the mbuf_pool passed as parameter
