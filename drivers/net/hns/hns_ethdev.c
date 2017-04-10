@@ -486,6 +486,7 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
 {
     struct hns_adapter *hns = dev->data->dev_private;
     struct hns_rx_queue *rxq;
+    int i;
     (void) socket;
     (void) nb_desc;
     if(dev->data->rx_queues[idx] != NULL){
@@ -621,7 +622,7 @@ next_desc:
 
         if((rx_id & 0x3) == 0){
             rte_hns_prefetch(&rx_ring[rx_id]);
-            rte_hns_prefetch(sw_ring[rx_id]);
+            rte_hns_prefetch(&sw_ring[rx_id]);
         }
 
         rxm = rxe->mbuf;
