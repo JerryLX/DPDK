@@ -188,6 +188,13 @@ lcore_main(void)
 	}
 }
 
+static int
+launch_one_lcore(__attribute__((unused)) void *dummy)
+{
+	lcore_main();
+	return 0;
+}
+
 static void
 signal_handler(int signum)
 {
@@ -255,7 +262,7 @@ main(int argc, char *argv[])
 
 	/* call lcore_main on each core */
 	//lcore_main();
-	rte_eal_mp_remote_launch(lcore_main, NULL, CALL_MASTER);
+	rte_eal_mp_remote_launch(launch_one_lcore, NULL, CALL_MASTER);
 	RTE_LCORE_FOREACH_SLAVE(lcore_id) {
 		if (rte_eal_wait_lcore(lcore_id) < 0) {
 			ret = -1;
