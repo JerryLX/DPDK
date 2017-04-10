@@ -153,6 +153,7 @@ static void lcore_main(void)
     uint8_t qid;
     unsigned lcore_id = rte_lcore_id();
     int index = core_map[lcore_id];
+    if(index < 0) return;
     int start = index*queue_in_each_core;
     int end = index==nTEST_CORE?nQUEUE:(start+queue_in_each_core);
 	printf("\nCore %u forwarding packets. [Ctrl+C to quit]\n",
@@ -241,13 +242,14 @@ main(int argc, char *argv[])
 
 	queue_in_each_core = nQUEUE/nTEST_CORE;
 
+	for(index = 0;index<128;index++) core_map[index] = -1;
 	index = 0;
 	for(lcore_id=0;lcore_id<RTE_MAX_LCORE;lcore_id++){
 		if(rte_lcore_is_enabled(lcore_id)){
 			core_map[lcore_id] = index;
 			index++;
 		}
-		if(index == 4) break;
+		if(index == nTEST_CORE) break;
 	}
 
 	/* call lcore_main on each core */
