@@ -328,24 +328,24 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 	}
 
 	/* try mapping somewhere close to the end of hugepages */
-//	if (platform_map_addr == NULL)
-//		platform_map_addr = platform_find_max_end_va();
+	if (platform_map_addr == NULL)
+		platform_map_addr = platform_find_max_end_va();
 
-//    mapaddr = platform_map_resource(platform_map_addr, fd, 0,
-//			(size_t)dev->mem_resource[res_idx].len, 0);
-	mapaddr = (void *)mmap(NULL, (size_t)dev->mem_resource[res_idx].len,
-                           PROT_READ|PROT_WRITE,MAP_SHARED,fd, map_idx*getpagesize());
+    mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
+			(size_t)dev->mem_resource[res_idx].len, 0);
+//	mapaddr = (void *)mmap(NULL, (size_t)dev->mem_resource[res_idx].len,
+//                           PROT_READ|PROT_WRITE,MAP_SHARED,fd, map_idx*getpagesize());
     close(fd);
 	if (mapaddr == MAP_FAILED)
 		goto error;
 
-//	platform_map_addr = RTE_PTR_ADD(mapaddr,
-//			(size_t)dev->mem_resource[res_idx].len);
+	platform_map_addr = RTE_PTR_ADD(mapaddr,
+			(size_t)dev->mem_resource[res_idx].len);
 
 	maps[map_idx].phaddr = dev->mem_resource[res_idx].phys_addr;
 	maps[map_idx].size = dev->mem_resource[res_idx].len;
 	maps[map_idx].addr = mapaddr;
-	maps[map_idx].offset = 0;
+	maps[map_idx].offset = map_idx*getpagesize();
 	printf("idx:%d,%p, mapped addr:%p\n",map_idx,(void *)(dev->mem_resource[res_idx].phys_addr),mapaddr);
     strcpy(maps[map_idx].path, devname);
 	dev->mem_resource[res_idx].addr = mapaddr;

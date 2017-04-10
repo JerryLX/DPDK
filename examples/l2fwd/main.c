@@ -99,7 +99,7 @@ static uint32_t l2fwd_enabled_port_mask = 0;
 /* list of enabled ports */
 static uint32_t l2fwd_dst_ports[RTE_MAX_ETHPORTS];
 
-static unsigned int l2fwd_rx_queue_per_lcore = 1;
+static unsigned int l2fwd_rx_queue_per_lcore = 16;
 
 #define MAX_RX_QUEUE_PER_LCORE 16
 #define MAX_TX_QUEUE_PER_PORT 16

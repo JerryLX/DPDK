@@ -78,7 +78,7 @@ int
 platform_uio_map_resource(struct rte_platform_device *dev)
 {
     int i,map_idx=0, ret;
-    //uint64_t phaddr;
+    uint64_t phaddr;
 	struct mapped_platform_resource *uio_res;
 	struct mapped_platform_res_list *uio_res_list =
 			RTE_TAILQ_CAST(rte_platform_uio_tailq.head, mapped_platform_res_list);
@@ -94,8 +94,8 @@ platform_uio_map_resource(struct rte_platform_device *dev)
         return ret;
 
 	for (i = 0; i != PLATFORM_MAX_RESOURCE; i++) {
-		//phaddr = dev->mem_resource[i].phys_addr;
-		//if(!phaddr) continue;
+		phaddr = dev->mem_resource[i].phys_addr;
+		if(!phaddr) continue;
         ret = platform_uio_map_resource_by_index(dev, i,
 				uio_res, map_idx);
 		if (ret)
