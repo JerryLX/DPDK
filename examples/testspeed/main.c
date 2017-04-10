@@ -245,7 +245,7 @@ main(int argc, char *argv[])
 	queue_in_each_core = nQUEUE/nTEST_CORE;
 
 	index = 0;
-	for(int lcore_id=0;lcore_id<RTE_MAX_LCORE;lcore_id++){
+	for(lcore_id=0;lcore_id<RTE_MAX_LCORE;lcore_id++){
 		if(rte_lcore_is_enabled(lcore_id)){
 			core_map[lcore_id] = index;
 			index++;
