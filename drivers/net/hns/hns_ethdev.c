@@ -301,13 +301,47 @@ eth_hns_configure(struct rte_eth_dev *dev)
     return 0;
 }
 
+/**
+ * Enable promiscuous mode
+ */
+static void
+eth_hns_promisc_enable(struct rte_eth_dev *dev)
+{
+    struct hns_adapter *hns = dev->data->dev_private;
+    struct hns_uio_ioctrl_para args;
+    int uio_index = hns->uio_index;
+
+    args.index = uio_index;
+    args.value = 1;
+    if(ioctl(hns->cdev_fd, HNS_UIO_IOCTL_PROMISCUOUS, &args) < 0) {
+        PMD_INIT_LOG(ERR, "Enable promisc mode failed!");
+        printf("enable promisc failed\n");
+    }
+    printf("enable promisc\n");
+}
+
+/**
+ * Disable promiscuous mode
+ */
+static void
+eth_hns_promisc_disable(struct rte_eth_dev *dev)
+{
+    struct hns_adapter *hns = dev->data->dev_private;
+    struct hns_uio_ioctrl_para args;
+    int uio_index = hns->uio_index;
+
+    args.index = uio_index;
+    args.value = 0;
+    if(ioctl(hns->cdev_fd, HNS_UIO_IOCTL_PROMISCUOUS, &args) < 0) {
+        PMD_INIT_LOG(ERR, "Disable promisc mode failed!");
+    }
+}
+
 /********************************************
  *
  *  Receive unit
  *
  * *****************************************/
-
-
 static void
 hns_rx_queue_release_mbufs(struct hns_rx_queue *rxq)
 {
@@ -550,7 +584,7 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     if(err)
         return 0;
     num = value;
-    if(num > 0) printf("packets in queue:%d\n",num);
+    //if(num > 0) printf("packets in queue:%d\n",num);
     while(nb_rx < nb_pkts && nb_bn < num ){
 next_desc:
         //printf("id=%d!\n",rx_id);
@@ -571,7 +605,7 @@ next_desc:
         
         nmb = rte_mbuf_raw_alloc(rxq->mb_pool);
         if(nmb == NULL){
-            printf("no free mbuf\n");
+            //printf("no free mbuf\n");
             PMD_RX_LOG(ERR, "RX mbuf alloc failed port_id=%u "
                 "queue_id=%u", (unsigned) rxq->port_id,
                 (unsigned) rxq->queue_id);
@@ -646,12 +680,7 @@ out_bnum_err:
     rxq->pkt_first_seg = first_seg;
     rxq->pkt_last_seg = last_seg;
     rxq->current_num = current_num;
-    nb_hold +=rxq->nb_rx_hold;
-    if(nb_hold > rxq->rx_free_thresh){
-        hns_clean_rx_buffers(rxq, nb_hold);
-        nb_hold = 0;
-    }   
-    rxq->nb_rx_hold = nb_hold;
+    hns_clean_rx_buffers(rxq, nb_hold);
     return nb_rx;
 }
 
@@ -911,7 +940,7 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
         
         nb_buf = tx_pkt->nb_segs;
         if(nb_buf > tx_ring_space(txq)){
-            printf("end ring space\n");
+            //printf("end ring space\n");
             if(nb_tx == 0) 
                 return 0;
             goto end_of_tx;
@@ -951,7 +980,8 @@ static const struct eth_dev_ops eth_hns_ops = {
     .tx_queue_setup     = eth_hns_tx_queue_setup,
     .rx_queue_release   = eth_hns_rx_queue_release,
     .tx_queue_release   = eth_hns_tx_queue_release,
-    .promiscuous_enable = NULL,
+    .promiscuous_enable = eth_hns_promisc_enable,
+    .promiscuous_disable = eth_hns_promisc_disable,
     .allmulticast_enable = NULL,
     .dev_configure      = eth_hns_configure,
     .mac_addr_set       = eth_hns_mac_addr_set,

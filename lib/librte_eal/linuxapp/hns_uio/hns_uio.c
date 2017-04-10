@@ -690,7 +690,15 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         }
         break; 
     }
-    
+    case HNS_UIO_IOCTL_PROMISCUOUS:
+    {
+        struct netdev_hw_addr *ha = NULL;
+        handle->dev->ops->set_promisc_mode(handle, !!uio_para.value);
+        netdev_for_each_mc_addr(ha, priv->netdev)
+            if(handle->dev->ops->set_mc_addr(handle,ha->addr))
+                netdev_err(priv->netdev, "set multicast fail\n");
+        break;
+    }
     default:
 		PRINT(KERN_ERR, "uio ioctl cmd(%d) illegal! range:0-%d.\n", cmd,
 		      HNS_UIO_IOCTL_NUM - 1);

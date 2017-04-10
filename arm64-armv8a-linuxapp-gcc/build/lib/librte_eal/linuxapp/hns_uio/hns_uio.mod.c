@@ -88,4 +88,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "3D84FE478B971EB784E6414");
+MODULE_INFO(srcversion, "9839E13914C9EEA395A2BDB");
