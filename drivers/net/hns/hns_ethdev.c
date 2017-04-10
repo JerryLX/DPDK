@@ -516,10 +516,10 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
         eth_hns_rx_queue_release(rxq);
         return -ENOMEM;
     }
-//    for(i = 0;i<rxq->nb_rx_desc;i++){
-//        struct rte_mbuf *mbuf = rte_mbuf_raw_alloc(rxq->mb_pool);
-//        rxq->sw_ring[i].mbuf = mbuf;
-//    }
+    for(i = 0;i<rxq->nb_rx_desc;i++){
+        struct rte_mbuf *mbuf = rte_mbuf_raw_alloc(rxq->mb_pool);
+        rxq->sw_ring[i].mbuf = mbuf;
+    }
     PMD_INIT_LOG(DEBUG, "sw_ring=%p", rxq->sw_ring);
     rxq->next_to_use = 0;
     rxq->next_to_clean = 0;
@@ -548,11 +548,14 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
 {
     struct hns_rx_queue *rxq;       //RX queue 
     struct hnae_desc *rx_ring;      //RX ring (desc)
+    struct hns_rx_entry *sw_ring;
+    struct hns_rx_entry *rxe;
     struct hnae_desc *rxdp;         //pointer of the current desc
     struct rte_mbuf *first_seg;
     struct rte_mbuf *last_seg;
     struct hnae_desc rxd;           //current desc
     struct rte_mbuf *nmb;           //pointer of the new mbuf
+    struct rte_mbuf *rxm;
     struct hns_adapter *hns;
 
     uint64_t dma_addr;
@@ -578,6 +581,7 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     first_seg = rxq->pkt_first_seg;
     last_seg = rxq->pkt_last_seg;
     current_num = rxq->current_num;
+    sw_ring = rxq->sw_ring;
     //get num of packets in desc ring
     err = dsaf_reg_read(hns->uio_index, 
             RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id,0);
@@ -590,6 +594,7 @@ next_desc:
         //printf("id=%d!\n",rx_id);
         rxdp = &rx_ring[rx_id];
         rxd = *rxdp;
+        rxe = &sw_ring[rx_id];
 
         nb_hold++;
         rx_id++;
@@ -597,6 +602,7 @@ next_desc:
         if(rx_id == rxq->nb_rx_desc) {
             rx_id = 0;
         }
+        rte_hns_prefetch(sw_ring[rx_id].mbuf);
         
         bnum_flag = rte_le_to_cpu_32(rxd.rx.ipoff_bnum_pid_flag);
         length = rte_le_to_cpu_16(rxd.rx.pkt_len); 
@@ -613,9 +619,21 @@ next_desc:
             break;
         }
 
+        if((rx_id & 0x3) == 0){
+            rte_hns_prefetch(&rx_ring[rx_id]);
+            rte_hns_prefetch(sw_ring[rx_id]);
+        }
+
+        rxm = rxe->mbuf;
+        rxe->mbuf = nmb;
+
+        dma_addr = 
+            rte_cpu_to_le_64(rte_mbuf_data_dma_addr_default(nmb));
+        rxdp->addr = dma_addr;
+
         if(first_seg == NULL){
             //this is the first seg
-            first_seg = nmb;
+            first_seg = rxm;
             first_seg-> nb_segs = bnum;
             first_seg->vlan_tci = 
                 rte_le_to_cpu_16(hnae_get_field(rxd.rx.vlan_cfi_pri,HNS_RXD_VLANID_M, HNS_RXD_VLANID_S));
@@ -632,27 +650,23 @@ next_desc:
             current_num = 1;
         }else{
             //this is not the first seg
-            last_seg->next = nmb;
+            last_seg->next = rxm;
         }
 
-        if((rx_id & 0x3) == 0){
-            rte_hns_prefetch(&rx_ring[rx_id]);
-        }
 
-        dma_addr = 
-            rte_cpu_to_le_64(rte_mbuf_data_dma_addr_default(nmb));
-        rxdp->addr = dma_addr;
+
+        
         /* Initialize the returned mbuf */
         pkt_len = (uint16_t) (rte_le_to_cpu_16(rxd.rx.pkt_len));
         data_len = (uint16_t) (rte_le_to_cpu_16(rxd.rx.size)); 
-        nmb->data_len = data_len;
-        nmb->pkt_len = pkt_len;
-        nmb->data_off = RTE_PKTMBUF_HEADROOM;
-        nmb->port = rxq->port_id;
-        nmb->hash.rss = rxd.rx.rss_hash;
+        rxm->data_len = data_len;
+        rxm->pkt_len = pkt_len;
+        rxm->data_off = RTE_PKTMBUF_HEADROOM;
+        rxm->port = rxq->port_id;
+        rxm->hash.rss = rxd.rx.rss_hash;
         
         if(current_num < bnum) {
-            last_seg = nmb;
+            last_seg = rxm;
             current_num++;
             goto next_desc;
         }
@@ -662,7 +676,7 @@ next_desc:
         if((!rxd.rx.pkt_len) || hnae_get_bit(bnum_flag, HNS_RXD_DROP_B)) goto pkt_err;
         if(hnae_get_bit(bnum_flag, HNS_RXD_L2E_B)) goto pkt_err;
         
-        nmb->next = NULL;
+        rxm->next = NULL;
         rte_packet_prefetch((char *)first_seg->buf_addr + first_seg->data_off);
 //        first_seg->vlan_tci = 
 //            rte_le_to_cpu_16(hnae_get_field(rxd.rx.vlan_cfi_pri,HNS_RXD_VLANID_M, HNS_RXD_VLANID_S));
@@ -673,7 +687,7 @@ next_desc:
         continue;
 pkt_err:
 out_bnum_err:
-        rte_pktmbuf_free_seg(nmb);
+        rte_pktmbuf_free_seg(rxm);
         first_seg = NULL;
     }
     rxq->next_to_clean = rx_id;

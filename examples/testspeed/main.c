@@ -75,7 +75,7 @@
 #define RX_RING_SIZE 128
 #define TX_RING_SIZE 512
 
-#define NUM_MBUFS 8191
+#define NUM_MBUFS 32767
 #define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 256
 
