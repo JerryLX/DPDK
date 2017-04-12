@@ -2693,7 +2693,7 @@ rte_eth_rx_burst(uint8_t port_id, uint16_t queue_id,
 #ifdef RTE_LIBRTE_ETHDEV_DEBUG
 	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, 0);
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->rx_pkt_burst, 0);
-
+    
 	if (queue_id >= dev->data->nb_rx_queues) {
 		RTE_PMD_DEBUG_TRACE("Invalid RX queue_id=%d\n", queue_id);
 		return 0;

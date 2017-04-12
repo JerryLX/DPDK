@@ -17,6 +17,7 @@
 #define NIC_MOD_VERSION "iWareV2R2C00B961"
 #define DRIVER_UIO_NAME "hns_uio"
 #define NIC_UIO_SIZE	0x10000
+#define MAX_QUEUE_NUM 32
 #define NUM_MAX		64
 
 enum  {
@@ -37,7 +38,9 @@ enum  {
 	HNS_UIO_IOCTL_NUM,
     HNS_UIO_IOCTL_LINK_UPDATE,
     HNS_UIO_IOCTL_INIT_MAC,
-    HNS_UIO_IOCTL_PROMISCUOUS
+    HNS_UIO_IOCTL_PROMISCUOUS,
+    HNS_UIO_IOCTL_READ_ALL,
+    HNS_UIO_IOCTL_WRITE_ALL
 };
 
 struct char_device {

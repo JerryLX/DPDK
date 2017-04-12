@@ -76,10 +76,10 @@
 #define TX_RING_SIZE 512
 
 #define NUM_MBUFS 32767
-#define MBUF_CACHE_SIZE 250
-#define BURST_SIZE 256
+#define MBUF_CACHE_SIZE 512
+#define BURST_SIZE 512
 
-#define nTEST_CORE 8
+#define nTEST_CORE 1
 #define nQUEUE 16
 
 static volatile bool force_quit;
@@ -149,7 +149,7 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 
 static void lcore_main(void)
 {
-	uint8_t port;
+	uint8_t port = 0;
     uint8_t qid;
     unsigned lcore_id = rte_lcore_id();
     int index = core_map[lcore_id];
@@ -159,14 +159,12 @@ static void lcore_main(void)
 	printf("\nCore %u forwarding packets. [Ctrl+C to quit]\n",
 			rte_lcore_id());
 	while(!force_quit) {
-		for (port = 0; port < nb_ports; port++) {
 			for (qid = start ; qid < end; qid++){
 	            struct rte_mbuf *bufs[BURST_SIZE];
 				const uint16_t nb_rx = rte_eth_rx_burst(port, qid,
 						bufs, BURST_SIZE);
-				if (unlikely(nb_rx == 0))
-					continue;
-				const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,
+				if(nb_rx == 0) continue;
+                const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,
 						bufs, nb_rx);
 				if (unlikely(nb_tx < nb_rx)) {
 					uint16_t buf;
@@ -175,8 +173,8 @@ static void lcore_main(void)
 						rte_pktmbuf_free(bufs[buf]);
 				}
             }
-		}
-	}
+	 //   force_quit = true;
+    }
 }
 
 static int

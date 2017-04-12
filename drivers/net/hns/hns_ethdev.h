@@ -190,7 +190,7 @@ struct hns_uio_ioctrl_para {
     unsigned long long index;
     unsigned long long cmd;
     unsigned long long value;
-    unsigned char data[40];
+    unsigned char data[200];
 };
 
 enum  {
@@ -211,7 +211,9 @@ enum  {
 	HNS_UIO_IOCTL_NUM,
     HNS_UIO_IOCTL_LINK_UPDATE,
     HNS_UIO_IOCTL_INIT_MAC,
-    HNS_UIO_IOCTL_PROMISCUOUS
+    HNS_UIO_IOCTL_PROMISCUOUS,
+    HNS_UIO_IOCTL_READ_ALL,
+    HNS_UIO_IOCTL_WRITE_ALL
 };
 
 struct hns_rx_entry {
@@ -285,6 +287,10 @@ struct hns_adapter {
     unsigned int desc_num_per_txq;
     struct hnae_desc *rx_desc[MAX_QUEUE_NUM];
     struct hnae_desc *tx_desc[MAX_QUEUE_NUM];
+    int fbdnum[MAX_QUEUE_NUM];
+    int rxhead[MAX_QUEUE_NUM];
+    int txhead[MAX_QUEUE_NUM];
+    int xmitnum[MAX_QUEUE_NUM];
 };
 
 void eth_hns_rx_queue_release(void *queue);

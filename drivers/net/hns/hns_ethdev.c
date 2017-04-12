@@ -71,6 +71,7 @@ get_v2rx_desc_bnum(uint32_t bnum_flag, uint16_t *out_bnum)
  * @return:
  *      0 for success and negative value for fail.
  */
+
 static int
 dsaf_reg_read(unsigned int uio_index, unsigned long long offset, 
         unsigned long long* value, int fd, uint16_t queue_id, bool rxtx)
@@ -111,6 +112,49 @@ dsaf_reg_write(unsigned int uio_index, unsigned long long offset,
     }
     return 0;
 }
+
+static void
+read_all_fbdnum( struct hns_adapter* hns)
+{
+    int* fbd = hns->fbdnum; 
+    struct hns_uio_ioctrl_para *args = 
+        (struct hns_uio_ioctrl_para *)fbd;
+    args->index = hns->uio_index;
+    args->cmd = RCB_REG_FBDNUM;
+    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_READ_ALL, args);
+}
+
+static void
+read_all_txhead(struct hns_adapter *hns)
+{
+    int *txhead = hns->txhead;
+    struct hns_uio_ioctrl_para *args = 
+        (struct hns_uio_ioctrl_para *)txhead;
+    args->index = hns->uio_index;
+    args->cmd = RCB_REG_HEAD+HNS_RCB_TX_REG_OFFSET;
+    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_READ_ALL, args);
+}
+
+static void
+write_all_rxhead( struct hns_adapter* hns)
+{
+    struct hns_uio_ioctrl_para args;
+    memcpy(args.data,hns->rxhead,sizeof(hns->rxhead));
+    args.index = hns->uio_index;
+    args.cmd = RCB_REG_HEAD;
+    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_WRITE_ALL, args);
+}
+
+static void
+write_all_xmit( struct hns_adapter* hns)
+{
+    struct hns_uio_ioctrl_para args;
+    memcpy(args.data,hns->xmitnum,sizeof(hns->xmitnum));
+    args.index = hns->uio_index;
+    args.cmd = RCB_REG_TAIL+HNS_RCB_TX_REG_OFFSET;
+    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_WRITE_ALL, args);
+}
+
 
 static void
 hns_dev_free_queues(struct rte_eth_dev *dev)
@@ -443,19 +487,19 @@ rx_desc_error_to_pkt_flags(uint32_t rx_status)
  *
  */
 static void
-hns_clean_rx_buffers(struct hns_rx_queue *rxq, int cleand_count)
+hns_clean_rx_buffers(struct hns_rx_queue *rxq, int cleaned_count)
 {
     struct hns_adapter *hns = rxq->hns;
-    int err;
+    int qid = rxq->queue_id;
 
-    rxq->next_to_use += cleand_count;
+    rxq->next_to_use += cleaned_count;
     if(rxq->next_to_use >= rxq->nb_rx_desc)
         rxq->next_to_use -= rxq->nb_rx_desc;
-    err = dsaf_reg_write(hns->uio_index, RCB_REG_HEAD, 
-            cleand_count, hns->cdev_fd, rxq->queue_id,0);
-    if(err)
-        PMD_RX_LOG(DEBUG, "clean rx buffers error!");
-
+    hns->rxhead[qid] = cleaned_count;
+//    err = dsaf_reg_write(hns->uio_index, RCB_REG_HEAD, 
+//            cleand_count, hns->cdev_fd, rxq->queue_id,0);
+    if(qid == (int)hns->q_num-1)
+        write_all_rxhead(hns);
 }
 
 /**
@@ -570,8 +614,7 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     uint16_t bnum;
     uint32_t bnum_flag;
     uint16_t current_num;
-    int err,length;
-    unsigned long long value;
+    int length;
 	
     nb_rx = nb_bn =0;
     nb_hold = 0;
@@ -584,12 +627,17 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     current_num = rxq->current_num;
     sw_ring = rxq->sw_ring;
     //get num of packets in desc ring
-    err = dsaf_reg_read(hns->uio_index, 
-            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id,0);
-    if(err)
-        return 0;
-    num = value;
-    //if(num > 0) printf("packets in queue:%d\n",num);
+//    err = dsaf_reg_read(hns->uio_index, 
+//            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id,0);
+//    if(err)
+//        return 0;
+//    num = value;
+    if(rxq->queue_id == 0){
+        read_all_fbdnum(hns);
+    }
+    num = hns->fbdnum[rxq->queue_id];
+    //if(num > 0) printf("packets in queue:%d\n",rxq->queue_id);
+    if(num < 16) return 0;
     while(nb_rx < nb_pkts && nb_bn < num ){
 next_desc:
         //printf("id=%d!\n",rx_id);
@@ -607,7 +655,6 @@ next_desc:
         
         bnum_flag = rte_le_to_cpu_32(rxd.rx.ipoff_bnum_pid_flag);
         length = rte_le_to_cpu_16(rxd.rx.pkt_len); 
-        //printf("bnum_flag: %08x\n", bnum_flag);
         get_v2rx_desc_bnum(bnum_flag, &bnum);
         
         nmb = rte_mbuf_raw_alloc(rxq->mb_pool);
@@ -653,9 +700,6 @@ next_desc:
             //this is not the first seg
             last_seg->next = rxm;
         }
-
-
-
         
         /* Initialize the returned mbuf */
         pkt_len = (uint16_t) (rte_le_to_cpu_16(rxd.rx.pkt_len));
@@ -673,16 +717,15 @@ next_desc:
         }
         //printf("this is the last seg\n");
         bnum_flag = rte_le_to_cpu_32(rxd.rx.ipoff_bnum_pid_flag);
-        if(!hnae_get_bit(bnum_flag, HNS_RXD_VLD_B)) goto pkt_err;
-        if((!rxd.rx.pkt_len) || hnae_get_bit(bnum_flag, HNS_RXD_DROP_B)) goto pkt_err;
-        if(hnae_get_bit(bnum_flag, HNS_RXD_L2E_B)) goto pkt_err;
+        if(unlikely(!hnae_get_bit(bnum_flag, HNS_RXD_VLD_B))) goto pkt_err;
+        if(unlikely((!rxd.rx.pkt_len) || hnae_get_bit(bnum_flag, HNS_RXD_DROP_B))) goto pkt_err;
+        if(unlikely(hnae_get_bit(bnum_flag, HNS_RXD_L2E_B))) goto pkt_err;
         
         rxm->next = NULL;
         rte_packet_prefetch((char *)first_seg->buf_addr + first_seg->data_off);
 //        first_seg->vlan_tci = 
 //            rte_le_to_cpu_16(hnae_get_field(rxd.rx.vlan_cfi_pri,HNS_RXD_VLANID_M, HNS_RXD_VLANID_S));
         first_seg->packet_type = rxd_pkt_info_to_pkt_type(rxd.rx.ipoff_bnum_pid_flag);
-        PMD_RX_LOG(DEBUG, "packet type: %08x\n", first_seg->packet_type);
         rx_pkts[nb_rx++] = first_seg;
         first_seg = NULL;
         continue;
@@ -722,17 +765,22 @@ hns_tx_clean(struct hns_tx_queue *txq)
     int err;
     unsigned long long value = 0;
     struct hns_adapter *hns;
-    int head;
+    int head,qid;
 
+    (void) dsaf_reg_read;
+    (void) read_all_txhead;
     hns = txq->hns;
+    qid = txq->queue_id;
+//    if(qid == (int)hns->q_num-1)
+//        read_all_txhead(hns);
+//    head = hns->txhead[qid];
     err = dsaf_reg_read(hns->uio_index, RCB_REG_HEAD, &value, 
-            hns->cdev_fd, txq->queue_id,1);
+            hns->cdev_fd, qid,1);
     if(err)
         PMD_TX_LOG(DEBUG, "get head failed!");
     rte_rmb();
 
     head = value;
-//    printf("before clean,use:%d,clean:%d,head:%d\n",txq->next_to_use,txq->next_to_clean,head);
     if(txq->next_to_use == txq->next_to_clean ||
             head == txq->next_to_clean)
         return;
@@ -742,24 +790,23 @@ hns_tx_clean(struct hns_tx_queue *txq)
         return;
     }
 
-    while(head != txq->next_to_clean){
-        txq->next_to_clean++;
-        if(txq->next_to_clean == txq->nb_tx_desc)
-            txq->next_to_clean = 0;
-    }
+    txq->next_to_clean = head;
 }
 
 
-static int
-hns_queue_xmit(struct hns_tx_queue *txq, unsigned long long buf_num){
-    int err;
+static void
+hns_queue_xmit(struct hns_tx_queue *txq, int buf_num){
     struct hns_adapter *hns = txq->hns;
     unsigned int uio_index = hns->uio_index;
-
-    err = dsaf_reg_write(uio_index, RCB_REG_TAIL, 
+//    int qid = txq->queue_id;
+//    hns->xmitnum[qid] = buf_num;
+//    (void) dsaf_reg_write;
+    (void)write_all_xmit;
+    dsaf_reg_write(uio_index, RCB_REG_TAIL, 
             buf_num, hns->cdev_fd, txq->queue_id,1);
-
-    return err;
+//    if(qid == (int)hns->q_num -1){
+//        write_all_xmit(hns);
+//    }
 }
 
 static inline int
@@ -939,7 +986,6 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
     uint16_t port_id;
     uint32_t nb_hold;
     unsigned int i;
-
     nb_hold = 0;
     txq = tx_queue;
     hns = txq->hns;

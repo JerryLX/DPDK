@@ -43,7 +43,7 @@ struct hns_uio_ioctrl_para {
     unsigned long long index;
     unsigned long long cmd;
     unsigned long long value;
-    unsigned char data[40];
+    unsigned char data[200];
 };
 
 static int char_dev_flag;
@@ -697,6 +697,34 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         netdev_for_each_mc_addr(ha, priv->netdev)
             if(handle->dev->ops->set_mc_addr(handle,ha->addr))
                 netdev_err(priv->netdev, "set multicast fail\n");
+        break;
+    }
+    case HNS_UIO_IOCTL_READ_ALL:
+    {
+        int value[MAX_QUEUE_NUM];
+        int i;
+		struct hnae_queue *queue;
+
+        for(i = 0; i<handle->q_num; i++){
+		    queue = handle->qs[i];
+		    value[i] = (int)dsaf_read_reg(queue->io_base, uio_para.cmd);
+        }
+
+		if (copy_to_user((void __user *)arg, value, sizeof(value)) != 0)
+			return UIO_ERROR;
+
+		break;
+    }
+    case HNS_UIO_IOCTL_WRITE_ALL:
+    {
+        int i;
+        struct hnae_queue *queue;
+	    int *vp = (int *)uio_para.data;
+	    
+        for(i=0; i<handle->q_num; i++){
+            queue = handle->qs[i];
+            dsaf_write_reg(queue->io_base, uio_para.cmd, vp[i]);
+        }
         break;
     }
     default:
