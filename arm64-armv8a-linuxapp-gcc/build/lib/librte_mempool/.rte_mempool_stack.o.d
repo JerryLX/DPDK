@@ -15,8 +15,8 @@ dep_rte_mempool_stack.o = /root/lixu/lib/librte_mempool/rte_mempool_stack.c \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
- /root/lixu/lib/librte_mempool/rte_mempool.h /usr/include/stdlib.h \
- /usr/include/aarch64-linux-gnu/bits/waitflags.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
+ /usr/include/stdlib.h /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
  /usr/include/aarch64-linux-gnu/bits/byteswap.h \

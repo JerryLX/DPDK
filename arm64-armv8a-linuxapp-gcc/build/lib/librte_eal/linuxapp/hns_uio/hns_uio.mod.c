@@ -55,7 +55,6 @@ __attribute__((section("__versions"))) = {
 	{ 0x4d96141b, __VMLINUX_SYMBOL_STR(netif_tx_wake_queue) },
 	{ 0xdc768f6, __VMLINUX_SYMBOL_STR(netif_carrier_on) },
 	{ 0xcad00366, __VMLINUX_SYMBOL_STR(phy_start) },
-	{ 0xa87cf413, __VMLINUX_SYMBOL_STR(clear_bit) },
 	{ 0x315b022d, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0x98082893, __VMLINUX_SYMBOL_STR(__copy_to_user) },
 	{ 0x6dee52f6, __VMLINUX_SYMBOL_STR(netdev_info) },
@@ -88,4 +87,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("acpi*:HISI00C1:*");
 MODULE_ALIAS("acpi*:HISI00C2:*");
 
-MODULE_INFO(srcversion, "70593DCF2AA6C01E28AAC8C");
+MODULE_INFO(srcversion, "5C0A95E911C716EE659E789");

@@ -255,7 +255,7 @@ struct hns_tx_queue{
     uint16_t nb_tx_desc;
     uint16_t next_to_clean;
     uint16_t next_to_use;
-
+    uint16_t nb_hold;
 };
 
 /*
@@ -287,6 +287,7 @@ struct hns_adapter {
     unsigned int desc_num_per_txq;
     struct hnae_desc *rx_desc[MAX_QUEUE_NUM];
     struct hnae_desc *tx_desc[MAX_QUEUE_NUM];
+    struct hns_tx_queue *txq[MAX_QUEUE_NUM];
     int fbdnum[MAX_QUEUE_NUM];
     int rxhead[MAX_QUEUE_NUM];
     int txhead[MAX_QUEUE_NUM];

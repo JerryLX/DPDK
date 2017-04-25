@@ -513,17 +513,7 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	{
         int k;
         priv->link = 0;
-        //netif_carrier_off(priv->netdev);
-        //ret = netif_set_real_num_tx_queues(priv->netdev, handle->q_num);
-        //if (ret < 0){
-        //    PRINT(KERN_ERR, "set tx queue fail, ret=%d!\n",ret);
-        //}
-        //ret = netif_set_real_num_rx_queues(priv->netdev, handle->q_num);
-        //if (ret < 0){
-        //    PRINT(KERN_ERR, "set rx queue fail, ret=%d!\n",ret);
-        //}
-	    netif_start_queue(priv->netdev);	
-        //PRINT(KERN_ERR,"pass!\n");
+	    //netif_start_queue(priv->netdev);	
         ret = handle->dev->ops->start ? handle->dev->ops->start(handle)
 		      : 0;
 		if (ret) {

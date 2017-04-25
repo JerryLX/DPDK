@@ -75,16 +75,17 @@
 #define RX_RING_SIZE 128
 #define TX_RING_SIZE 512
 
-#define NUM_MBUFS 32767
-#define MBUF_CACHE_SIZE 512
-#define BURST_SIZE 512
+#define NUM_MBUFS 16384
+#define MBUF_CACHE_SIZE 256
+#define BURST_SIZE 256
+
+static uint64_t timer_period = 100000000;
+static uint64_t speed = 0;
+static uint64_t tspeed = 0;
 
 #define nTEST_CORE 1
 #define nQUEUE 16
 
-static volatile bool force_quit;
-static int queue_in_each_core;
-static int core_map[128];
 
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = { .max_rx_pkt_len = ETHER_MAX_LEN, },
@@ -149,50 +150,50 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 
 static void lcore_main(void)
 {
-	uint8_t port = 0;
+	uint8_t port = 1;
     uint8_t qid;
-    unsigned lcore_id = rte_lcore_id();
-    int index = core_map[lcore_id];
-    if(index < 0) return;
-    int start = index*queue_in_each_core;
-    int end = index==nTEST_CORE?nQUEUE:(start+queue_in_each_core);
+    uint64_t cur_tsc, prev_tsc;
+    uint64_t count[16];
+    int k;
+    (void)k;
+    for(qid=0;qid<16;qid++) count[qid]=0;
+    prev_tsc = 0;
 	printf("\nCore %u forwarding packets. [Ctrl+C to quit]\n",
 			rte_lcore_id());
-	while(!force_quit) {
-			for (qid = start ; qid < end; qid++){
-	            struct rte_mbuf *bufs[BURST_SIZE];
-				const uint16_t nb_rx = rte_eth_rx_burst(port, qid,
-						bufs, BURST_SIZE);
-				if(nb_rx == 0) continue;
-                const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,
-						bufs, nb_rx);
-				if (unlikely(nb_tx < nb_rx)) {
-					uint16_t buf;
-
-					for (buf = nb_tx; buf < nb_rx; buf++)
-						rte_pktmbuf_free(bufs[buf]);
-				}
+	 for(;;){
+        cur_tsc = rte_rdtsc();
+        if(unlikely(cur_tsc-prev_tsc>timer_period)){
+            printf("current speed: %lu\n",speed/6);   
+            printf("current tx speed: %lu\n",tspeed/6);   
+            prev_tsc = cur_tsc;
+            speed = 0;
+            tspeed = 0;
+            for(qid=0;qid<16;qid++)
+                printf("%llu ",(unsigned long long)count[qid]);
+            printf("\n");
+        }
+        for(port=0;port<nb_ports;port++){
+            for (qid = 0 ; qid < 16; qid++){
+                struct rte_mbuf *bufs[BURST_SIZE];
+                const uint16_t nb_rx = rte_eth_rx_burst(port, qid,
+           			bufs, BURST_SIZE);
+                speed += nb_rx;
+           	    count[qid] += nb_rx;
+                if(nb_rx == 0) continue;
+                const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,	bufs, nb_rx);
+           	    tspeed += nb_tx;
             }
-	 //   force_quit = true;
+        }
     }
 }
-
+/*
 static int
 launch_one_lcore(__attribute__((unused)) void *dummy)
 {
 	lcore_main();
 	return 0;
 }
-
-static void
-signal_handler(int signum)
-{
-	if (signum == SIGINT || signum == SIGTERM) {
-		printf("\n\nSignal %d received, preparing to exit...\n",
-				signum);
-		force_quit = true;
-	}
-}
+*/
 
 
 /* Main function, does initialisation and calls the per-lcore functions */
@@ -201,8 +202,6 @@ main(int argc, char *argv[])
 {
 	struct rte_mempool *mbuf_pool;
 	uint8_t portid;
-	int lcore_id;
-	int index;
 
 	/* init EAL */
 	int ret = rte_eal_init(argc, argv);
@@ -212,9 +211,6 @@ main(int argc, char *argv[])
 	argc -= ret;
 	argv += ret;
 
-	force_quit = false;
-	signal(SIGINT, signal_handler);
-	signal(SIGTERM, signal_handler);
     
 	nb_ports = rte_eth_dev_count();
     printf("num of ports: %d\n", nb_ports);
@@ -237,29 +233,8 @@ main(int argc, char *argv[])
 
 	if (rte_lcore_count() < nTEST_CORE)
 		rte_exit(EXIT_FAILURE, "%d core is needed!\n", nTEST_CORE);
-
-	queue_in_each_core = nQUEUE/nTEST_CORE;
-
-	for(index = 0;index<128;index++) core_map[index] = -1;
-	index = 0;
-	for(lcore_id=0;lcore_id<RTE_MAX_LCORE;lcore_id++){
-		if(rte_lcore_is_enabled(lcore_id)){
-			core_map[lcore_id] = index;
-			index++;
-		}
-		if(index == nTEST_CORE) break;
-	}
-
 	/* call lcore_main on each core */
-	//lcore_main();
-	rte_eal_mp_remote_launch(launch_one_lcore, NULL, CALL_MASTER);
-	RTE_LCORE_FOREACH_SLAVE(lcore_id) {
-		if (rte_eal_wait_lcore(lcore_id) < 0) {
-			ret = -1;
-			break;
-		}
-	}
+	lcore_main();
 
-	printf("Bye...\n");
 	return 0;
 }
