@@ -321,6 +321,6 @@ plfuio_exit_module(void)
 module_init(plfuio_init_module);
 module_exit(plfuio_exit_module);
 
-MODULE_DESCRIPTION("UIO driver for Arm platform");
+MODULE_DESCRIPTION("UIO driver for Arm VirtIO");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("LAB 1219");
