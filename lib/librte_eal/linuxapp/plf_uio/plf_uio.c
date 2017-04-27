@@ -139,14 +139,15 @@ plfuio_remap_memory(struct platform_device *dev, struct uio_info *info)
     iom = 0;
     iop = 0;
 
-    printk(KERN_DEBUG "There is %d resources\n", num_res);
+    printk(KERN_ERR "There is %d resources\n", num_res);
     for(i=0; i<num_res; i++) {
         if(platform_resource_len(dev, i)!=0 &&
                 platform_resource_start(dev, i)!=0) {
             flags = platform_resource_flags(dev, i);
 
-            printk(KERN_DEBUG "resource %d has flag %d\n", i, (int)flags);
+            printk(KERN_ERR "resource %d has flag %d\n", i, (int)flags);
             if(flags & IORESOURCE_MEM){
+                printk(KERN_ERR "io mem here\n");
                 ret = plfuio_setup_iomem(dev, info, iom, i, bar_names[i]);
                 if(ret!=0)
                     return ret;
@@ -155,6 +156,7 @@ plfuio_remap_memory(struct platform_device *dev, struct uio_info *info)
             
             
             else if(flags & IORESOURCE_IO) {
+                printk(KERN_ERR "io port here\n");
                 ret = plfuio_setup_ioport(dev, info, iop, i, bar_names[i]);
                 if(ret!=0)
                     return ret;
@@ -278,6 +280,13 @@ plf_uio_remove(struct platform_device *dev)
 }
 
 
+/* Platform driver */
+
+static struct of_device_id virtio_mmio_match[] = {
+        { .compatible = "virtio,mmio", },
+        {},
+};
+MODULE_DEVICE_TABLE(of, virtio_mmio_match);
 
 static struct platform_driver plf_uio_driver = {
     .probe = plf_uio_probe,
@@ -285,6 +294,8 @@ static struct platform_driver plf_uio_driver = {
     .driver = 
     {
         .name = "plf_uio",
+        .owner  = THIS_MODULE,
+        .of_match_table = virtio_mmio_match,
     },
 };
 
