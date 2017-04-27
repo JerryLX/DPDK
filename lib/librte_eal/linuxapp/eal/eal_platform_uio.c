@@ -286,7 +286,6 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     snprintf((*uio_res)->path, sizeof((*uio_res)->path), "%s", devname);
     memcpy(&(*uio_res)->name, &dev->name, sizeof((*uio_res)->name));
 
-
     return 0;
 error:
     platform_uio_free_resource(dev, *uio_res);

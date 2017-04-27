@@ -199,7 +199,7 @@ platform_scan_one(const char *dirname, const char *dev_name, int uio_num)
 
     //set uio_num
     dev->uio_num = uio_num;
-        
+    printf("scaning device %s, uio_num: %d\n", dev_name, uio_num)；
     RTE_LOG(ERR, EAL, "scaning device %s, uio_num: %d\n", dev_name, uio_num);
     snprintf(filename, sizeof(filename), "%s/uio/uio%u", 
             dirname, uio_num);
@@ -225,7 +225,6 @@ platform_scan_one(const char *dirname, const char *dev_name, int uio_num)
 			dev->kdrv = RTE_KDRV_HNS_UIO;
         else{
             dev->kdrv = RTE_KDRV_UNKNOWN;
-            RTE_LOG(INFO, EAL, "%s has a unknown driver: %s\n", dev_name, driver);
         }
     }
     else
