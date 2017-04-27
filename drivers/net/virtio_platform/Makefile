@@ -31,10 +31,40 @@
 
 include $(RTE_SDK)/mk/rte.vars.mk
 
-DIRS-$(CONFIG_RTE_EXEC_ENV_LINUXAPP) += eal
-DIRS-$(CONFIG_RTE_EAL_IGB_UIO) += igb_uio
-DIRS-$(CONFIG_RTE_KNI_KMOD) += kni
-DIRS-$(CONFIG_RTE_LIBRTE_XEN_DOM0) += xen_dom0
-DIRS-$(CONFIG_RTE_EAL_HNS_UIO) += hns_uio
-DIRS-$(CONFIG_RTE_EAL_HNS_VIRTIO_UIO) += plf_uio
-include $(RTE_SDK)/mk/rte.subdir.mk
+#
+# library name
+#
+LIB = librte_pmd_virtio_platform.a
+
+CFLAGS += -O3
+CFLAGS += $(WERROR_FLAGS)
+
+EXPORT_MAP := rte_pmd_virtio_platform_version.map
+
+LIBABIVER := 1
+
+#
+# all source are stored in SRCS-y
+#
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtqueue.c
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_pci.c
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_rxtx.c
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_ethdev.c
+
+ifeq ($(findstring RTE_MACHINE_CPUFLAG_SSSE3,$(CFLAGS)),RTE_MACHINE_CPUFLAG_SSSE3)
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_rxtx_simple.c
+endif
+
+ifeq ($(CONFIG_RTE_VIRTIO_USER),y)
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_user/vhost_user.c
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_user/virtio_user_dev.c
+SRCS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += virtio_user_ethdev.c
+endif
+
+# this lib depends upon:
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += lib/librte_eal lib/librte_ether
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += lib/librte_mempool lib/librte_mbuf
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += lib/librte_net
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VIRTIO_PMD) += lib/librte_kvargs
+
+include $(RTE_SDK)/mk/rte.lib.mk
