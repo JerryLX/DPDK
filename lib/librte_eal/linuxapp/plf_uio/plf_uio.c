@@ -277,22 +277,6 @@ plf_uio_remove(struct platform_device *dev)
     return 0;
 }
 
-static const struct acpi_device_id hns_enet_acpi_match[] = {
-    {"HISI00C1", 0 },
-    {"HISI00C2", 0 },
-    {},
-};
-
-MODULE_DEVICE_TABLE(acpi, hns_enet_acpi_match);
-
-
-static const struct of_device_id hns_enet_of_match[] = {
-    {.compatible = "hisilicon,hns-nic-v1",},
-    {.compatible = "hisilicon,hns-nic-v2",},
-    {},
-};
-
-MODULE_DEVICE_TABLE(of, hns_enet_of_match);
 
 
 static struct platform_driver plf_uio_driver = {
@@ -301,8 +285,6 @@ static struct platform_driver plf_uio_driver = {
     .driver = 
     {
         .name = "plf_uio",
-        .of_match_table = hns_enet_of_match,
-        .acpi_match_table = ACPI_PTR(hns_enet_acpi_match),
     },
 };
 

@@ -795,8 +795,12 @@ rte_eal_init(int argc, char **argv)
 
 	rte_config_init();
 
+	//by lixu
+	//for vm do not support pci
+#ifndef RTE_LIBRTE_VIRTIO_PLATFORM_PMD
 	if (rte_eal_pci_init() < 0)
 		rte_panic("Cannot init PCI\n");
+#endif
 
     //by lixu 
     if (rte_eal_platform_init() < 0)
