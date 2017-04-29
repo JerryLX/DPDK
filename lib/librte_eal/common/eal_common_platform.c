@@ -237,7 +237,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 		/* check if device's identifiers match the driver's ones */
 
         len = strlen(id->name);
-        printf("scanning, dev name: %s, id name: \n",dev->name, id->name);
+        printf("scanning, dev name: %s, id name: %s\n",dev->name, id->name);
         if(len == 7 && strncmp(id->name,"virtio",7)){
             if(!strstr(dev->name, "virtio"))
                 continue;
