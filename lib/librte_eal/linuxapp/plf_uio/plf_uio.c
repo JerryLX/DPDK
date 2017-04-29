@@ -218,7 +218,7 @@ plf_uio_probe(struct platform_device *dev)
     struct rte_uio_platform_dev *udev;
     int err;
     struct resource *mem;
-    void *base;
+    //void *base;
 
     printk(KERN_EMERG "hello world!\n");    
     udev = kzalloc(sizeof(struct rte_uio_platform_dev),GFP_KERNEL);
