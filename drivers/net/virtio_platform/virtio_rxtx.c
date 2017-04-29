@@ -53,7 +53,7 @@
 
 #include "virtio_logs.h"
 #include "virtio_ethdev.h"
-#include "virtio_pci.h"
+#include "virtio_platform.h"
 #include "virtqueue.h"
 #include "virtio_rxtx.h"
 
@@ -440,12 +440,12 @@ virtio_dev_rx_queue_setup(struct rte_eth_dev *dev,
 			__rte_unused const struct rte_eth_rxconf *rx_conf,
 			struct rte_mempool *mp)
 {
-	uint16_t vtpci_queue_idx = 2 * queue_idx + VTNET_SQ_RQ_QUEUE_IDX;
+	uint16_t vtplatform_queue_idx = 2 * queue_idx + VTNET_SQ_RQ_QUEUE_IDX;
 	struct virtnet_rx *rxvq;
 	int ret;
 
 	PMD_INIT_FUNC_TRACE();
-	ret = virtio_dev_queue_setup(dev, VTNET_RQ, queue_idx, vtpci_queue_idx,
+	ret = virtio_dev_queue_setup(dev, VTNET_RQ, queue_idx, vtplatform_queue_idx,
 			nb_desc, socket_id, (void **)&rxvq);
 	if (ret < 0) {
 		PMD_INIT_LOG(ERR, "rvq initialization failed");
@@ -499,7 +499,7 @@ virtio_dev_tx_queue_setup(struct rte_eth_dev *dev,
 			unsigned int socket_id,
 			const struct rte_eth_txconf *tx_conf)
 {
-	uint8_t vtpci_queue_idx = 2 * queue_idx + VTNET_SQ_TQ_QUEUE_IDX;
+	uint8_t vtplatform_queue_idx = 2 * queue_idx + VTNET_SQ_TQ_QUEUE_IDX;
 
 #ifdef RTE_MACHINE_CPUFLAG_SSSE3
 	struct virtio_hw *hw = dev->data->dev_private;
@@ -520,7 +520,7 @@ virtio_dev_tx_queue_setup(struct rte_eth_dev *dev,
 #ifdef RTE_MACHINE_CPUFLAG_SSSE3
 	/* Use simple rx/tx func if single segment and no offloads */
 	if ((tx_conf->txq_flags & VIRTIO_SIMPLE_FLAGS) == VIRTIO_SIMPLE_FLAGS &&
-	     !vtpci_with_feature(hw, VIRTIO_NET_F_MRG_RXBUF)) {
+	     !vtplatform_with_feature(hw, VIRTIO_NET_F_MRG_RXBUF)) {
 		PMD_INIT_LOG(INFO, "Using simple rx/tx path");
 		dev->tx_pkt_burst = virtio_xmit_pkts_simple;
 		dev->rx_pkt_burst = virtio_recv_pkts_vec;
@@ -528,7 +528,7 @@ virtio_dev_tx_queue_setup(struct rte_eth_dev *dev,
 	}
 #endif
 
-	ret = virtio_dev_queue_setup(dev, VTNET_TQ, queue_idx, vtpci_queue_idx,
+	ret = virtio_dev_queue_setup(dev, VTNET_TQ, queue_idx, vtplatform_queue_idx,
 			nb_desc, socket_id, (void **)&txvq);
 	if (ret < 0) {
 		PMD_INIT_LOG(ERR, "tvq initialization failed");
@@ -925,7 +925,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 		}
 
 		/* optimize ring usage */
-		if (vtpci_with_feature(hw, VIRTIO_F_ANY_LAYOUT) &&
+		if (vtplatform_with_feature(hw, VIRTIO_F_ANY_LAYOUT) &&
 		    rte_mbuf_refcnt_read(txm) == 1 &&
 		    RTE_MBUF_DIRECT(txm) &&
 		    txm->nb_segs == 1 &&
@@ -933,7 +933,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 		    rte_is_aligned(rte_pktmbuf_mtod(txm, char *),
 				   __alignof__(struct virtio_net_hdr_mrg_rxbuf)))
 			can_push = 1;
-		else if (vtpci_with_feature(hw, VIRTIO_RING_F_INDIRECT_DESC) &&
+		else if (vtplatform_with_feature(hw, VIRTIO_RING_F_INDIRECT_DESC) &&
 			 txm->nb_segs < VIRTIO_MAX_TX_INDIRECT)
 			use_indirect = 1;
 

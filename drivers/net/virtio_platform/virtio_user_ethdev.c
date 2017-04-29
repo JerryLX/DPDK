@@ -40,7 +40,7 @@
 
 #include "virtio_ethdev.h"
 #include "virtio_logs.h"
-#include "virtio_pci.h"
+#include "virtio_platform.h"
 #include "virtqueue.h"
 #include "virtio_rxtx.h"
 #include "virtio_user/virtio_user_dev.h"
@@ -211,7 +211,7 @@ virtio_user_notify_queue(struct virtio_hw *hw, struct virtqueue *vq)
 			    strerror(errno));
 }
 
-static const struct virtio_pci_ops virtio_user_ops = {
+static const struct virtio_platform_ops virtio_user_ops = {
 	.read_dev_cfg	= virtio_user_read_dev_config,
 	.write_dev_cfg	= virtio_user_write_dev_config,
 	.reset		= virtio_user_reset,
@@ -300,7 +300,7 @@ virtio_user_eth_dev_alloc(const char *name)
 		return NULL;
 	}
 
-	hw->vtpci_ops = &virtio_user_ops;
+	hw->vtplatform_ops = &virtio_user_ops;
 	hw->use_msix = 0;
 	hw->modern   = 0;
 	hw->virtio_user_dev = dev;
@@ -308,7 +308,7 @@ virtio_user_eth_dev_alloc(const char *name)
 	data->numa_node = SOCKET_ID_ANY;
 	data->kdrv = RTE_KDRV_NONE;
 	data->dev_flags = RTE_ETH_DEV_DETACHABLE;
-	eth_dev->pci_dev = NULL;
+	eth_dev->platform_dev = NULL;
 	eth_dev->driver = NULL;
 	return eth_dev;
 }
@@ -423,7 +423,7 @@ virtio_user_pmd_devinit(const char *name, const char *params)
 		goto end;
 	}
 
-	/* previously called by rte_eal_pci_probe() for physical dev */
+	/* previously called by rte_eal_platform_probe() for physical dev */
 	if (eth_virtio_dev_init(eth_dev) < 0) {
 		PMD_INIT_LOG(ERR, "eth_virtio_dev_init fails");
 		virtio_user_eth_dev_free(eth_dev);

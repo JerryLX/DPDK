@@ -31,37 +31,86 @@
  *   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _VIRTIO_PCI_H_
-#define _VIRTIO_PCI_H_
+#ifndef _VIRTIO_PLATFORM_H_
+#define _VIRTIO_PLATFORM_H_
 
 #include <stdint.h>
 
-#include <rte_pci.h>
+#include <rte_platform.h>
 #include <rte_ethdev.h>
 
 struct virtqueue;
 struct virtnet_ctl;
 
-/* VirtIO PCI vendor/device ID. */
-#define VIRTIO_PCI_VENDORID     0x1AF4
-#define VIRTIO_PCI_DEVICEID_MIN 0x1000
-#define VIRTIO_PCI_DEVICEID_MAX 0x103F
+/* Magic value ("virt" string) - Read Only */
+#define VIRTIO_MMIO_MAGIC_VALUE         0x000
 
-/* VirtIO ABI version, this must match exactly. */
-#define VIRTIO_PCI_ABI_VERSION 0
+/* Virtio device version - Read Only */
+#define VIRTIO_MMIO_VERSION             0x004
+
+/* Virtio device ID - Read Only */
+#define VIRTIO_MMIO_DEVICE_ID           0x008
+
+/* Virtio vendor ID - Read Only */
+#define VIRTIO_MMIO_VENDOR_ID           0x00c
+
+/* Bitmask of the features supported by the host
+ * (32 bits per set) - Read Only */
+#define VIRTIO_MMIO_HOST_FEATURES       0x010
+
+/* Host features set selector - Write Only */
+#define VIRTIO_MMIO_HOST_FEATURES_SEL   0x014
+
+/* Bitmask of features activated by the guest
+ * (32 bits per set) - Write Only */
+#define VIRTIO_MMIO_GUEST_FEATURES      0x020
+
+/* Activated features set selector - Write Only */
+#define VIRTIO_MMIO_GUEST_FEATURES_SEL  0x024
+
+/* Guest's memory page size in bytes - Write Only */
+#define VIRTIO_MMIO_GUEST_PAGE_SIZE     0x028
+
+/* Queue selector - Write Only */
+#define VIRTIO_MMIO_QUEUE_SEL           0x030
+
+/* Maximum size of the currently selected queue - Read Only */
+#define VIRTIO_MMIO_QUEUE_NUM_MAX       0x034
+
+/* Queue size for the currently selected queue - Write Only */
+#define VIRTIO_MMIO_QUEUE_NUM           0x038
+
+/* Used Ring alignment for the currently selected queue - Write Only */
+#define VIRTIO_MMIO_QUEUE_ALIGN         0x03c
+
+/* Guest's PFN for the currently selected queue - Read Write */
+#define VIRTIO_MMIO_QUEUE_PFN           0x040
+
+/* Queue notifier - Write Only */
+#define VIRTIO_MMIO_QUEUE_NOTIFY        0x050
+
+/* Interrupt status - Read Only */
+#define VIRTIO_MMIO_INTERRUPT_STATUS    0x060
+
+/* Interrupt acknowledge - Write Only */
+#define VIRTIO_MMIO_INTERRUPT_ACK       0x064
+
+/* Device status register - Read Write */
+#define VIRTIO_MMIO_STATUS              0x070
+
+/* The config space is defined by each driver as
+ * the per-driver configuration space - Read Write */
+#define VIRTIO_MMIO_CONFIG              0x100
+
+
 
 /*
- * VirtIO Header, located in BAR 0.
+ * Interrupt flags (re: interrupt status & acknowledge registers)
  */
-#define VIRTIO_PCI_HOST_FEATURES  0  /* host's supported features (32bit, RO)*/
-#define VIRTIO_PCI_GUEST_FEATURES 4  /* guest's supported features (32, RW) */
-#define VIRTIO_PCI_QUEUE_PFN      8  /* physical address of VQ (32, RW) */
-#define VIRTIO_PCI_QUEUE_NUM      12 /* number of ring entries (16, RO) */
-#define VIRTIO_PCI_QUEUE_SEL      14 /* current VQ selection (16, RW) */
-#define VIRTIO_PCI_QUEUE_NOTIFY   16 /* notify host regarding VQ (16, RW) */
-#define VIRTIO_PCI_STATUS         18 /* device status register (8, RW) */
-#define VIRTIO_PCI_ISR		  19 /* interrupt status register, reading
-				      * also clears the register (8, RO) */
+
+#define VIRTIO_MMIO_INT_VRING           (1 << 0)
+#define VIRTIO_MMIO_INT_CONFIG          (1 << 1)
+
 /* Only if MSIX is enabled: */
 #define VIRTIO_MSI_CONFIG_VECTOR  20 /* configuration change vector (16, RW) */
 #define VIRTIO_MSI_QUEUE_VECTOR	  22 /* vector for selected VQ notifications
@@ -173,7 +222,7 @@ struct virtnet_ctl;
 #define VIRTIO_PCI_CAP_PCI_CFG		5
 
 /* This is the PCI capability header: */
-struct virtio_pci_cap {
+struct virtio_platform_cap {
 	uint8_t cap_vndr;		/* Generic PCI field: PCI_CAP_ID_VNDR */
 	uint8_t cap_next;		/* Generic PCI field: next ptr. */
 	uint8_t cap_len;		/* Generic PCI field: capability length */
@@ -184,13 +233,13 @@ struct virtio_pci_cap {
 	uint32_t length;		/* Length of the structure, in bytes. */
 };
 
-struct virtio_pci_notify_cap {
-	struct virtio_pci_cap cap;
+struct virtio_platform_notify_cap {
+	struct virtio_platform_cap cap;
 	uint32_t notify_off_multiplier;	/* Multiplier for queue_notify_off. */
 };
 
 /* Fields in VIRTIO_PCI_CAP_COMMON_CFG: */
-struct virtio_pci_common_cfg {
+struct virtio_platform_common_cfg {
 	/* About the whole device. */
 	uint32_t device_feature_select;	/* read-write */
 	uint32_t device_feature;	/* read-only */
@@ -217,7 +266,7 @@ struct virtio_pci_common_cfg {
 
 struct virtio_hw;
 
-struct virtio_pci_ops {
+struct virtio_platform_ops {
 	void (*read_dev_cfg)(struct virtio_hw *hw, size_t offset,
 			     void *dst, int len);
 	void (*write_dev_cfg)(struct virtio_hw *hw, size_t offset,
@@ -244,7 +293,7 @@ struct virtio_net_config;
 
 struct virtio_hw {
 	struct virtnet_ctl *cvq;
-	struct rte_pci_ioport io;
+	void *base;
 	uint64_t    guest_features;
 	uint32_t    max_tx_queues;
 	uint32_t    max_rx_queues;
@@ -257,10 +306,10 @@ struct virtio_hw {
 	uint32_t    notify_off_multiplier;
 	uint8_t     *isr;
 	uint16_t    *notify_base;
-	struct rte_pci_device *dev;
-	struct virtio_pci_common_cfg *common_cfg;
+	struct rte_platform_device *dev;
+	struct virtio_platform_common_cfg *common_cfg;
 	struct virtio_net_config *dev_cfg;
-	const struct virtio_pci_ops *vtpci_ops;
+	const struct virtio_platform_ops *vtplatform_ops;
 	void	    *virtio_user_dev;
 };
 
@@ -287,31 +336,31 @@ struct virtio_net_config {
 #define VIRTIO_PCI_VRING_ALIGN 4096
 
 static inline int
-vtpci_with_feature(struct virtio_hw *hw, uint64_t bit)
+vtplatform_with_feature(struct virtio_hw *hw, uint64_t bit)
 {
 	return (hw->guest_features & (1ULL << bit)) != 0;
 }
 
 /*
- * Function declaration from virtio_pci.c
+ * Function declaration from virtio_platform.c
  */
-int vtpci_init(struct rte_pci_device *, struct virtio_hw *,
+int vtplatform_init(struct rte_platform_device *, struct virtio_hw *,
 	       uint32_t *dev_flags);
-void vtpci_reset(struct virtio_hw *);
+void vtplatform_reset(struct virtio_hw *);
 
-void vtpci_reinit_complete(struct virtio_hw *);
+void vtplatform_reinit_complete(struct virtio_hw *);
 
-uint8_t vtpci_get_status(struct virtio_hw *);
-void vtpci_set_status(struct virtio_hw *, uint8_t);
+uint8_t vtplatform_get_status(struct virtio_hw *);
+void vtplatform_set_status(struct virtio_hw *, uint8_t);
 
-uint64_t vtpci_negotiate_features(struct virtio_hw *, uint64_t);
+uint64_t vtplatform_negotiate_features(struct virtio_hw *, uint64_t);
 
-void vtpci_write_dev_config(struct virtio_hw *, size_t, const void *, int);
+void vtplatform_write_dev_config(struct virtio_hw *, size_t, const void *, int);
 
-void vtpci_read_dev_config(struct virtio_hw *, size_t, void *, int);
+void vtplatform_read_dev_config(struct virtio_hw *, size_t, void *, int);
 
-uint8_t vtpci_isr(struct virtio_hw *);
+uint8_t vtplatform_isr(struct virtio_hw *);
 
-uint16_t vtpci_irq_config(struct virtio_hw *, uint16_t);
+uint16_t vtplatform_irq_config(struct virtio_hw *, uint16_t);
 
 #endif /* _VIRTIO_PCI_H_ */

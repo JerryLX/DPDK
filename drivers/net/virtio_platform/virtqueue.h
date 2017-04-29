@@ -41,7 +41,7 @@
 #include <rte_memzone.h>
 #include <rte_mempool.h>
 
-#include "virtio_pci.h"
+#include "virtio_platform.h"
 #include "virtio_ring.h"
 #include "virtio_logs.h"
 
@@ -49,7 +49,7 @@ struct rte_mbuf;
 
 /*
  * Per virtio_config.h in Linux.
- *     For virtio_pci on SMP, we don't need to order with respect to MMIO
+ *     For virtio_platform on SMP, we don't need to order with respect to MMIO
  *     accesses through relaxed memory I/O windows, so smp_mb() et al are
  *     sufficient.
  *
@@ -323,7 +323,7 @@ virtqueue_notify(struct virtqueue *vq)
 	 * For virtio on IA, the notificaiton is through io port operation
 	 * which is a serialization instruction itself.
 	 */
-	vq->hw->vtpci_ops->notify_queue(vq->hw, vq);
+	vq->hw->vtplatform_ops->notify_queue(vq->hw, vq);
 }
 
 #ifdef RTE_LIBRTE_VIRTIO_DEBUG_DUMP

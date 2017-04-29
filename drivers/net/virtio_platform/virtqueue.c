@@ -36,7 +36,7 @@
 
 #include "virtqueue.h"
 #include "virtio_logs.h"
-#include "virtio_pci.h"
+#include "virtio_platform.h"
 
 void
 virtqueue_disable_intr(struct virtqueue *vq)
