@@ -35,7 +35,7 @@
 #define _VIRTIO_USER_DEV_H
 
 #include <limits.h>
-#include "../virtio_pci.h"
+#include "../virtio_platform.h"
 #include "../virtio_ring.h"
 
 struct virtio_user_dev {
