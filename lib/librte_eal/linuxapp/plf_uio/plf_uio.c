@@ -72,7 +72,7 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 	if (internal_addr == NULL)
 		return -1;
 	info->mem[n].name = name;
-	info->mem[n].addr = addr;
+	//info->mem[n].addr = addr;
 	info->mem[n].internal_addr = internal_addr;
 	info->mem[n].size = len;
 	info->mem[n].memtype = UIO_MEM_PHYS;
@@ -224,11 +224,11 @@ plf_uio_probe(struct platform_device *dev)
         return -ENOMEM;
 
     /* remap IO memory */
-    err = plfuio_remap_memory(dev, &udev->info);
-    if(err){
-		printk(KERN_EMERG "REMAP FAILED\n");
-        goto fail_release_iomem;
-    }
+  //   err = plfuio_remap_memory(dev, &udev->info);
+  //   if(err){
+		// printk(KERN_EMERG "REMAP FAILED\n");
+  //       goto fail_release_iomem;
+  //   }
 
     (void) plfuio_remap_memory;
     udev->info.name = "plf_uio";
