@@ -1296,7 +1296,7 @@ eth_virtio_dev_uninit(struct rte_eth_dev *eth_dev)
 		rte_intr_callback_unregister(&platform_dev->intr_handle,
 						virtio_interrupt_handler,
 						eth_dev);
-	rte_eal_platform_unmap_device(platform_dev);
+	//rte_eal_platform_unmap_device(platform_dev);
 
 	PMD_INIT_LOG(DEBUG, "dev_uninit completed");
 

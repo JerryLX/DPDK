@@ -3478,6 +3478,26 @@ rte_eth_copy_pci_info(struct rte_eth_dev *eth_dev, struct rte_pci_device *pci_de
 	eth_dev->data->drv_name = pci_dev->driver->name;
 }
 
+void
+rte_eth_copy_platform_info(struct rte_eth_dev *eth_dev, struct rte_platform_device *platform_dev)
+{
+	if ((eth_dev == NULL) || (platform_dev == NULL)) {
+		RTE_PMD_DEBUG_TRACE("NULL pointer eth_dev=%p platform_dev=%p\n",
+				eth_dev, platform_dev);
+		return;
+	}
+
+	eth_dev->data->dev_flags = 0;
+	if (platform_dev->driver->drv_flags & RTE_PCI_DRV_INTR_LSC)
+		eth_dev->data->dev_flags |= RTE_ETH_DEV_INTR_LSC;
+	if (platform_dev->driver->drv_flags & RTE_PCI_DRV_DETACHABLE)
+		eth_dev->data->dev_flags |= RTE_ETH_DEV_DETACHABLE;
+
+	eth_dev->data->kdrv = platform_dev->kdrv;
+	eth_dev->data->numa_node = platform_dev->numa_node;
+	eth_dev->data->drv_name = platform_dev->driver->name;
+}
+
 int
 rte_eth_dev_l2_tunnel_eth_type_conf(uint8_t port_id,
 				    struct rte_eth_l2_tunnel_conf *l2_tunnel)
