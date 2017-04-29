@@ -1,4 +1,4 @@
-limian/*-
+/*-
  *   BSD LICENSE
  *
  *   Copyright(c) 2010-2014 Intel Corporation. All rights reserved.
@@ -277,7 +277,7 @@ vm_set_config_irq(struct virtio_hw *hw, uint16_t vec)
 static uint16_t
 vm_get_queue_num(struct virtio_hw *hw, uint16_t queue_id)
 {
-	io_write32(queue_id, hw->base + VIRTIO_MMI_OQUEUE_SEL);
+	io_write32(queue_id, hw->base + VIRTIO_MMIO_QUEUE_SEL);
 	return io_read32(hw->base + VIRTIO_MMIO_QUEUE_NUM_MAX);
 }
 

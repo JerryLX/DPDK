@@ -42,6 +42,8 @@
 struct virtqueue;
 struct virtnet_ctl;
 
+#define PAGE_SHIFT  12
+
 /* Magic value ("virt" string) - Read Only */
 #define VIRTIO_MMIO_MAGIC_VALUE         0x000
 
