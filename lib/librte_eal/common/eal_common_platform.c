@@ -239,7 +239,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
         len = strlen(id->name);
         printf("scanning, dev name: %s, id name: %s, len:%d\n",dev->name, id->name,len);
 
-        if(len == 7 && strncmp(id->name,"virtio",7)){
+        if(len == 6 && strncmp(id->name,"virtio",6)){
             if(!strstr(dev->name, "virtio"))
                 continue;
         }
