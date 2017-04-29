@@ -62,7 +62,7 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 
 	if (n >= ARRAY_SIZE(info->mem))
 		return -EINVAL;
-    mem = platform_get_resource(pdev, IORESOURCE_MEM, index);
+    mem = platform_get_resource(dev, IORESOURCE_MEM, index);
 	addr = mem->start;
 	len = resource_size(mem);
 	if (len == 0)
@@ -76,7 +76,7 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 	info->mem[n].internal_addr = internal_addr;
 	info->mem[n].size = len;
 	info->mem[n].memtype = UIO_MEM_PHYS;
-    printk(KERN_ERR "addr:%08x,internal_addr:%p\n", addr,internal_addr);
+    printk(KERN_ERR "addr:%08lu,internal_addr:%p\n", addr,internal_addr);
 	return 0;
 }
 
