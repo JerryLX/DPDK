@@ -103,10 +103,9 @@ static int virtio_dev_queue_stats_mapping_set(
  * The set of PCI devices this driver supports
  */
 static const struct rte_platform_id platform_id_virtio_map[] = {
-	{ RTE_PCI_DEVICE(VIRTIO_PCI_VENDORID, VIRTIO_PCI_DEVICEID_MIN) },
-	{ .vendor_id = 0, /* sentinel */ },
+	{.name = "virtio"},
+    {0},
 };
-
 struct rte_virtio_xstats_name_off {
 	char name[RTE_ETH_XSTATS_NAME_SIZE];
 	unsigned offset;
