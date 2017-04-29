@@ -239,7 +239,7 @@ plf_uio_probe(struct platform_device *dev)
     udev->info.priv = udev;
     udev->pdev = dev;
 
-    mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+    mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
     udev->info.mem[0].name = "resource";
     udev->info.mem[0].addr = mem->start;
     udev->info.mem[0].size = resource_size(mem);
