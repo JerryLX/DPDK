@@ -75,49 +75,49 @@ check_vq_phys_addr_ok(struct virtqueue *vq)
 //Do not modify
 //====================================================
 static inline uint8_t
-io_read8(uint8_t *addr)
+io_read8(char *addr)
 {
 	return *(volatile uint8_t *)addr;
 }
 
 static inline void
-io_write8(uint8_t val, uint8_t *addr)
+io_write8(uint8_t val, char *addr)
 {
 	*(volatile uint8_t *)addr = val;
 }
 
 static inline uint16_t
-io_read16(uint16_t *addr)
+io_read16(char *addr)
 {
 	return *(volatile uint16_t *)addr;
 }
 
 static inline void
-io_write16(uint16_t val, uint16_t *addr)
+io_write16(uint16_t val, char *addr)
 {
 	*(volatile uint16_t *)addr = val;
 }
 
 static inline uint32_t
-io_read32(uint32_t *addr)
+io_read32(char *addr)
 {
 	return *(volatile uint32_t *)addr;
 }
 
 static inline void
-io_write32(uint32_t val, uint32_t *addr)
+io_write32(uint32_t val, char *addr)
 {
 	*(volatile uint32_t *)addr = val;
 }
 
 static inline uint64_t
-io_read64(uint64_t *addr)
+io_read64(char *addr)
 {
 	return *(volatile uint64_t *)addr;
 }
 
 static inline void
-io_write64(uint64_t val, uint64_t *addr)
+io_write64(uint64_t val, char *addr)
 {
 	*(volatile uint64_t *)addr = val;
 }
