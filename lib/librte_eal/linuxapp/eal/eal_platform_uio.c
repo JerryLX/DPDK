@@ -268,7 +268,7 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     }
     */
 
-    if (dev->kdrv == RTE_KDRV_HNS_UIO)
+    if (dev->kdrv == RTE_KDRV_HNS_UIO || dev->kdrv == RTE_KDRV_PLF_UIO)
         dev->intr_handle.type = RTE_INTR_HANDLE_UIO;
     else{
         RTE_LOG(ERR, EAL, "not implement yet\n");
