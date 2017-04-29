@@ -338,6 +338,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
             MAP_SHARED, fd2, 0);
         printf("%d\n",getpagesize());
         printf("%p,error:%d\n",mapaddr,errno);
+        close(fd2);
     }
     mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
 			(size_t)dev->mem_resource[res_idx].len, 0);
