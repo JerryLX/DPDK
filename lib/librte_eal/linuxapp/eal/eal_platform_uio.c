@@ -335,7 +335,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
     {
         mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
             MAP_SHARED, fd, 0);
-        printf("%lu\n",getpagesize());
+        printf("%d\n",getpagesize());
         printf("%p,error:%d\n",mapaddr,errno);
     }
     mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
