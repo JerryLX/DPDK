@@ -69,11 +69,10 @@ main(int argc, char **argv)
 
 	{
         int fd2 = open("/dev/uio0", O_RDWR);
-        mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
+        void *mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
             MAP_SHARED, fd2, 0);
         printf("%p,error:%d\n",mapaddr,errno);
         close(fd2);
-        fd = open(devname, O_RDWR); 
     }
 
 	ret = rte_eal_init(argc, argv);
