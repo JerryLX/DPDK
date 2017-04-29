@@ -241,9 +241,9 @@ plf_uio_probe(struct platform_device *dev)
     udev->pdev = dev;
 
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
-    base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
+    //base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
     udev->info.mem[0].name = "resource";
-    udev->info.mem[0].addr = (unsigned long)base;
+    udev->info.mem[0].addr = mem->start;
     udev->info.mem[0].size = resource_size(mem);
     udev->info.mem[0].memtype = UIO_MEM_LOGICAL;
 
