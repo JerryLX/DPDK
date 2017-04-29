@@ -58,12 +58,13 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 {
 	unsigned long addr, len;
 	void *internal_addr;
+    struct resource *mem;
 
 	if (n >= ARRAY_SIZE(info->mem))
 		return -EINVAL;
-
-	addr = platform_resource_start(dev, index);
-	len = platform_resource_len(dev, index);
+    mem = platform_get_resource(pdev, IORESOURCE_MEM, index);
+	addr = mem->start;
+	len = resource_size(mem);
 	if (len == 0)
 		return -EINVAL;
 	
@@ -75,6 +76,7 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 	info->mem[n].internal_addr = internal_addr;
 	info->mem[n].size = len;
 	info->mem[n].memtype = UIO_MEM_PHYS;
+    printk(KERN_ERR "addr:%p,internal_addr:%p\n", addr,internal_addr);
 	return 0;
 }
 
@@ -145,9 +147,7 @@ plfuio_remap_memory(struct platform_device *dev, struct uio_info *info)
                 platform_resource_start(dev, i)!=0) {
             flags = platform_resource_flags(dev, i);
 
-            printk(KERN_ERR "resource %d has flag %d\n", i, (int)flags);
             if(flags & IORESOURCE_MEM){
-                printk(KERN_ERR "mem here\n");
                 ret = plfuio_setup_iomem(dev, info, iom, i, bar_names[i]);
                 if(ret!=0)
                     return ret;
@@ -156,7 +156,6 @@ plfuio_remap_memory(struct platform_device *dev, struct uio_info *info)
             
             
             else if(flags & IORESOURCE_IO) {
-                printk(KERN_ERR "io here\n");
                 ret = plfuio_setup_ioport(dev, info, iop, i, bar_names[i]);
                 if(ret!=0)
                     return ret;
