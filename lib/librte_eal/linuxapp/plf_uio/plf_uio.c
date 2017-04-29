@@ -76,7 +76,7 @@ plfuio_setup_iomem(struct platform_device *dev, struct uio_info *info,
 	info->mem[n].internal_addr = internal_addr;
 	info->mem[n].size = len;
 	info->mem[n].memtype = UIO_MEM_PHYS;
-    printk(KERN_ERR "addr:%p,internal_addr:%p\n", addr,internal_addr);
+    printk(KERN_ERR "addr:%08x,internal_addr:%p\n", addr,internal_addr);
 	return 0;
 }
 
