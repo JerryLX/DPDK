@@ -218,6 +218,7 @@ plf_uio_probe(struct platform_device *dev)
     struct rte_uio_platform_dev *udev;
     int err;
     struct resource *mem;
+    void *base;
 
     printk(KERN_EMERG "hello world!\n");    
     udev = kzalloc(sizeof(struct rte_uio_platform_dev),GFP_KERNEL);
@@ -240,10 +241,11 @@ plf_uio_probe(struct platform_device *dev)
     udev->pdev = dev;
 
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
+    base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
     udev->info.mem[0].name = "resource";
-    udev->info.mem[0].addr = mem->start;
+    udev->info.mem[0].addr = base;
     udev->info.mem[0].size = resource_size(mem);
-    udev->info.mem[0].memtype = UIO_MEM_PHYS;
+    udev->info.mem[0].memtype = UIO_MEM_LOGICAL;
 
 //    err = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64));
 //    if(err != 0)
