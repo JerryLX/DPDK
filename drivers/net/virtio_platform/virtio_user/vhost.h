@@ -38,7 +38,7 @@
 #include <linux/types.h>
 #include <linux/ioctl.h>
 
-#include "../virtio_pci.h"
+#include "../virtio_platform.h"
 #include "../virtio_logs.h"
 #include "../virtqueue.h"
 
