@@ -235,8 +235,14 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
     const struct rte_platform_id *id;
 	for (id = dr->id_table; id->name != NULL; id++) {
 		/* check if device's identifiers match the driver's ones */
+
         len = strlen(id->name);
-        if(len != strlen(dev->name) ||
+        printf("scanning, dev name: %s, id name: \n",dev->name, id->name);
+        if(len == 7 && strncmp(id->name,"virtio",7)){
+            if(!strstr(dev->name, "virtio"))
+                continue;
+        }
+        else if(len != strlen(dev->name) ||
                 strncmp(id->name, dev->name, len)) 
             continue;
 
@@ -248,7 +254,7 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 			if (ret != 0)
 				return ret;
 		}
-      
+        printf("match!\n");
 		/* reference driver structure */
 		dev->driver = dr;
 
