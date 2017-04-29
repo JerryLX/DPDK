@@ -1324,11 +1324,12 @@ static int
 rte_virtio_pmd_init(const char *name __rte_unused,
 		    const char *param __rte_unused)
 {
+	printf("pmd init!\n");
 	if (rte_eal_iopl_init() != 0) {
 		PMD_INIT_LOG(ERR, "IOPL call failed - cannot use virtio PMD");
 		return -1;
 	}
-
+	printf("pmd really init!\n");
 	rte_eth_platform_driver_register(&rte_virtio_pmd);
 	return 0;
 }
