@@ -335,7 +335,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
     {
         unsigned long value;
         unsigned long test = dev->mem_resource[res_idx].phys_addr + 0x10;
-        value = *(volatile uint32_t *)addr;
+        value = *(volatile uint32_t *)test;
         printf("no need remap!!!%lu\n",value);
     }
     mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
