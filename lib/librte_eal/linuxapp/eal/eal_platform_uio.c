@@ -332,7 +332,13 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 
     printf("dev name:%s, mapidx:%d\n",devname,map_idx);
     (void)platform_map_addr;
-    mapaddr = platform_map_resource(0, fd, map_idx*getpagesize(),
+    {
+        unsigned long value;
+        unsigned long test = dev->mem_resource[res_idx].phys_addr + 0x10;
+        value = *(volatile uint32_t *)addr;
+        printf("no need remap!!!%lu\n",value);
+    }
+    mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
 			(size_t)dev->mem_resource[res_idx].len, 0);
     close(fd);
 	if (mapaddr == MAP_FAILED)
