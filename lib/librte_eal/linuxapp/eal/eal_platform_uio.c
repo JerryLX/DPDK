@@ -333,7 +333,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
     printf("dev name:%s, mapidx:%d\n",devname,map_idx);
     (void)platform_map_addr;
     {
-        mapaddr = mmap(0,(size_t)dev->mem_resource[res_idx].len,PROT_READ | PROT_WRITE,
+        mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
             MAP_SHARED, fd, 0);
         printf("%p\n",mapaddr);
     }
