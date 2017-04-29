@@ -67,14 +67,6 @@ main(int argc, char **argv)
 	int ret;
 	unsigned lcore_id;
 
-	{
-        int fd2 = open("/dev/uio0", O_RDWR);
-        void *mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
-            MAP_SHARED, fd2, 0);
-        printf("%p,error:%d\n",mapaddr,errno);
-        close(fd2);
-    }
-
 	ret = rte_eal_init(argc, argv);
 	if (ret < 0)
 		rte_panic("Cannot init EAL\n");
