@@ -1329,7 +1329,7 @@ rte_virtio_pmd_init(const char *name __rte_unused,
 		return -1;
 	}
 
-	rte_eth_driver_register(&rte_virtio_pmd);
+	rte_eth_platform_driver_register(&rte_virtio_pmd);
 	return 0;
 }
 
