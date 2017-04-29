@@ -240,9 +240,8 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
         printf("scanning, dev name: %s, id name: %s, len:%d\n",dev->name, id->name,len);
 
         if(len == 6 && !strncmp(id->name,"virtio",6)){
-            printf("get here!");
             if(!strstr(dev->name, "virtio")){
-                printf("not match!");
+                printf("not match!\n");
                 continue;
             }
         }

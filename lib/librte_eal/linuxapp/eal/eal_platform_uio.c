@@ -330,7 +330,9 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 	if (platform_map_addr == NULL)
 		platform_map_addr = platform_find_max_end_va();
 
-    mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
+    printf("dev name:%s, mapidx:%d\n",devname,map_idx);
+    (void)platform_map_addr;
+    mapaddr = platform_map_resource(0, fd, map_idx*getpagesize(),
 			(size_t)dev->mem_resource[res_idx].len, 0);
     close(fd);
 	if (mapaddr == MAP_FAILED)
