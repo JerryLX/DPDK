@@ -293,7 +293,7 @@ struct virtio_net_config;
 
 struct virtio_hw {
 	struct virtnet_ctl *cvq;
-	char *base;
+	void __iomem *base;
 	uint64_t    guest_features;
 	uint32_t    max_tx_queues;
 	uint32_t    max_rx_queues;
