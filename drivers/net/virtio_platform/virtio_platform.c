@@ -311,13 +311,6 @@ vm_notify_queue(struct virtio_hw *hw, struct virtqueue *vq)
 	io_write32(vq->vq_queue_index, hw->base+ VIRTIO_MMIO_QUEUE_NOTIFY);
 }
 
-static int
-vm_virtio_has_msix(const struct rte_platform_addr *loc __rte_unused)
-{
-	/* nic_uio does not enable interrupts, return 0 (false). */
-	return 0;
-}
-
 
 static int
 vm_virtio_resource_init(struct rte_platform_device *platform_dev,
@@ -540,7 +533,6 @@ vtplatform_init(struct rte_platform_device *dev, struct virtio_hw *hw,
 	hw->vtplatform_ops = &vm_ops;
 	(void)dev_flags;
 	(void)vm_virtio_resource_init;
-	(void)vm_virtio_has_msix;
 	// if (vm_virtio_resource_init(dev, hw, dev_flags) < 0) {
 	// 	return -1;
 	// }
