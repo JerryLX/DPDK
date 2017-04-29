@@ -241,7 +241,6 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 
         if(len == 6 && !strncmp(id->name,"virtio",6)){
             if(!strstr(dev->name, "virtio")){
-                printf("not match!\n");
                 continue;
             }
         }
@@ -257,7 +256,6 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
 			if (ret != 0)
 				return ret;
 		}
-        printf("match!\n");
 		/* reference driver structure */
 		dev->driver = dr;
 

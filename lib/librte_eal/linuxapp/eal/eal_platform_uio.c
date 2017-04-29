@@ -331,16 +331,7 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 		platform_map_addr = platform_find_max_end_va();
 
     printf("dev name:%s, mapidx:%d\n",devname,map_idx);
-    (void)platform_map_addr;
-    {
-        close(fd);
-        int fd2 = open("/dev/uio0", O_RDWR);
-        mapaddr = mmap(0,getpagesize(),PROT_READ | PROT_WRITE,
-            MAP_SHARED, fd2, 0);
-        printf("%p,error:%d\n",mapaddr,errno);
-        close(fd2);
-        fd = open(devname, O_RDWR); 
-    }
+    
     mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
 			(size_t)dev->mem_resource[res_idx].len, 0);
     close(fd);

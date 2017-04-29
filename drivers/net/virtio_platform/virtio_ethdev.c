@@ -1133,6 +1133,7 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 
 	RTE_BUILD_BUG_ON(RTE_PKTMBUF_HEADROOM < sizeof(struct virtio_net_hdr_mrg_rxbuf));
 
+	printf("init fuction start!\n");
 	eth_dev->dev_ops = &virtio_eth_dev_ops;
 	eth_dev->tx_pkt_burst = &virtio_xmit_pkts;
 
@@ -1162,7 +1163,7 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 
 	/* Reset the device although not necessary at startup */
 	vtplatform_reset(hw);
-
+	printf("vtplatform_reset!\n");
 	/* Tell the host we've noticed this device. */
 	vtplatform_set_status(hw, VIRTIO_CONFIG_STATUS_ACK);
 
@@ -1179,7 +1180,7 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 	eth_dev->data->dev_flags = dev_flags;
 
 	rx_func_get(eth_dev);
-
+	printf("rx_func_get!\n");
 	/* Setting up rx_header size for the device */
 	if (vtplatform_with_feature(hw, VIRTIO_NET_F_MRG_RXBUF) ||
 	    vtplatform_with_feature(hw, VIRTIO_F_VERSION_1))
