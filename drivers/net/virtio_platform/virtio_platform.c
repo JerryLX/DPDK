@@ -31,7 +31,6 @@ limian/*-
  *   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdint.h>
-
 #ifdef RTE_EXEC_ENV_LINUXAPP
  #include <dirent.h>
  #include <fcntl.h>
@@ -141,7 +140,7 @@ vm_read_dev_config(struct virtio_hw *hw, size_t offset,
 	(void)hw;
 	(void)offset;
 	(void)dst;
-	(void)length
+	(void)length;
 // #ifdef RTE_ARCH_PPC_64
 // 	int size;
 
@@ -178,8 +177,8 @@ vm_write_dev_config(struct virtio_hw *hw, size_t offset,
 {
 	(void)hw;
 	(void)offset;
-	(void)dst;
-	(void)length
+	(void)src;
+	(void)length;
 // #ifdef RTE_ARCH_PPC_64
 // 	union {
 // 		uint32_t u32;
@@ -223,7 +222,7 @@ vm_write_dev_config(struct virtio_hw *hw, size_t offset,
 static uint64_t
 vm_get_features(struct virtio_hw *hw)
 {
-	io_write32(0, vm_dev->base + VIRTIO_MMIO_HOST_FEATURES_SEL);
+	io_write32(0, hw->base + VIRTIO_MMIO_HOST_FEATURES_SEL);
 	return io_read32(hw->base + VIRTIO_MMIO_HOST_FEATURES);
 }
 
@@ -324,9 +323,9 @@ static int
 vm_virtio_resource_init(struct rte_platform_device *platform_dev,
 			    struct virtio_hw *hw, uint32_t *dev_flags)
 {
-	if (rte_eal_platform_ioport_map(platform_dev, 0, &hw->io) < 0)
-		return -1;
-
+	(void)platform_dev;
+	(void)hw;
+	(void)dev_flags;
 	return 0;
 }
 
@@ -539,6 +538,9 @@ vtplatform_init(struct rte_platform_device *dev, struct virtio_hw *hw,
 {
 	hw->dev = dev;
 	hw->vtplatform_ops = &vm_ops;
+	(void)dev_flags;
+	(void)vm_virtio_resource_init;
+	(void)vm_virtio_has_msix;
 	// if (vm_virtio_resource_init(dev, hw, dev_flags) < 0) {
 	// 	return -1;
 	// }
