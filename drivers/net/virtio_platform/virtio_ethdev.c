@@ -1571,4 +1571,5 @@ static struct rte_driver rte_virtio_driver = {
 };
 
 PMD_REGISTER_DRIVER(rte_virtio_driver, virtio_net);
+PMD_REGISTER_DRIVER(rte_virtio_driver, virtio_net);
 //DRIVER_REGISTER_PCI_TABLE(virtio_net, platform_id_virtio_map);
