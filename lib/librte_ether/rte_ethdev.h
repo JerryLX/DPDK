@@ -4299,7 +4299,7 @@ void rte_eth_copy_pci_info(struct rte_eth_dev *eth_dev,
  * @return
  *   - 0 on success, negative on error
  */
-void rte_eth_copy_pci_info(struct rte_eth_dev *eth_dev,
+void rte_eth_copy_platform_info(struct rte_eth_dev *eth_dev,
 		struct rte_pci_device *platform_dev);
 
 /**
