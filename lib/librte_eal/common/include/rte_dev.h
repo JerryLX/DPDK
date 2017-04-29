@@ -189,6 +189,7 @@ void devinitfn_ ##drv(void);\
 void __attribute__((constructor, used)) devinitfn_ ##drv(void)\
 {\
 	(drv).name = RTE_STR(nm);\
+	printf("def: %s\n",(drv).name);
 	rte_eal_driver_register(&drv);\
 } \
 DRIVER_EXPORT_NAME(nm, __COUNTER__)
