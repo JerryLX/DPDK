@@ -342,6 +342,8 @@ plf_uio_remove(struct platform_device *dev)
  
     struct rte_uio_platform_dev *udev = platform_get_drvdata(dev);
 
+
+    class_destroy((void *)udev->dev_class);
     // sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
     uio_unregister_device(&udev->info);
     platform_set_drvdata(dev,NULL);
