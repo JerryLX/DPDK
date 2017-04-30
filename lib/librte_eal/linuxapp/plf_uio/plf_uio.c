@@ -318,6 +318,7 @@ plf_uio_probe(struct platform_device *dev)
 
     udev->info.mem[0].name = "index";
     udev->info.mem[0].addr =  index;
+    udev->info.mem[0].size =  sizeof(int);
     // udev->info.mem[0].internal_addr = platform_base;
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
     index++;
