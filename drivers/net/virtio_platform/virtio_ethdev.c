@@ -39,6 +39,9 @@
 #include <linux/fb.h>  
 #include <sys/mman.h>  
 #include <sys/ioctl.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
 
 #include <rte_ethdev.h>
 #include <rte_memcpy.h>
