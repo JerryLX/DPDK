@@ -82,6 +82,7 @@ main(int argc, char **argv)
 
     p_map = (unsigned char *)mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,fd, 0);
     printf("%p\n",p_map);
+    printf("%d\n",errno);
     {
     	unsigned int test;
     	*(unsigned int *)(p_map+0x14) = 0;
