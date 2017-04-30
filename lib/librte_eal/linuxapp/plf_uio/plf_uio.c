@@ -23,6 +23,7 @@ struct rte_uio_platform_dev {
 	struct uio_info info;
 	struct platform_device *pdev;
     int cdev_major;
+    struct class *dev_class;
 };
 
 
@@ -230,9 +231,9 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
 
 static struct file_operations mmapdrv_fops =
 {
-    owner: THIS_MODULE, 
-    mmap: mmapdrv_mmap, 
-    open: mmapdrv_open, 
+    .owner = THIS_MODULE, 
+    .mmap = mmapdrv_mmap, 
+    .open = mmapdrv_open, 
 };
 
 
@@ -248,9 +249,9 @@ plf_uio_probe(struct platform_device *dev)
     (void) plfuio_irqhandler;
 */    
     struct rte_uio_platform_dev *udev;
-    int err;
+    int err, major;
     struct resource *mem;
-    int major;
+    struct device *aeclassdev;
     // void *base;
 
     printk(KERN_EMERG "hello world!\n");    
@@ -263,12 +264,23 @@ plf_uio_probe(struct platform_device *dev)
      //register cdev
     if ((major = register_chrdev(0, "virtio_cdev", &mmapdrv_fops)) < 0)
     {
-        printk("virtio_cdev: unable to register character device\n");
+        printk(KERN_ERR "virtio_cdev: unable to register character device\n");
         err =  major;
         goto fail_release_udev;
     }
     udev->cdev_major = major;
-
+    udev->dev_class = class_create(THIS_MODULE, "virtio_cdev");
+    if (IS_ERR(udev->dev_class)) {
+        printk(KERN_ERR "virtio_cdev: unable to class_create\n");
+        goto fail_unregister_cdev;
+    }
+    aeclassdev = device_create(priv->dev_class, NULL, MKDEV(priv->major,
+                                0), NULL,priv->name);
+    if (IS_ERR(aeclassdev)) {
+        printk(KERN_ERR "virtio_cdev: unable to device_create\n");
+        err = PTR_ERR(aeclassdev)
+        goto fail_destory_class;
+    }
     /* remap IO memory */
   //   err = plfuio_remap_memory(dev, &udev->info);
   //   if(err){
@@ -287,13 +299,7 @@ plf_uio_probe(struct platform_device *dev)
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
     phy_addr = mem->start;
     platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
-    {
-        //test this addr
-        unsigned int feature;
-        *(unsigned int *)((char *)platform_base+0x014) = 0;
-        feature = *(unsigned int *)((char *)platform_base+0x010);
-        printk(KERN_EMERG "host feature:%08x\n",feature);    
-    }
+
     udev->info.mem[0].name = "resource";
     udev->info.mem[0].addr = mem->start;
     udev->info.mem[0].internal_addr = platform_base;
@@ -320,9 +326,12 @@ plf_uio_probe(struct platform_device *dev)
 
 fail_release_iomem:
 	plfuio_release_iomem(&udev->info);
+fail_destory_class:
+    class_destroy((void *)udev->dev_class);
+fail_unregister_cdev:
+    unregister_chrdev(major, "virtio_cdev");
 fail_release_udev:
     kfree(udev);
-    unregister_chrdev(major, "virtio_cdev");
     return err;
 }
 
