@@ -16,8 +16,8 @@
 #include <linux/cdev.h>  
 #include "compat.h"
 
-static void *platform_base;
-static unsigned long phy_addr;
+// static void *platform_base;
+unsigned long phy_addr;
 
 struct rte_uio_platform_dev {
 	struct uio_info info;
@@ -222,7 +222,7 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
     /* we do not want to have this area swapped out, lock it */
     //vma->vm_flags |= VM_LOCKED;
     printk(KERN_ERR "phy_addr%08lx\n",phy_addr);
-    if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, PAGE_SHARED))
+    if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, vma->vm_page_prot))
     {
         printk(KERN_ERR "remap page range failed\n");
         return - ENXIO;
@@ -300,11 +300,11 @@ plf_uio_probe(struct platform_device *dev)
 
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
     phy_addr = mem->start;
-    platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
+    // platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
 
     udev->info.mem[0].name = "resource";
     udev->info.mem[0].addr = mem->start;
-    udev->info.mem[0].internal_addr = platform_base;
+    // udev->info.mem[0].internal_addr = platform_base;
     udev->info.mem[0].size = resource_size(mem);
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
 
