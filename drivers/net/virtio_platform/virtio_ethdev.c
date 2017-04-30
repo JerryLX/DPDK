@@ -1161,7 +1161,7 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 	platform_dev = eth_dev->platform_dev;
 	//map resource
 	index = platform_dev->mem_resource[0].phys_addr;
-	snprintf(chrdev,"/dev/virtio_cdev%d",index);
+	snprintf(chrdev,60,"/dev/virtio_cdev%d",index);
 	fd = open(chrdev,O_RDWR);  
     if(fd < 0)  
     {  
