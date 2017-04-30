@@ -86,6 +86,10 @@ main(int argc, char **argv)
     	*(unsigned int *)(p_map+0x14) = 0;
     	test = *(unsigned int *)(p_map+0x10);
     	printf("host feature: %08x\n",test);
+
+    	*(unsigned int *)(p_map+0x030) = 0;
+    	test = *(unsigned int *)(p_map+0x034);
+    	printf("host feature: %08x\n",test);
     }
 
 	ret = rte_eal_init(argc, argv);

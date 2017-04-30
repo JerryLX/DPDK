@@ -220,10 +220,11 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
     unsigned long size = vma->vm_end - vma->vm_start;
 
     /* we do not want to have this area swapped out, lock it */
-    vma->vm_flags |= VM_LOCKED;
+    //vma->vm_flags |= VM_LOCKED;
+    printk(KERN_ERR "phy_addr%08lx\n",phy_addr);
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, PAGE_SHARED))
     {
-        printk("remap page range failed\n");
+        printk(KERN_ERR "remap page range failed\n");
         return - ENXIO;
     }
     return (0);
