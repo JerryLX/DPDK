@@ -14,9 +14,13 @@
 
 #include "compat.h"
 
+static void *platform_base;
+static unsigned long phy_addr;
+
 struct rte_uio_platform_dev {
 	struct uio_info info;
 	struct platform_device *pdev;
+    int cdev_major;
 };
 
 
@@ -24,32 +28,32 @@ struct rte_uio_platform_dev {
  * Template to r/w something
  */
 
-static ssize_t
-show_something(struct device *dev, struct device_attribute *attr,
-                 char *buf)
-{
-    return 0;
-}
+// static ssize_t
+// show_something(struct device *dev, struct device_attribute *attr,
+//                  char *buf)
+// {
+//     return 0;
+// }
 
-static ssize_t
-store_something(struct device *dev, struct device_attribute *attr,
-                  const char *buf, size_t count)
-{
-    int err = 0;
+// static ssize_t
+// store_something(struct device *dev, struct device_attribute *attr,
+//                   const char *buf, size_t count)
+// {
+//     int err = 0;
 
-    return err ? err : count;
-}
+//     return err ? err : count;
+// }
 
-static DEVICE_ATTR(something, S_IRUGO | S_IWUSR, show_something, store_something);
+// static DEVICE_ATTR(something, S_IRUGO | S_IWUSR, show_something, store_something);
 
-static struct attribute *dev_attrs[] = {
-    &dev_attr_something.attr,
-    NULL,
-};
+// static struct attribute *dev_attrs[] = {
+//     &dev_attr_something.attr,
+//     NULL,
+// };
 
-static const struct attribute_group dev_attr_grp = {
-    .attrs = dev_attrs,
-};
+// static const struct attribute_group dev_attr_grp = {
+//     .attrs = dev_attrs,
+// };
 
 /* Remap platform resources described by index in uio resource n. */
 static int
@@ -203,6 +207,43 @@ plfuio_irqhandler(int irq, struct uio_info *info)
 	return IRQ_HANDLED;
 }
 
+int mmapdrv_open(struct inode *inode, struct file *file)
+{
+    MOD_INC_USE_COUNT;
+    return (0);
+}
+
+int mmapdrv_release(struct inode *inode, struct file *file)
+{
+    MOD_DEC_USE_COUNT;
+    return (0);
+}
+
+int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
+{
+    unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
+    unsigned long size = vma->vm_end - vma->vm_start;
+
+    offset = offset + phy_addr;
+
+    /* we do not want to have this area swapped out, lock it */
+    vma->vm_flags |= VM_LOCKED;
+    if (remap_page_range(vma, vma->vm_start, offset, size, PAGE_SHARED))
+    {
+        printk("remap page range failed\n");
+        return - ENXIO;
+    }
+    return (0);
+}
+
+static struct file_operations mmapdrv_fops =
+{
+    owner: THIS_MODULE, 
+    mmap: mmapdrv_mmap, 
+    open: mmapdrv_open, 
+    release:mmapdrv_release,
+}
+
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 static int __devinit
@@ -218,12 +259,24 @@ plf_uio_probe(struct platform_device *dev)
     struct rte_uio_platform_dev *udev;
     int err;
     struct resource *mem;
-    //void *base;
+    int major;
+    // void *base;
 
     printk(KERN_EMERG "hello world!\n");    
+
+    //malloc rte_uio_platform_dev
     udev = kzalloc(sizeof(struct rte_uio_platform_dev),GFP_KERNEL);
     if(!udev)
         return -ENOMEM;
+
+     //register cdev
+    if ((major = register_chrdev(0, "virtio_cdev", &mmapdrv_fops)) < 0)
+    {
+        printk("virtio_cdev: unable to register character device\n");
+        err =  major;
+        goto fail_release_udev;
+    }
+    udev->cdev_major = major;
 
     /* remap IO memory */
   //   err = plfuio_remap_memory(dev, &udev->info);
@@ -241,36 +294,44 @@ plf_uio_probe(struct platform_device *dev)
     udev->pdev = dev;
 
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
-    //base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
+    phy_addr = mem->start;
+    platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
+    {
+        //test this addr
+        unsigned int feature;
+        *(unsigned int *)((char *)platform_base+0x014) = 0;
+        feature = *(unsigned int *)((char *)platform_base+0x010);
+        printk(KERN_EMERG "host feature:%08x\n",feature);    
+    }
     udev->info.mem[0].name = "resource";
-    udev->info.mem[0].addr = mem->start;
+    udev->info.mem[0].addr = base;
     udev->info.mem[0].size = resource_size(mem);
-    udev->info.mem[0].memtype = UIO_MEM_LOGICAL;
+    udev->info.mem[0].memtype = UIO_MEM_PHYS;
 
 //    err = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64));
 //    if(err != 0)
 //		goto fail_release_iomem; 
 
-    err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
-    if (err != 0)
-		goto fail_release_iomem;  
+  //   err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
+  //   if (err != 0)
+		// goto fail_release_iomem;  
 
     err = uio_register_device(&dev->dev, &udev->info);
     if(err != 0)
-        goto fail_remove_group;
+        goto fail_release_iomem;
 
     platform_set_drvdata(dev,udev);
     return 0;
 
-fail_remove_group:
-    sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
+// fail_remove_group:
+//     sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
 
 fail_release_iomem:
 	plfuio_release_iomem(&udev->info);
+fail_release_udev:
     kfree(udev);
+    unregister_chrdev(major, "virtio_cdev");
     return err;
-    
-    return 0;
 }
 
 static int
@@ -279,9 +340,10 @@ plf_uio_remove(struct platform_device *dev)
  
     struct rte_uio_platform_dev *udev = platform_get_drvdata(dev);
 
-    sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
+    // sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
     uio_unregister_device(&udev->info);
     platform_set_drvdata(dev,NULL);
+    unregister_chrdev(major, udev->cdev_major);
     kfree(udev);
 
     return 0;
