@@ -217,13 +217,9 @@ int mmapdrv_open(struct inode *inode, struct file *file)
 int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
 {
     unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
-    unsigned long size = vma->vm_end - vma->vm_start;
-
-    offset = offset + phy_addr;
-
     /* we do not want to have this area swapped out, lock it */
     vma->vm_flags |= VM_LOCKED;
-    if (remap_page_range(vma, vma->vm_start, offset, size, PAGE_SHARED))
+    if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, PAGE_SHARED))
     {
         printk("remap page range failed\n");
         return - ENXIO;
