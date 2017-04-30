@@ -226,11 +226,11 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
         unsigned int test;
         *(unsigned int *)((char *)platform_base+0x14) = 0;
         test = *(unsigned int *)((char *)platform_base+0x10);
-        printf("host feature: %08x\n",test);
+        printk(KERN_ERR "host feature: %08x\n",test);
 
         *(unsigned int *)((char *)platform_base+0x030) = 0;
         test = *(unsigned int *)((char *)platform_base+0x034);
-        printf("host feature: %08x\n",test);
+        printk(KERN_ERR "host feature: %08x\n",test);
     }
     phy_addr = virt_to_phys(platform_base);
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, vma->vm_page_prot))
