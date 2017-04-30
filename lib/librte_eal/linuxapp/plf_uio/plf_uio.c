@@ -316,11 +316,17 @@ plf_uio_probe(struct platform_device *dev)
     phy_addr = mem->start;
     platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
 
-    udev->info.mem[0].name = "index";
-    udev->info.mem[0].addr =  index;
+    udev->info.mem[0].name = "resource";
+    udev->info.mem[0].addr =  phy_addr;
     udev->info.mem[0].size =  sizeof(int);
     // udev->info.mem[0].internal_addr = platform_base;
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
+
+    udev->info.mem[1].name = "index";
+    udev->info.mem[1].addr =  index;
+    udev->info.mem[1].size =  sizeof(int);
+    // udev->info.mem[0].internal_addr = platform_base;
+    udev->info.mem[1].memtype = UIO_MEM_PHYS;
     index++;
 
 //    err = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64));
