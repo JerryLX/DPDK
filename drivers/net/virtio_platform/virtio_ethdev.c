@@ -1160,7 +1160,7 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 
 	platform_dev = eth_dev->platform_dev;
 	//map resource
-	index = platform_dev->mem_resource[0].phys_addr;
+	index = platform_dev->mem_resource[1].phys_addr;
 	snprintf(chrdev,60,"/dev/virtio_cdev%d",index);
 	printf("%s!\n",chrdev);
 	fd = open(chrdev,O_RDWR);  
@@ -1170,8 +1170,8 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
         exit(1);  
     }  
     hw->base = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,fd, 0);
-    hw->base += (platform_dev->mem_resource[1].phys_addr) & 0xfff;
-	printf("offset: %08lx",(platform_dev->mem_resource[1].phys_addr) & 0xfff);
+    hw->base += (platform_dev->mem_resource[0].phys_addr) & 0xfff;
+	printf("offset: %08lx",(platform_dev->mem_resource[0].phys_addr) & 0xfff);
 	if (platform_dev) {
 		ret = vtplatform_init(platform_dev, hw, &dev_flags);
 		if (ret)

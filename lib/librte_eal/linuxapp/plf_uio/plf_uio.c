@@ -363,13 +363,17 @@ plf_uio_remove(struct platform_device *dev)
 {
  
     struct rte_uio_platform_dev *udev = platform_get_drvdata(dev);
+    char devname[60];
+    int myindex;
 
+    myindex = udev->info.mem[1].addr;
+    snprintf(devname, 60, "virtio_cdev%d",myindex);
 
     class_destroy((void *)udev->dev_class);
     // sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
     uio_unregister_device(&udev->info);
     platform_set_drvdata(dev,NULL);
-    unregister_chrdev(udev->cdev_major, "virtio_cdev");
+    unregister_chrdev(udev->cdev_major, devname);
     kfree(udev);
 
     return 0;
