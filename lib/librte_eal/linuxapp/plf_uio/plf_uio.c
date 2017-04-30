@@ -216,7 +216,8 @@ int mmapdrv_open(struct inode *inode, struct file *file)
 
 int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
 {
-    unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
+    unsigned long size = vma->vm_end - vma->vm_start;
+
     /* we do not want to have this area swapped out, lock it */
     vma->vm_flags |= VM_LOCKED;
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, PAGE_SHARED))
@@ -232,7 +233,7 @@ static struct file_operations mmapdrv_fops =
     owner: THIS_MODULE, 
     mmap: mmapdrv_mmap, 
     open: mmapdrv_open, 
-}
+};
 
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
@@ -295,6 +296,7 @@ plf_uio_probe(struct platform_device *dev)
     }
     udev->info.mem[0].name = "resource";
     udev->info.mem[0].addr = base;
+    udev->info.mem[0].internal_addr = platform_base;
     udev->info.mem[0].size = resource_size(mem);
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
 
@@ -333,7 +335,7 @@ plf_uio_remove(struct platform_device *dev)
     // sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
     uio_unregister_device(&udev->info);
     platform_set_drvdata(dev,NULL);
-    unregister_chrdev(major, udev->cdev_major);
+    unregister_chrdev(udev->cdev_major, "virtio_cdev");
     kfree(udev);
 
     return 0;
