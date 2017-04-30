@@ -16,7 +16,7 @@
 #include <linux/cdev.h>  
 #include "compat.h"
 
-// static void *platform_base;
+void *platform_base;
 unsigned long phy_addr;
 
 struct rte_uio_platform_dev {
@@ -222,6 +222,17 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
     /* we do not want to have this area swapped out, lock it */
     //vma->vm_flags |= VM_LOCKED;
     printk(KERN_ERR "phy_addr%08lx\n",phy_addr);
+    {
+        unsigned int test;
+        *(unsigned int *)((char *)platform_base+0x14) = 0;
+        test = *(unsigned int *)((char *)platform_base+0x10);
+        printf("host feature: %08x\n",test);
+
+        *(unsigned int *)((char *)platform_base+0x030) = 0;
+        test = *(unsigned int *)((char *)platform_base+0x034);
+        printf("host feature: %08x\n",test);
+    }
+    phy_addr = virt_to_phys(platform_base);
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, vma->vm_page_prot))
     {
         printk(KERN_ERR "remap page range failed\n");
@@ -300,7 +311,7 @@ plf_uio_probe(struct platform_device *dev)
 
     mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
     phy_addr = mem->start;
-    // platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
+    platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
 
     udev->info.mem[0].name = "resource";
     udev->info.mem[0].addr = mem->start;
