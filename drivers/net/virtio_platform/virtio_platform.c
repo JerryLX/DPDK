@@ -320,12 +320,9 @@ vtplatform_reinit_complete(struct virtio_hw *hw)
 void
 vtplatform_set_status(struct virtio_hw *hw, uint8_t status)
 {
-	printf("we are here!\n");
 	if (status != VIRTIO_CONFIG_STATUS_RESET)
 		status |= hw->vtplatform_ops->get_status(hw);
-	printf("boom?\n");
 	hw->vtplatform_ops->set_status(hw, status);
-	printf("boom!!!!!!\n");
 }
 
 uint8_t

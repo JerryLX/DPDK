@@ -1141,7 +1141,6 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 
 	RTE_BUILD_BUG_ON(RTE_PKTMBUF_HEADROOM < sizeof(struct virtio_net_hdr_mrg_rxbuf));
 
-	printf("init fuction start!\n");
 	eth_dev->dev_ops = &virtio_eth_dev_ops;
 	eth_dev->tx_pkt_burst = &virtio_xmit_pkts;
 
@@ -1178,24 +1177,18 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 
 	/* Reset the device although not necessary at startup */
 	vtplatform_reset(hw);
-	printf("vtplatform_reset!\n");
 	/* Tell the host we've noticed this device. */
 	vtplatform_set_status(hw, VIRTIO_CONFIG_STATUS_ACK);
-printf("1!\n");
 	/* Tell the host we've known how to drive the device. */
 	vtplatform_set_status(hw, VIRTIO_CONFIG_STATUS_DRIVER);
 	if (virtio_negotiate_features(hw) < 0)
 		return -1;
-printf("2!\n");
 	/* If host does not support status then disable LSC */
 	if (!vtplatform_with_feature(hw, VIRTIO_NET_F_STATUS))
 		dev_flags &= ~RTE_ETH_DEV_INTR_LSC;
-printf("3!\n");
 	rte_eth_copy_platform_info(eth_dev, platform_dev);
 	eth_dev->data->dev_flags = dev_flags;
-printf("4!\n");
 	rx_func_get(eth_dev);
-	printf("rx_func_get!\n");
 	/* Setting up rx_header size for the device */
 	if (vtplatform_with_feature(hw, VIRTIO_NET_F_MRG_RXBUF) ||
 	    vtplatform_with_feature(hw, VIRTIO_F_VERSION_1))
