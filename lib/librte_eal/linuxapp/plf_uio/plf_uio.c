@@ -11,7 +11,9 @@
 #include <linux/acpi.h>
 #include <linux/dma-mapping.h>
 #include <linux/string.h>
-
+#include <linux/mm.h>  
+#include <linux/fs.h>
+#include <linux/cdev.h>  
 #include "compat.h"
 
 static void *platform_base;
@@ -209,13 +211,6 @@ plfuio_irqhandler(int irq, struct uio_info *info)
 
 int mmapdrv_open(struct inode *inode, struct file *file)
 {
-    MOD_INC_USE_COUNT;
-    return (0);
-}
-
-int mmapdrv_release(struct inode *inode, struct file *file)
-{
-    MOD_DEC_USE_COUNT;
     return (0);
 }
 
@@ -241,7 +236,6 @@ static struct file_operations mmapdrv_fops =
     owner: THIS_MODULE, 
     mmap: mmapdrv_mmap, 
     open: mmapdrv_open, 
-    release:mmapdrv_release,
 }
 
 
