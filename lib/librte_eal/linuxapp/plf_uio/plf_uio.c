@@ -232,7 +232,7 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
         test = *(unsigned int *)((char *)platform_base+0x034);
         printk(KERN_ERR "host feature: %08x\n",test);
     }
-    phy_addr = virt_to_phys(platform_base);
+    //phy_addr = virt_to_phys(platform_base);
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, vma->vm_page_prot))
     {
         printk(KERN_ERR "remap page range failed\n");

@@ -86,11 +86,11 @@ main(int argc, char **argv)
     {
     	unsigned int test;
     	*(unsigned int *)(p_map+0x14) = 0;
-    	test = *(unsigned int *)(p_map+0x10);
+    	test = *(unsigned int *)(p_map+0xc10);
     	printf("host feature: %08x\n",test);
 
     	*(unsigned int *)(p_map+0x030) = 0;
-    	test = *(unsigned int *)(p_map+0x034);
+    	test = *(unsigned int *)(p_map+0xc34);
     	printf("host feature: %08x\n",test);
     }
 
