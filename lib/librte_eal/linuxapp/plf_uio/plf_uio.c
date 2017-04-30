@@ -265,7 +265,7 @@ plf_uio_probe(struct platform_device *dev)
     int err, major;
     struct resource *mem;
     struct device *aeclassdev;
-    char *devname[60];
+    char devname[60];
     // void *base;
 
     printk(KERN_EMERG "hello world!\n");    
