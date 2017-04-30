@@ -18,6 +18,7 @@
 
 void *platform_base;
 unsigned long phy_addr;
+static unsigned int index;
 
 struct rte_uio_platform_dev {
 	struct uio_info info;
@@ -221,17 +222,17 @@ int mmapdrv_mmap(struct file *file, struct vm_area_struct *vma)
 
     /* we do not want to have this area swapped out, lock it */
     //vma->vm_flags |= VM_LOCKED;
-    printk(KERN_ERR "phy_addr%08lx\n",phy_addr);
-    {
-        unsigned int test;
-        *(unsigned int *)((char *)platform_base+0x14) = 0;
-        test = *(unsigned int *)((char *)platform_base+0x10);
-        printk(KERN_ERR "host feature: %08x\n",test);
+    // printk(KERN_ERR "phy_addr%08lx\n",phy_addr);
+    // {
+    //     unsigned int test;
+    //     *(unsigned int *)((char *)platform_base+0x14) = 0;
+    //     test = *(unsigned int *)((char *)platform_base+0x10);
+    //     printk(KERN_ERR "host feature: %08x\n",test);
 
-        *(unsigned int *)((char *)platform_base+0x030) = 0;
-        test = *(unsigned int *)((char *)platform_base+0x034);
-        printk(KERN_ERR "host feature: %08x\n",test);
-    }
+    //     *(unsigned int *)((char *)platform_base+0x030) = 0;
+    //     test = *(unsigned int *)((char *)platform_base+0x034);
+    //     printk(KERN_ERR "host feature: %08x\n",test);
+    // }
     //phy_addr = virt_to_phys(platform_base);
     if (remap_pfn_range(vma, vma->vm_start, phy_addr>>PAGE_SHIFT, size, vma->vm_page_prot))
     {
@@ -264,9 +265,11 @@ plf_uio_probe(struct platform_device *dev)
     int err, major;
     struct resource *mem;
     struct device *aeclassdev;
+    char *devname[60];
     // void *base;
 
     printk(KERN_EMERG "hello world!\n");    
+    snprintf(devname, 60, "virtio_cdev%d",index);
 
     //malloc rte_uio_platform_dev
     udev = kzalloc(sizeof(struct rte_uio_platform_dev),GFP_KERNEL);
@@ -274,21 +277,21 @@ plf_uio_probe(struct platform_device *dev)
         return -ENOMEM;
 
      //register cdev
-    if ((major = register_chrdev(0, "virtio_cdev", &mmapdrv_fops)) < 0)
+    if ((major = register_chrdev(0, devname, &mmapdrv_fops)) < 0)
     {
         printk(KERN_ERR "virtio_cdev: unable to register character device\n");
         err =  major;
         goto fail_release_udev;
     }
     udev->cdev_major = major;
-    udev->dev_class = class_create(THIS_MODULE, "virtio_cdev");
+    udev->dev_class = class_create(THIS_MODULE, devname);
     if (IS_ERR(udev->dev_class)) {
         printk(KERN_ERR "virtio_cdev: unable to class_create\n");
         err = PTR_ERR(udev->dev_class);
         goto fail_unregister_cdev;
     }
     aeclassdev = device_create(udev->dev_class, NULL, MKDEV(udev->cdev_major,
-                                0), NULL,"virtio_cdev");
+                                0), NULL,devname);
     if (IS_ERR(aeclassdev)) {
         printk(KERN_ERR "virtio_cdev: unable to device_create\n");
         err = PTR_ERR(aeclassdev);
@@ -313,11 +316,11 @@ plf_uio_probe(struct platform_device *dev)
     phy_addr = mem->start;
     platform_base = devm_ioremap(&dev->dev, mem->start, resource_size(mem));
 
-    udev->info.mem[0].name = "resource";
-    udev->info.mem[0].addr = mem->start;
+    udev->info.mem[0].name = "index";
+    udev->info.mem[0].addr =  index;
     // udev->info.mem[0].internal_addr = platform_base;
-    udev->info.mem[0].size = resource_size(mem);
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
+    index++;
 
 //    err = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(64));
 //    if(err != 0)
