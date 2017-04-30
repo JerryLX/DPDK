@@ -1129,7 +1129,9 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 	struct virtio_net_config local_config;
 	struct rte_platform_device *platform_dev;
 	uint32_t dev_flags = RTE_ETH_DEV_DETACHABLE;
-	int ret;
+	int ret, fd;
+
+	
 
 	RTE_BUILD_BUG_ON(RTE_PKTMBUF_HEADROOM < sizeof(struct virtio_net_hdr_mrg_rxbuf));
 
@@ -1152,8 +1154,15 @@ eth_virtio_dev_init(struct rte_eth_dev *eth_dev)
 	}
 
 	platform_dev = eth_dev->platform_dev;
-	
-	hw->base = (void *)platform_dev->mem_resource[0].addr;
+	//map resource
+	fd = open("/dev/virtio_cdev",O_RDWR);  
+    if(fd < 0)  
+    {  
+        printf("open fail\n");  
+        exit(1);  
+    }  
+    hw->base = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,fd, 0);
+    hw->base += (platform_dev->mem_resource[1].phys_addr) & 0xfff;
 	
 	if (platform_dev) {
 		ret = vtplatform_init(platform_dev, hw, &dev_flags);
