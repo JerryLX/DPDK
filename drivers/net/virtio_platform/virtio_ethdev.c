@@ -36,6 +36,9 @@
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+#include <linux/fb.h>  
+#include <sys/mman.h>  
+#include <sys/ioctl.h>
 
 #include <rte_ethdev.h>
 #include <rte_memcpy.h>
