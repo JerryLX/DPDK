@@ -272,6 +272,7 @@ plf_uio_probe(struct platform_device *dev)
     udev->dev_class = class_create(THIS_MODULE, "virtio_cdev");
     if (IS_ERR(udev->dev_class)) {
         printk(KERN_ERR "virtio_cdev: unable to class_create\n");
+        err = PTR_ERR(udev->dev_class);
         goto fail_unregister_cdev;
     }
     aeclassdev = device_create(udev->dev_class, NULL, MKDEV(udev->cdev_major,
