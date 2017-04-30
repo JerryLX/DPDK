@@ -295,7 +295,7 @@ plf_uio_probe(struct platform_device *dev)
         printk(KERN_EMERG "host feature:%08x\n",feature);    
     }
     udev->info.mem[0].name = "resource";
-    udev->info.mem[0].addr = base;
+    udev->info.mem[0].addr = mem->start;
     udev->info.mem[0].internal_addr = platform_base;
     udev->info.mem[0].size = resource_size(mem);
     udev->info.mem[0].memtype = UIO_MEM_PHYS;
