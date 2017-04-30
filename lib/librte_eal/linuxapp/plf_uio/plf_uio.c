@@ -278,7 +278,7 @@ plf_uio_probe(struct platform_device *dev)
                                 0), NULL,priv->name);
     if (IS_ERR(aeclassdev)) {
         printk(KERN_ERR "virtio_cdev: unable to device_create\n");
-        err = PTR_ERR(aeclassdev)
+        err = PTR_ERR(aeclassdev);
         goto fail_destory_class;
     }
     /* remap IO memory */
