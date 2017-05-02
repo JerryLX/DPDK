@@ -105,7 +105,6 @@ struct virtnet_ctl;
 #define VIRTIO_MMIO_CONFIG              0x100
 
 
-
 /*
  * Interrupt flags (re: interrupt status & acknowledge registers)
  */

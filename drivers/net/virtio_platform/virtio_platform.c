@@ -48,6 +48,8 @@
 #define PCI_CAPABILITY_LIST	0x34
 #define PCI_CAP_ID_VNDR		0x09
 
+#define VIRTIO_MMIO_VRING_ALIGN         PAGE_SIZE
+
 static inline int
 check_vq_phys_addr_ok(struct virtqueue *vq)
 {
@@ -221,7 +223,7 @@ vm_get_queue_num(struct virtio_hw *hw, uint16_t queue_id)
 static int
 vm_setup_queue(struct virtio_hw *hw, struct virtqueue *vq)
 {
-	uint32_t src;
+	uint32_t src, num;
 	if (!check_vq_phys_addr_ok(vq))
 		return -1;
 	io_write32(vq->vq_queue_index, hw->base + VIRTIO_MMIO_QUEUE_SEL);
@@ -229,7 +231,10 @@ vm_setup_queue(struct virtio_hw *hw, struct virtqueue *vq)
 		PMD_DRV_LOG(ERR, "Queue is already be set up!");
 		return -1;
 	}
-
+	num = io_read32(hw->base + VIRTIO_MMIO_QUEUE_NUM_MAX);
+	io_write32(num, hw->base + VIRTIO_MMIO_QUEUE_NUM);
+	io_write32(VIRTIO_MMIO_VRING_ALIGN,
+                        vm_dev->base + VIRTIO_MMIO_QUEUE_ALIGN);
 	src = vq->vq_ring_mem >> PAGE_SHIFT;
 	io_write32(src, hw->base + VIRTIO_MMIO_QUEUE_PFN);
 	return 0;
