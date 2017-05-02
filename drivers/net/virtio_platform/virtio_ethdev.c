@@ -1124,7 +1124,7 @@ rx_func_get(struct rte_eth_dev *eth_dev)
 }
 
 /*
- * This function is based on probe() function in virtio_platform.c
+ * This function is based on probe() function in virtio_mmio.c
  * It returns 0 on success.
  */
 int

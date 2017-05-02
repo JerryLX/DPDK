@@ -473,6 +473,7 @@ vtplatform_init(struct rte_platform_device *dev, struct virtio_hw *hw,
 {
 	hw->dev = dev;
 	hw->vtplatform_ops = &vm_ops;
+	io_write32(PAGE_SIZE, hw->base + VIRTIO_MMIO_GUEST_PAGE_SIZE);
 	(void)dev_flags;
 	(void)vm_virtio_resource_init;
 	// if (vm_virtio_resource_init(dev, hw, dev_flags) < 0) {
