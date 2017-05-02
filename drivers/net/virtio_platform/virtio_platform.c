@@ -40,6 +40,9 @@
 #include "virtio_logs.h"
 #include "virtqueue.h"
 
+#ifndef PAGE_SIZE
+#define PAGE_SIZE 4096
+#endif
 /*
  * Following macros are derived from linux/platform_regs.h, however,
  * we can't simply include that header here, as there is no such
@@ -48,7 +51,6 @@
 #define PCI_CAPABILITY_LIST	0x34
 #define PCI_CAP_ID_VNDR		0x09
 
-#define VIRTIO_MMIO_VRING_ALIGN         PAGE_SIZE
 
 static inline int
 check_vq_phys_addr_ok(struct virtqueue *vq)
@@ -233,8 +235,7 @@ vm_setup_queue(struct virtio_hw *hw, struct virtqueue *vq)
 	}
 	num = io_read32(hw->base + VIRTIO_MMIO_QUEUE_NUM_MAX);
 	io_write32(num, hw->base + VIRTIO_MMIO_QUEUE_NUM);
-	io_write32(VIRTIO_MMIO_VRING_ALIGN,
-                        vm_dev->base + VIRTIO_MMIO_QUEUE_ALIGN);
+	io_write32(PAGE_SIZE, vm_dev->base + VIRTIO_MMIO_QUEUE_ALIGN);
 	src = vq->vq_ring_mem >> PAGE_SHIFT;
 	io_write32(src, hw->base + VIRTIO_MMIO_QUEUE_PFN);
 	return 0;
