@@ -40,9 +40,9 @@
 #include "virtio_logs.h"
 #include "virtqueue.h"
 
-#ifndef PAGE_SIZE
+#undef PAGE_SIZE
 #define PAGE_SIZE 4096
-#endif
+
 /*
  * Following macros are derived from linux/platform_regs.h, however,
  * we can't simply include that header here, as there is no such
