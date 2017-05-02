@@ -235,7 +235,7 @@ vm_setup_queue(struct virtio_hw *hw, struct virtqueue *vq)
 	}
 	num = io_read32(hw->base + VIRTIO_MMIO_QUEUE_NUM_MAX);
 	io_write32(num, hw->base + VIRTIO_MMIO_QUEUE_NUM);
-	io_write32(PAGE_SIZE, vm_dev->base + VIRTIO_MMIO_QUEUE_ALIGN);
+	io_write32(PAGE_SIZE, hw->base + VIRTIO_MMIO_QUEUE_ALIGN);
 	src = vq->vq_ring_mem >> PAGE_SHIFT;
 	io_write32(src, hw->base + VIRTIO_MMIO_QUEUE_PFN);
 	return 0;
