@@ -542,8 +542,10 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
 
     rxq = rte_zmalloc("ethdev RX queue", sizeof(struct hns_rx_queue),
             RTE_CACHE_LINE_SIZE);
-    if(rxq == NULL)
+    if(rxq == NULL){
+        printf("no space for rx_queue\n");
         return -ENOMEM;
+    }
     rxq->mb_pool = mp;
     rxq->nb_rx_desc = hns->desc_num_per_rxq;
     rxq->queue_id = idx;
@@ -560,6 +562,7 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
             sizeof(struct hns_rx_entry) * rxq->nb_rx_desc,
             RTE_CACHE_LINE_SIZE);
     if(rxq->sw_ring == NULL){
+        printf("no space for sw_ring\n");
         eth_hns_rx_queue_release(rxq);
         return -ENOMEM;
     }
@@ -1118,7 +1121,8 @@ eth_hns_dev_init (struct rte_eth_dev *dev){
         return -EINVAL;
     }
 	ether_addr_copy((struct ether_addr *)args.data, &dev->data->mac_addrs[0]);
-
+    dev->data->nb_rx_queues = 16;
+    dev->data->nb_tx_queues = 16;
     return 0;
 }
 
