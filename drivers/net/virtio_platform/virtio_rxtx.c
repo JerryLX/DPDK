@@ -519,6 +519,7 @@ virtio_dev_tx_queue_setup(struct rte_eth_dev *dev,
 
 #ifdef RTE_MACHINE_CPUFLAG_SSSE3
 	/* Use simple rx/tx func if single segment and no offloads */
+	printf("use simple tx\n");
 	if ((tx_conf->txq_flags & VIRTIO_SIMPLE_FLAGS) == VIRTIO_SIMPLE_FLAGS &&
 	     !vtplatform_with_feature(hw, VIRTIO_NET_F_MRG_RXBUF)) {
 		PMD_INIT_LOG(INFO, "Using simple rx/tx path");
@@ -919,6 +920,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 		if (unlikely(txm->ol_flags & PKT_TX_VLAN_PKT)) {
 			error = rte_vlan_insert(&txm);
 			if (unlikely(error)) {
+				printf("error\n");
 				rte_pktmbuf_free(txm);
 				continue;
 			}
@@ -956,6 +958,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 			if (unlikely(need > 0)) {
 				PMD_TX_LOG(ERR,
 					   "No free tx descriptors to transmit");
+				printf("No free tx descriptors to transmit\n");
 				break;
 			}
 		}
