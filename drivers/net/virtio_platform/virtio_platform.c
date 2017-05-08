@@ -210,8 +210,8 @@ vm_get_isr(struct virtio_hw *hw)
 static uint16_t
 vm_set_config_irq(struct virtio_hw *hw, uint16_t vec)
 {
-	(void) hw;
-	(void) vec;
+	(void)hw;
+	(void)vec;	
 	return 0;
 }
 
@@ -229,10 +229,10 @@ vm_setup_queue(struct virtio_hw *hw, struct virtqueue *vq)
 	if (!check_vq_phys_addr_ok(vq))
 		return -1;
 	io_write32(vq->vq_queue_index, hw->base + VIRTIO_MMIO_QUEUE_SEL);
-	if (io_read32(hw->base + VIRTIO_MMIO_QUEUE_PFN)) {
-		PMD_DRV_LOG(ERR, "Queue is already be set up!");
-		return -1;
-	}
+//	if (io_read32(hw->base + VIRTIO_MMIO_QUEUE_PFN)) {
+//		PMD_DRV_LOG(ERR, "Queue is already be set up!");
+//		return -1;
+//	}
 	num = io_read32(hw->base + VIRTIO_MMIO_QUEUE_NUM_MAX);
 	io_write32(num, hw->base + VIRTIO_MMIO_QUEUE_NUM);
 	io_write32(PAGE_SIZE, hw->base + VIRTIO_MMIO_QUEUE_ALIGN);

@@ -328,6 +328,7 @@ int virtio_dev_queue_setup(struct rte_eth_dev *dev,
 	 * Always power of 2 and if 0 virtqueue does not exist
 	 */
 	vq_size = hw->vtplatform_ops->get_queue_num(hw, vtplatform_queue_idx);
+	printf("vq_size: %u nb_desc:%u\n",vq_size,nb_desc);
 	PMD_INIT_LOG(DEBUG, "vq_size: %u nb_desc:%u", vq_size, nb_desc);
 	if (vq_size == 0) {
 		PMD_INIT_LOG(ERR, "virtqueue does not exist");
@@ -346,9 +347,11 @@ int virtio_dev_queue_setup(struct rte_eth_dev *dev,
 				vq_size * sizeof(struct vq_desc_extra),
 				RTE_CACHE_LINE_SIZE);
 	if (queue_type == VTNET_RQ) {
-		sz_q = sz_vq + sizeof(*rxvq);
+	printf("in rx");	
+	sz_q = sz_vq + sizeof(*rxvq);
 	} else if (queue_type == VTNET_TQ) {
-		sz_q = sz_vq + sizeof(*txvq);
+	printf("in tx");		
+sz_q = sz_vq + sizeof(*txvq);
 		/*
 		 * For each xmit packet, allocate a virtio_net_hdr
 		 * and indirect ring elements
@@ -371,8 +374,10 @@ int virtio_dev_queue_setup(struct rte_eth_dev *dev,
 
 	if (nb_desc == 0 || nb_desc > vq_size)
 		nb_desc = vq_size;
+		
 	vq->vq_free_cnt = nb_desc;
 
+	printf("  in queue_setup()---vq_nentries=%d,vq_free_cnt=%d",vq->vq_nentries,vq->vq_free_cnt);
 	/*
 	 * Reserve a memzone for vring elements
 	 */
@@ -380,7 +385,7 @@ int virtio_dev_queue_setup(struct rte_eth_dev *dev,
 	vq->vq_ring_size = RTE_ALIGN_CEIL(size, VIRTIO_PCI_VRING_ALIGN);
 	PMD_INIT_LOG(DEBUG, "vring_size: %d, rounded_vring_size: %d",
 		     size, vq->vq_ring_size);
-
+	printf("vring_size: %d, rounded_vring_size: %d\n",size, vq->vq_ring_size);
 	mz = rte_memzone_reserve_aligned(vq_name, vq->vq_ring_size, socket_id,
 					 0, VIRTIO_PCI_VRING_ALIGN);
 	if (mz == NULL) {

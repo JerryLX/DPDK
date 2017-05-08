@@ -44,7 +44,7 @@
 
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
-#define BURST_SIZE 32
+#define BURST_SIZE 16
 
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = { .max_rx_pkt_len = ETHER_MAX_LEN }
@@ -69,23 +69,29 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 
 	/* Configure the Ethernet device. */
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
-	if (retval != 0)
+	if (retval != 0){
+		printf("configure fail%d\n",retval);
 		return retval;
+	}
 
 	/* Allocate and set up 1 RX queue per Ethernet port. */
 	for (q = 0; q < rx_rings; q++) {
 		retval = rte_eth_rx_queue_setup(port, q, RX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL, mbuf_pool);
-		if (retval < 0)
+		if (retval < 0){
+			printf("rx%d fail,retval%d\n",q,retval);
 			return retval;
+		}
 	}
 
 	/* Allocate and set up 1 TX queue per Ethernet port. */
 	for (q = 0; q < tx_rings; q++) {
 		retval = rte_eth_tx_queue_setup(port, q, TX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL);
-		if (retval < 0)
+		if (retval < 0){
+			printf("tx%d fail\n",q);
 			return retval;
+		}
 	}
 
 	/* Start the Ethernet port. */
@@ -118,7 +124,6 @@ lcore_main(void)
 {
 	const uint8_t nb_ports = rte_eth_dev_count();
 	uint8_t port;
-
 	/*
 	 * Check that the port is on the same NUMA node as the polling thread
 	 * for best performance.
@@ -140,8 +145,7 @@ lcore_main(void)
 		 * Receive packets on a port and forward them on the paired
 		 * port. The mapping is 0 -> 1, 1 -> 0, 2 -> 3, 3 -> 2, etc.
 		 */
-		for (port = 0; port < nb_ports; port++) {
-
+		for (port = 1; port < nb_ports; port++) {
 			/* Get burst of RX packets, from first port of pair. */
 			struct rte_mbuf *bufs[BURST_SIZE];
 			const uint16_t nb_rx = rte_eth_rx_burst(port, 0,
@@ -154,12 +158,14 @@ lcore_main(void)
 			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
 					bufs, nb_rx);
 
+		(void)nb_tx;
 			/* Free any unsent packets. */
-			if (unlikely(nb_tx < nb_rx)) {
-				uint16_t buf;
-				for (buf = nb_tx; buf < nb_rx; buf++)
-					rte_pktmbuf_free(bufs[buf]);
-			}
+		//	if (unlikely(nb_tx < nb_rx)) {
+				//printf("drop: %d\n",nb_rx-nb_tx);
+		//		uint16_t buf;
+		//		for (buf = nb_tx; buf < nb_rx; buf++)
+		//			rte_pktmbuf_free(bufs[buf]);
+		//	}
 		}
 	}
 }

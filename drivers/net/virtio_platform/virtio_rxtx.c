@@ -302,7 +302,7 @@ virtio_dev_vring_start(struct virtqueue *vq)
 	vq->vq_desc_tail_idx = (uint16_t)(vq->vq_nentries - 1);
 	vq->vq_free_cnt = vq->vq_nentries;
 	memset(vq->vq_descx, 0, sizeof(struct vq_desc_extra) * vq->vq_nentries);
-
+	printf("vq_free_cnt=%d in vring_start()\n",vq->vq_free_cnt);
 	vring_desc_init(vr->desc, size);
 
 	/*
@@ -958,7 +958,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 			if (unlikely(need > 0)) {
 				PMD_TX_LOG(ERR,
 					   "No free tx descriptors to transmit");
-				printf("No free tx descriptors to transmit\n");
+			//	printf("nb_tx=%d,nb_pkts=%d\n",nb_tx,nb_pkts);
 				break;
 			}
 		}
@@ -975,11 +975,14 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 	if (likely(nb_tx)) {
 		vq_update_avail_idx(vq);
 
-		if (unlikely(virtqueue_kick_prepare(vq))) {
+		//if (unlikely(virtqueue_kick_prepare(vq))) {
 			virtqueue_notify(vq);
-			PMD_TX_LOG(DEBUG, "Notified backend after xmit");
-		}
+		//	PMD_TX_LOG(DEBUG, "Notified backend after xmit");
+		//}
 	}
-
+/*
+	if(nb_tx!=32)
+	printf("nb_tx=%d\n",nb_tx);
+*/
 	return nb_tx;
 }
