@@ -1,7 +1,7 @@
 dep_tb_mem.o = /root/lixu/lib/librte_acl/tb_mem.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
  /root/lixu/lib/librte_acl/tb_mem.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_acl_osdep.h \
+ /root/lixu/lib/librte_acl/rte_acl_osdep.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \

@@ -497,6 +497,7 @@ kni_ioctl_create(struct net *net,
 					dev_info.vendor_id,
 					dev_info.device_id);
 
+    if(!dev_info.is_platform_dev){
 	pci = pci_get_device(dev_info.vendor_id, dev_info.device_id, NULL);
 
 	/* Support Ethtool */
@@ -553,7 +554,16 @@ kni_ioctl_create(struct net *net,
 		 * version of generating mac address in linux kernel.
 		 */
 		random_ether_addr(net_dev->dev_addr);
-
+    }
+    else{
+        printk("KNI MISC: here comes a platform device!\n");
+        kni->lad_dev = NULL;
+        memcpy(net_dev->dev_addr, dev_info.addr_bytes, ETH_ALEN);
+        printk(KERN_ERR "MAC: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx",
+                net_dev->dev_addr[0],net_dev->dev_addr[1],
+                net_dev->dev_addr[2],net_dev->dev_addr[3],
+                net_dev->dev_addr[4],net_dev->dev_addr[5]);
+    }
 	ret = register_netdev(net_dev);
 	if (ret) {
 		KNI_ERR("error %i registering device \"%s\"\n",
@@ -586,7 +596,6 @@ kni_ioctl_create(struct net *net,
 	down_write(&knet->kni_list_lock);
 	list_add(&kni->list, &knet->kni_list_head);
 	up_write(&knet->kni_list_lock);
-
 	return 0;
 }
 

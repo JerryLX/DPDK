@@ -71,12 +71,12 @@ dep_eal_common_platform_uio.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h

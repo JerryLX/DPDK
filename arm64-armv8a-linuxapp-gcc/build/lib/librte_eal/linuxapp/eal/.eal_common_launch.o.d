@@ -23,7 +23,7 @@ dep_eal_common_launch.o = /root/lixu/lib/librte_eal/common/eal_common_launch.c \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/stdlib.h /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \

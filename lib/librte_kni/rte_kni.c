@@ -427,7 +427,12 @@ rte_kni_alloc(struct rte_mempool *pktmbuf_pool,
 
 	dev_info.mbuf_va = STAILQ_FIRST(&mp->mem_list)->addr;
 	dev_info.mbuf_phys = STAILQ_FIRST(&mp->mem_list)->phys_addr;
-	ctx->pktmbuf_pool = pktmbuf_pool;
+    dev_info.is_platform_dev = conf->is_platform_dev;	
+    if(conf->is_platform_dev){
+        rte_eth_macaddr_get(ops->port_id, (struct ether_addr *)(dev_info.addr_bytes)); 
+    }
+    
+    ctx->pktmbuf_pool = pktmbuf_pool;
 	ctx->group_id = conf->group_id;
 	ctx->slot_id = slot->id;
 	ctx->mbuf_size = conf->mbuf_size;

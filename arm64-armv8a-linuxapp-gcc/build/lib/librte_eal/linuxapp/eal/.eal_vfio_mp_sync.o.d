@@ -71,7 +71,7 @@ dep_eal_vfio_mp_sync.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal_memconfig.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_tailq.h \
@@ -79,7 +79,7 @@ dep_eal_vfio_mp_sync.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc_heap.h \

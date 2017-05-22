@@ -67,7 +67,7 @@ dep_cmdline.o = /root/lixu/lib/librte_cmdline/cmdline.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_rdline.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_cirbuf.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_vt100.h \
+ /root/lixu/lib/librte_cmdline/cmdline_cirbuf.h \
+ /root/lixu/lib/librte_cmdline/cmdline_vt100.h \
  /root/lixu/lib/librte_cmdline/cmdline.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_rdline.h
+ /root/lixu/lib/librte_cmdline/cmdline_rdline.h

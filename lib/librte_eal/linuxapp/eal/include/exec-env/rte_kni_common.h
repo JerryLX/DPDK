@@ -62,13 +62,13 @@
 #ifdef __KERNEL__
 #include <linux/if.h>
 #endif
-
 /**
  * KNI name is part of memzone name.
  */
 #define RTE_KNI_NAMESIZE 32
 
 #define RTE_CACHE_LINE_MIN_SIZE 64
+
 
 /*
  * Request id.
@@ -163,6 +163,9 @@ struct rte_kni_device_info {
 
 	/* mbuf size */
 	unsigned mbuf_size;
+
+	uint8_t addr_bytes[6]; /**< Address bytes in transmission order */
+    uint8_t is_platform_dev;
 };
 
 #define KNI_DEVICE "kni"

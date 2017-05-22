@@ -958,6 +958,57 @@ deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/kni/kni_
     $(wildcard include/config/pending.h) \
   /root/open-estuary/kernel/include/uapi/linux/if_bonding.h \
   /root/lixu/lib/librte_eal/linuxapp/kni/kni_dev.h \
+  /root/open-estuary/kernel/include/net/sock.h \
+    $(wildcard include/config/net.h) \
+    $(wildcard include/config/inet.h) \
+  /root/open-estuary/kernel/include/linux/uaccess.h \
+  /root/open-estuary/kernel/include/linux/page_counter.h \
+  /root/open-estuary/kernel/include/linux/memcontrol.h \
+    $(wildcard include/config/memcg/swap.h) \
+  /root/open-estuary/kernel/include/linux/vmpressure.h \
+  /root/open-estuary/kernel/include/linux/eventfd.h \
+    $(wildcard include/config/eventfd.h) \
+  /root/open-estuary/kernel/include/linux/writeback.h \
+  /root/open-estuary/kernel/include/linux/flex_proportions.h \
+  /root/open-estuary/kernel/include/linux/backing-dev-defs.h \
+    $(wildcard include/config/debug/fs.h) \
+  /root/open-estuary/kernel/include/linux/bio.h \
+  /root/open-estuary/kernel/include/linux/highmem.h \
+    $(wildcard include/config/x86/32.h) \
+    $(wildcard include/config/debug/highmem.h) \
+  /root/open-estuary/kernel/arch/arm64/include/asm/cacheflush.h \
+    $(wildcard include/config/debug/rodata.h) \
+  arch/arm64/include/generated/asm/kmap_types.h \
+  /root/open-estuary/kernel/include/asm-generic/kmap_types.h \
+  /root/open-estuary/kernel/include/linux/mempool.h \
+  /root/open-estuary/kernel/include/linux/ioprio.h \
+  /root/open-estuary/kernel/include/linux/iocontext.h \
+  /root/open-estuary/kernel/include/linux/filter.h \
+    $(wildcard include/config/bpf/jit.h) \
+  /root/open-estuary/kernel/include/net/sch_generic.h \
+  /root/open-estuary/kernel/include/uapi/linux/pkt_sched.h \
+  /root/open-estuary/kernel/include/uapi/linux/pkt_cls.h \
+    $(wildcard include/config/net/cls/ind.h) \
+  /root/open-estuary/kernel/include/net/gen_stats.h \
+  /root/open-estuary/kernel/include/uapi/linux/gen_stats.h \
+  /root/open-estuary/kernel/include/linux/rtnetlink.h \
+    $(wildcard include/config/net/ingress.h) \
+  /root/open-estuary/kernel/include/uapi/linux/rtnetlink.h \
+  /root/open-estuary/kernel/include/uapi/linux/if_addr.h \
+  /root/open-estuary/kernel/include/net/rtnetlink.h \
+  /root/open-estuary/kernel/include/net/netlink.h \
+  /root/open-estuary/kernel/include/uapi/linux/filter.h \
+  /root/open-estuary/kernel/include/uapi/linux/bpf_common.h \
+  /root/open-estuary/kernel/include/uapi/linux/bpf.h \
+  /root/open-estuary/kernel/include/linux/rculist_nulls.h \
+  /root/open-estuary/kernel/include/linux/poll.h \
+  /root/open-estuary/kernel/include/uapi/linux/poll.h \
+  arch/arm64/include/generated/asm/poll.h \
+  /root/open-estuary/kernel/include/uapi/asm-generic/poll.h \
+  /root/open-estuary/kernel/include/net/dst.h \
+  /root/open-estuary/kernel/include/net/neighbour.h \
+  /root/open-estuary/kernel/include/net/tcp_states.h \
+  /root/open-estuary/kernel/include/uapi/linux/net_tstamp.h \
   /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_kni_common.h \
 
 /root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/kni/kni_ethtool.o: $(deps_/root/lixu/arm64-armv8a-linuxapp-gcc/build/lib/librte_eal/linuxapp/kni/kni_ethtool.o)

@@ -345,12 +345,13 @@ kni_chk_vhost_rx(struct kni_dev *kni)
 		KNI_DBG_RX("RX CHK KICK nb_mbuf %d, nb_skb %d, nb_in %d\n",
 			   nb_mbuf, nb_skb, nb_in);
 	}
-
+    printk("vhost rx\n");
 	return 0;
 
 except:
 	/* Failing should not happen */
-	KNI_ERR("Fail to enqueue fifo, it shouldn't happen \n");
+	printk("Fail to enqueue fifo\n");
+    KNI_ERR("Fail to enqueue fifo, it shouldn't happen \n");
 	BUG_ON(1);
 
 	return 0;
@@ -845,10 +846,13 @@ int
 kni_vhost_init(struct kni_dev *kni)
 {
 	struct net_device *dev = kni->net_dev;
+    uint32_t err;
+    err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
 
-	if (sysfs_create_group(&dev->dev.kobj, &dev_attr_grp))
-		sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
-
+	if (err){
+		printk("kni_vhost_init error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%d\n",err);
+        sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
+    }
 	kni->vq_status = BE_STOP;
 
 	KNI_DBG("kni_vhost_init done\n");
