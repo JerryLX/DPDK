@@ -553,7 +553,6 @@ unsigned
 rte_kni_tx_burst(struct rte_kni *kni, struct rte_mbuf **mbufs, unsigned num)
 {
 	unsigned ret = kni_fifo_put(kni->rx_q, (void **)mbufs, num);
-
 	/* Get mbufs from free_q and then free them */
 	kni_free_mbufs(kni);
 

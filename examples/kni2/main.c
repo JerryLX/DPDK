@@ -84,7 +84,7 @@
 #define MBUF_DATA_SZ (MAX_PACKET_SZ + RTE_PKTMBUF_HEADROOM)
 
 /* Number of mbufs in mempool that is created */
-#define NB_MBUF                 (8192 * 16)
+#define NB_MBUF                 (8192 * 18)
 
 /* How many packets to attempt to read from NIC in one go */
 #define PKT_BURST_SZ            32
@@ -258,11 +258,12 @@ kni_ingress(struct kni_port_params *p)
 			    RTE_LOG(ERR, APP, "Error receiving from eth\n");
 			    return;
 		    }
+            if(!nb_rx)continue;
             //if(nb_rx)printf("nb_rx:%d\n",nb_rx);
 		    /* Burst tx to kni */
 		    num = rte_kni_tx_burst(p->kni[i], pkts_burst, nb_rx);
 		    kni_stats[port_id].rx_packets += num;
-            if(num)printf("send to kni:%d\n",num);
+            //if(num)printf("send to kni:%d\n",num);
 		    rte_kni_handle_request(p->kni[i]);
 		    if (unlikely(num < nb_rx)) {
 			    /* Free mbufs not tx to kni interface */

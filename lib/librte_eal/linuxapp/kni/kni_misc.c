@@ -299,13 +299,13 @@ kni_thread_single(void *data)
 	struct kni_net *knet = data;
 	int j;
 	struct kni_dev *dev;
-
+	printk("single!!!!!!!!!!!!\n");
 	while (!kthread_should_stop()) {
-		down_read(&knet->kni_list_lock);
+        down_read(&knet->kni_list_lock);
 		for (j = 0; j < KNI_RX_LOOP_NUM; j++) {
 			list_for_each_entry(dev, &knet->kni_list_head, list) {
 #ifdef RTE_KNI_VHOST
-				kni_chk_vhost_rx(dev);
+                kni_chk_vhost_rx(dev);
 #else
 				kni_net_rx(dev);
 #endif

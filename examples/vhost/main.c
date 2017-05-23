@@ -331,7 +331,8 @@ port_init(uint8_t port)
 		rte_vhost_feature_disable(1ULL << VIRTIO_NET_F_GUEST_TSO6);
 	}
 
-	rx_rings = (uint16_t)dev_info.max_rx_queues;
+	//rx_rings = (uint16_t)dev_info.max_rx_queues;
+	rx_rings = 16;
 	/* Configure ethernet device. */
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0) {
@@ -730,7 +731,7 @@ link_vmdq(struct vhost_dev *vdev, struct rte_mbuf *m)
 
 	/* Learn MAC address of guest device from packet */
 	pkt_hdr = rte_pktmbuf_mtod(m, struct ether_hdr *);
-
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	if (find_vhost_dev(&pkt_hdr->s_addr)) {
 		RTE_LOG(ERR, VHOST_DATA,
 			"(%d) device is using a registered MAC!\n",
@@ -1060,12 +1061,17 @@ drain_eth_rx(struct vhost_dev *vdev)
 {
 	uint16_t rx_count, enqueue_count;
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
+    uint16_t qid;
 
-	rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
+    for(qid=0;qid<16;qid++){
+	rx_count = rte_eth_rx_burst(ports[0], qid,
 				    pkts, MAX_PKT_BURST);
+	//rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
+	//			    pkts, MAX_PKT_BURST);
+
 	if (!rx_count)
 		return;
-
+    printf("rx_count: %d\n",rx_count);
 	/*
 	 * When "enable_retry" is set, here we wait and retry when there
 	 * is no enough free slots in the queue to hold @rx_count packets,
@@ -1092,8 +1098,9 @@ drain_eth_rx(struct vhost_dev *vdev)
 	}
 
 	free_pkts(pkts, rx_count);
-}
 
+    }
+}
 static inline void __attribute__((always_inline))
 drain_virtio_tx(struct vhost_dev *vdev)
 {
@@ -1470,7 +1477,8 @@ main(int argc, char *argv[])
 		vmdq_conf_default.rx_adv_conf.vmdq_rx_conf.enable_loop_back = 1;
 		RTE_LOG(DEBUG, VHOST_CONFIG,
 			"Enable loop back for L2 switch in vmdq.\n");
-	}
+	    printf("should not get here: vm2vm\n");
+    }
 
 	/* initialize all ports */
 	for (portid = 0; portid < nb_ports; portid++) {
@@ -1514,7 +1522,6 @@ main(int argc, char *argv[])
 	ret = rte_vhost_driver_register(dev_basename, flags);
 	if (ret != 0)
 		rte_exit(EXIT_FAILURE, "vhost driver register failure.\n");
-
 	rte_vhost_driver_callback_register(&virtio_net_device_ops);
 
 	/* Start CUSE session. */
