@@ -25,7 +25,7 @@ dep_rte_malloc.o = /root/lixu/lib/librte_eal/common/rte_malloc.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \

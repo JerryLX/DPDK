@@ -63,7 +63,8 @@ dep_rte_mempool_ring.o = /root/lixu/lib/librte_mempool/rte_mempool_ring.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/lixu/lib/librte_mempool/rte_mempool.h /usr/include/inttypes.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
+ /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_spinlock.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \

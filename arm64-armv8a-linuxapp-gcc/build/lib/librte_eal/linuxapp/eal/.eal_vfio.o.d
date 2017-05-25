@@ -64,7 +64,7 @@ dep_eal_vfio.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_vfio.c \
  /usr/include/aarch64-linux-gnu/bits/stdio.h \
  /usr/include/aarch64-linux-gnu/bits/stdio2.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal_memconfig.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_tailq.h \
@@ -105,6 +105,6 @@ dep_eal_vfio.o = /root/lixu/lib/librte_eal/linuxapp/eal/eal_vfio.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h

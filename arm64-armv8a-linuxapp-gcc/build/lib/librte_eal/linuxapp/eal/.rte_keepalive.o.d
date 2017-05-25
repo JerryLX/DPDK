@@ -65,5 +65,5 @@ dep_rte_keepalive.o = /root/lixu/lib/librte_eal/common/rte_keepalive.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_keepalive.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h

@@ -336,6 +336,7 @@ eth_hns_dev_infos_get(struct rte_eth_dev *dev, struct rte_eth_dev_info *info)
     info->rx_desc_lim.nb_max = hns->desc_num_per_txq;
 //    info->nb_rx_queues = hns->q_num;
 //    info->nb_tx_queues = hns->q_num;
+    info->vmdq_queue_num = 1;
 }
 
 static int

@@ -74,7 +74,7 @@ dep_eal_common_options.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \

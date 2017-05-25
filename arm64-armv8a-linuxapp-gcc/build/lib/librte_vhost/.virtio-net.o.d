@@ -126,7 +126,7 @@ dep_virtio-net.o = /root/lixu/lib/librte_vhost/virtio-net.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_dev_info.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_string_fns.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
- /root/lixu/lib/librte_vhost/rte_virtio_net.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_virtio_net.h \
  /usr/include/aarch64-linux-gnu/sys/eventfd.h \
  /usr/include/aarch64-linux-gnu/bits/eventfd.h /usr/include/linux/if.h \
  /usr/include/linux/socket.h /usr/include/linux/hdlc/ioctl.h \

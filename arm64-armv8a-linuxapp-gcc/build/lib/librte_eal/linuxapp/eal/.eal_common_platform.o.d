@@ -50,7 +50,7 @@ dep_eal_common_platform.o = \
  /usr/include/aarch64-linux-gnu/bits/stat.h \
  /usr/include/aarch64-linux-gnu/bits/fcntl2.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/ctype.h /usr/include/errno.h \
@@ -67,7 +67,7 @@ dep_eal_common_platform.o = \
  /usr/include/aarch64-linux-gnu/bits/sched.h \
  /usr/include/aarch64-linux-gnu/bits/setjmp.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \

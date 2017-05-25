@@ -1270,7 +1270,7 @@ new_device(int vid)
 	vdev->vmdq_rx_q = vid * queues_per_pool + vmdq_queue_base;
 
 	/*reset ready flag*/
-	vdev->ready = DEVICE_MAC_LEARNING;
+	vdev->ready = 1;
 	//vdev->ready = DEVICE_MAC_LEARNING;
 	vdev->remove = 0;
 

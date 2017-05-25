@@ -89,5 +89,5 @@ dep_rte_cuckoo_hash.o = /root/lixu/lib/librte_hash/rte_cuckoo_hash.c \
  /root/lixu/lib/librte_hash/rte_hash.h \
  /root/lixu/lib/librte_hash/rte_cuckoo_hash.h \
  /root/lixu/lib/librte_hash/rte_cmp_arm64.h \
- /root/lixu/lib/librte_hash/rte_hash_crc.h \
- /root/lixu/lib/librte_hash/rte_crc_arm64.h
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_hash_crc.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_crc_arm64.h
