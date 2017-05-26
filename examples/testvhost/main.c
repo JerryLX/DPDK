@@ -938,7 +938,7 @@ do_drain_mbuf_table(struct mbuf_table *tx_q)
 {
 	uint16_t count;
 
-	count = rte_eth_tx_burst(ports[0], tx_q->txq_id,
+	count = rte_eth_tx_burst(tx_q->txq_id, tx_q->txq_id,
 				 tx_q->m_table, tx_q->len);
 	if (unlikely(count < tx_q->len))
 		free_pkts(&tx_q->m_table[count], tx_q->len - count);
@@ -960,29 +960,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 
 
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
-	if (unlikely(is_broadcast_ether_addr(&nh->d_addr))) {
-		struct vhost_dev *vdev2;
-
-		TAILQ_FOREACH(vdev2, &vhost_dev_list, global_vdev_entry) {
-			virtio_xmit(vdev2, vdev, m);
-		}
-		goto queue2nic;
-	}
-
-	/*check if destination is local VM*/
-	if ((vm2vm_mode == VM2VM_SOFTWARE) && (virtio_tx_local(vdev, m) == 0)) {
-		rte_pktmbuf_free(m);
-		return;
-	}
-
-	if (unlikely(vm2vm_mode == VM2VM_HARDWARE)) {
-		if (unlikely(find_local_dest(vdev, m, &offset,
-					     &vlan_tag) != 0)) {
-			rte_pktmbuf_free(m);
-			return;
-		}
-	}
-
+	
 	RTE_LOG(DEBUG, VHOST_DATA,
 		"(%d) TX: MAC address is external\n", vdev->vid);
 
@@ -1120,8 +1098,10 @@ drain_virtio_tx(struct vhost_dev *vdev)
 			free_pkts(pkts, count);
 	}
 
-	for (i = 0; i < count; ++i)
-		virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
+	//for (i = 0; i < count; ++i)
+	//	virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
+	rx_count = rte_eth_tx_burst(ports[vdev->vid], qid,
+				    pkts, MAX_PKT_BURST);
 }
 
 /*
