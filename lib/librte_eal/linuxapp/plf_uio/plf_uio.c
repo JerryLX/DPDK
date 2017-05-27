@@ -14,6 +14,7 @@
 #include <linux/mm.h>  
 #include <linux/fs.h>
 #include <linux/cdev.h>  
+#include <linux/interrupt.h>
 #include "compat.h"
 
 void *platform_base;
@@ -249,6 +250,14 @@ static struct file_operations mmapdrv_fops =
     .open = mmapdrv_open, 
 };
 
+static irqreturn_t vm_interrupt(int irq, void *opaque)
+{
+    (void)irq;
+    (void)opaque;
+printk("interrupt\n");    
+return IRQ_HANDLED;
+}
+
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 static int __devinit
@@ -266,8 +275,8 @@ plf_uio_probe(struct platform_device *dev)
     struct resource *mem;
     struct device *aeclassdev;
     char devname[60];
+    unsigned int irq;
     // void *base;
-
     printk(KERN_EMERG "hello world!\n");    
     snprintf(devname, 60, "virtio_cdev%d",index);
 
@@ -276,6 +285,9 @@ plf_uio_probe(struct platform_device *dev)
     if(!udev)
         return -ENOMEM;
 
+    irq = platform_get_irq(dev, 0);
+    err = request_irq(irq, vm_interrupt, IRQF_SHARED, dev_name(&dev->dev), udev);
+    printk("err:%d\n",err);
      //register cdev
     if ((major = register_chrdev(0, devname, &mmapdrv_fops)) < 0)
     {

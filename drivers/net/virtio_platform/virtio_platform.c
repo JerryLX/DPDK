@@ -471,8 +471,11 @@ int
 vtplatform_init(struct rte_platform_device *dev, struct virtio_hw *hw,
 	   uint32_t *dev_flags)
 {
+	int version;
 	hw->dev = dev;
 	hw->vtplatform_ops = &vm_ops;
+	version = io_read32(hw->base + VIRTIO_MMIO_VERSION);
+	printf("version:%d!!!!!!!!!!!!!!!!!!!!!!!!!!\n",version);
 	io_write32(PAGE_SIZE, hw->base + VIRTIO_MMIO_GUEST_PAGE_SIZE);
 	(void)dev_flags;
 	(void)vm_virtio_resource_init;

@@ -343,7 +343,7 @@ virtio_user_handle_cq(struct virtio_user_dev *dev, uint16_t queue_idx)
 	struct vring_used_elem *uep;
 	uint32_t n_descs;
 	struct vring *vring = &dev->vrings[queue_idx];
-
+	printf("handle cq:%d\n",queue_idx);
 	/* Consume avail ring, using used ring idx as first one */
 	while (vring->used->idx != vring->avail->idx) {
 		avail_idx = (vring->used->idx) & (vring->num - 1);
