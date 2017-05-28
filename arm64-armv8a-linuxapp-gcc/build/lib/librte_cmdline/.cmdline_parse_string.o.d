@@ -31,4 +31,4 @@ dep_cmdline_parse_string.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_string_fns.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse.h \
  /root/lixu/lib/librte_cmdline/cmdline_parse_string.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_parse.h
+ /root/lixu/lib/librte_cmdline/cmdline_parse.h

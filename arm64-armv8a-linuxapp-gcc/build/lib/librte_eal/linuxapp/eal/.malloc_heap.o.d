@@ -38,7 +38,7 @@ dep_malloc_heap.o = /root/lixu/lib/librte_eal/common/malloc_heap.c \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/ctype.h /usr/include/xlocale.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \

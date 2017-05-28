@@ -1,4 +1,4 @@
-dep_main.o = /root/lixu/examples/vhost/main.c /usr/include/stdc-predef.h \
+dep_main.o = /root/lixu/examples/testvhost/main.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
  /usr/include/arpa/inet.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
@@ -152,4 +152,4 @@ dep_main.o = /root/lixu/examples/vhost/main.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ip.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_tcp.h \
- /root/lixu/examples/vhost/main.h
+ /root/lixu/examples/testvhost/main.h

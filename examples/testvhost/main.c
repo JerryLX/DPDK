@@ -65,7 +65,7 @@
 #define MBUF_CACHE_SIZE	128
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 32		/* Max burst size for RX/TX */
+#define MAX_PKT_BURST 128		/* Max burst size for RX/TX */
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */
@@ -98,7 +98,6 @@
 
 /* mask of enabled ports */
 static uint32_t enabled_port_mask = 0;
-
 /* Promiscuous mode */
 static uint32_t promiscuous;
 
@@ -111,7 +110,7 @@ static int mergeable;
 
 /* Do vlan strip on host, enabled on default */
 static uint32_t vlan_strip = 1;
-
+static uint32_t queue_index;
 /* Enable VM2VM communications. If this is disabled then the MAC address compare is skipped. */
 typedef enum {
 	VM2VM_DISABLED = 0,
@@ -203,7 +202,7 @@ static struct vhost_dev_tailq_list vhost_dev_list =
 	TAILQ_HEAD_INITIALIZER(vhost_dev_list);
 
 static struct lcore_info lcore_info[RTE_MAX_LCORE];
-
+int core_vdev_map[RTE_MAX_LCORE];
 /* Used for queueing bursts of TX packets. */
 struct mbuf_table {
 	unsigned len;
@@ -333,6 +332,7 @@ port_init(uint8_t port)
 	}
 
 	rx_rings = 16;
+	tx_rings = 16;
 	//rx_rings = (uint16_t)dev_info.max_rx_queues;
 	/* Configure ethernet device. */
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
@@ -783,8 +783,9 @@ static inline void
 unlink_vmdq(struct vhost_dev *vdev)
 {
 	unsigned i = 0;
-	unsigned rx_count;
-	struct rte_mbuf *pkts_burst[MAX_PKT_BURST];
+    //unsigned qid, pid;
+//	unsigned rx_count;
+//	struct rte_mbuf *pkts_burst[MAX_PKT_BURST];
 
 	if (vdev->ready == DEVICE_RX) {
 		/*clear MAC and VLAN settings*/
@@ -793,19 +794,21 @@ unlink_vmdq(struct vhost_dev *vdev)
 			vdev->mac_address.addr_bytes[i] = 0;
 
 		vdev->vlan_tag = 0;
-
-		/*Clear out the receive buffers*/
-		rx_count = rte_eth_rx_burst(ports[0],
-					(uint16_t)vdev->vmdq_rx_q, pkts_burst, MAX_PKT_BURST);
+/*
+        for(qid=0;qid<16;qid++){
+        for(pid=0;pid<2;pid++){
+		rx_count = rte_eth_rx_burst(ports[pid],
+					qid, pkts_burst, MAX_PKT_BURST);
 
 		while (rx_count) {
 			for (i = 0; i < rx_count; i++)
 				rte_pktmbuf_free(pkts_burst[i]);
 
-			rx_count = rte_eth_rx_burst(ports[0],
-					(uint16_t)vdev->vmdq_rx_q, pkts_burst, MAX_PKT_BURST);
+			rx_count = rte_eth_rx_burst(ports[pid],
+					qid, pkts_burst, MAX_PKT_BURST);
 		}
-
+        }
+        }*/
 		vdev->ready = DEVICE_MAC_LEARNING;
 	}
 }
@@ -934,16 +937,20 @@ free_pkts(struct rte_mbuf **pkts, uint16_t n)
 }
 
 static inline void __attribute__((always_inline))
-do_drain_mbuf_table(struct mbuf_table *tx_q)
+do_drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
 {
 	uint16_t count;
-
-	count = rte_eth_tx_burst(tx_q->txq_id, tx_q->txq_id,
+    int qid = queue_index % 16;
+    queue_index++;
+	if(vid != 0 && vid != 1)
+        printf("wrong vid!!!!!!!!\n");
+    count = rte_eth_tx_burst(vid, qid ,
 				 tx_q->m_table, tx_q->len);
 	if (unlikely(count < tx_q->len))
 		free_pkts(&tx_q->m_table[count], tx_q->len - count);
 
 	tx_q->len = 0;
+    //printf("tx drain:%d\n",count);
 }
 
 /*
@@ -960,7 +967,31 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 
 
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
-	
+	if (unlikely(is_broadcast_ether_addr(&nh->d_addr))) {
+		struct vhost_dev *vdev2;
+        printf("broadcast!\n");
+		TAILQ_FOREACH(vdev2, &vhost_dev_list, global_vdev_entry) {
+			virtio_xmit(vdev2, vdev, m);
+		}
+		goto queue2nic;
+	}
+
+	/*check if destination is local VM*/
+	if ((vm2vm_mode == VM2VM_SOFTWARE) && (virtio_tx_local(vdev, m) == 0)) {
+        printf("local!\n");
+		rte_pktmbuf_free(m);
+		return;
+	}
+
+	if (unlikely(vm2vm_mode == VM2VM_HARDWARE)) {
+		if (unlikely(find_local_dest(vdev, m, &offset,
+					     &vlan_tag) != 0)) {
+            printf("not found!\n");
+			rte_pktmbuf_free(m);
+			return;
+		}
+	}
+
 	RTE_LOG(DEBUG, VHOST_DATA,
 		"(%d) TX: MAC address is external\n", vdev->vid);
 
@@ -968,7 +999,6 @@ queue2nic:
 
 	/*Add packet to the port tx queue*/
 	tx_q = &lcore_tx_queue[lcore_id];
-
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
 	if (unlikely(nh->ether_type == rte_cpu_to_be_16(ETHER_TYPE_VLAN))) {
 		/* Guest has inserted the vlan tag. */
@@ -1010,14 +1040,14 @@ queue2nic:
 		vdev->stats.tx_total++;
 		vdev->stats.tx++;
 	}
-
-	if (unlikely(tx_q->len == MAX_PKT_BURST))
-		do_drain_mbuf_table(tx_q);
+    //printf("txq->len:%d,%d\n",tx_q->len,MAX_PKT_BURST);
+	if (unlikely(tx_q->len >= MAX_PKT_BURST))
+		do_drain_mbuf_table(tx_q,vdev->vid);
 }
 
 
 static inline void __attribute__((always_inline))
-drain_mbuf_table(struct mbuf_table *tx_q)
+drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
 {
 	static uint64_t prev_tsc;
 	uint64_t cur_tsc;
@@ -1032,7 +1062,7 @@ drain_mbuf_table(struct mbuf_table *tx_q)
 		RTE_LOG(DEBUG, VHOST_DATA,
 			"TX queue drained after timeout with burst size %u\n",
 			tx_q->len);
-		do_drain_mbuf_table(tx_q);
+		do_drain_mbuf_table(tx_q,vid);
 	}
 }
 
@@ -1045,7 +1075,7 @@ drain_eth_rx(struct vhost_dev *vdev)
     for(qid=0;qid<16;qid++){
     //rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
 	//			    pkts, MAX_PKT_BURST);
-    rx_count = rte_eth_rx_burst(ports[0], qid,
+    rx_count = rte_eth_rx_burst(ports[vdev->vid], qid,
 				    pkts, MAX_PKT_BURST);
 //	if (!rx_count)
 //		return;
@@ -1089,19 +1119,17 @@ drain_virtio_tx(struct vhost_dev *vdev)
 	uint16_t i;
 
 	count = rte_vhost_dequeue_burst(vdev->vid, VIRTIO_TXQ, mbuf_pool,
-					pkts, MAX_PKT_BURST);
-
-    //printf("count:%d\n",count);
+					pkts, 64);
 	/* setup VMDq for the first packet */
 	if (unlikely(vdev->ready == DEVICE_MAC_LEARNING) && count) {
 		if (vdev->remove || link_vmdq(vdev, pkts[0]) == -1)
+            printf("free it\n");
 			free_pkts(pkts, count);
 	}
 
-	//for (i = 0; i < count; ++i)
-	//	virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
-	rx_count = rte_eth_tx_burst(ports[vdev->vid], qid,
-				    pkts, MAX_PKT_BURST);
+
+	for (i = 0; i < count; ++i)
+		virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
 }
 
 /*
@@ -1140,7 +1168,7 @@ switch_worker(void *arg __rte_unused)
 	}
     //printf("worker: %d\n",lcore_id);
 	while(1) {
-		drain_mbuf_table(tx_q);
+		drain_mbuf_table(tx_q, core_vdev_map[lcore_id]);
 
 		/*
 		 * Inform the configuration core that we have exited the
@@ -1250,8 +1278,8 @@ new_device(int vid)
 	vdev->vmdq_rx_q = vid * queues_per_pool + vmdq_queue_base;
 
 	/*reset ready flag*/
-	vdev->ready = 1;
 	//vdev->ready = DEVICE_MAC_LEARNING;
+	vdev->ready = 1;
 	vdev->remove = 0;
 
     printf("device_num_min:%d\n",device_num_min);
@@ -1265,7 +1293,7 @@ new_device(int vid)
 	}
     printf("core: %d!\n", core_add);
 	vdev->coreid = core_add;
-
+    core_vdev_map[core_add] = vid;
 	TAILQ_INSERT_TAIL(&lcore_info[vdev->coreid].vdev_list, vdev,
 			  lcore_vdev_entry);
 	lcore_info[vdev->coreid].device_num++;

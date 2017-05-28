@@ -545,7 +545,7 @@ vhost_set_vring_addr(int vid, struct vhost_vring_addr *addr)
 
 	vq->avail = (struct vring_avail *)(uintptr_t)qva_to_vva(dev,
 			addr->avail_user_addr);
-	if (vq->avail == 0) {
+    if (vq->avail == 0) {
 		RTE_LOG(ERR, VHOST_CONFIG,
 			"(%d) failed to find avail ring address.\n",
 			dev->vid);
@@ -560,6 +560,7 @@ vhost_set_vring_addr(int vid, struct vhost_vring_addr *addr)
 			dev->vid);
 		return -1;
 	}
+	printf("vq->avail:%p,vq->used:%p\n",vq->avail,vq->used);
 
 	if (vq->last_used_idx != vq->used->idx) {
 		RTE_LOG(WARNING, VHOST_CONFIG,

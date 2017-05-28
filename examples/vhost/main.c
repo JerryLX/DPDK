@@ -65,7 +65,7 @@
 #define MBUF_CACHE_SIZE	128
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 32		/* Max burst size for RX/TX */
+#define MAX_PKT_BURST 8		/* Max burst size for RX/TX */
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */
@@ -937,13 +937,16 @@ static inline void __attribute__((always_inline))
 do_drain_mbuf_table(struct mbuf_table *tx_q)
 {
 	uint16_t count;
+    int pid;
 
-	count = rte_eth_tx_burst(ports[0], tx_q->txq_id,
+    pid = tx_q->txq_id == 1?1:0;
+	count = rte_eth_tx_burst(pid, tx_q->txq_id,
 				 tx_q->m_table, tx_q->len);
 	if (unlikely(count < tx_q->len))
 		free_pkts(&tx_q->m_table[count], tx_q->len - count);
 
 	tx_q->len = 0;
+    printf("tx drain:%d\n",count);
 }
 
 /*
@@ -962,7 +965,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
 	if (unlikely(is_broadcast_ether_addr(&nh->d_addr))) {
 		struct vhost_dev *vdev2;
-
+        printf("broadcast!\n");
 		TAILQ_FOREACH(vdev2, &vhost_dev_list, global_vdev_entry) {
 			virtio_xmit(vdev2, vdev, m);
 		}
@@ -971,6 +974,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 
 	/*check if destination is local VM*/
 	if ((vm2vm_mode == VM2VM_SOFTWARE) && (virtio_tx_local(vdev, m) == 0)) {
+        printf("local!\n");
 		rte_pktmbuf_free(m);
 		return;
 	}
@@ -978,6 +982,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 	if (unlikely(vm2vm_mode == VM2VM_HARDWARE)) {
 		if (unlikely(find_local_dest(vdev, m, &offset,
 					     &vlan_tag) != 0)) {
+            printf("not found!\n");
 			rte_pktmbuf_free(m);
 			return;
 		}
@@ -1032,8 +1037,8 @@ queue2nic:
 		vdev->stats.tx_total++;
 		vdev->stats.tx++;
 	}
-
-	if (unlikely(tx_q->len == MAX_PKT_BURST))
+    //printf("txq->len:%d,%d\n",tx_q->len,MAX_PKT_BURST);
+	if (unlikely(tx_q->len >= MAX_PKT_BURST))
 		do_drain_mbuf_table(tx_q);
 }
 
@@ -1119,6 +1124,7 @@ drain_virtio_tx(struct vhost_dev *vdev)
 		if (vdev->remove || link_vmdq(vdev, pkts[0]) == -1)
 			free_pkts(pkts, count);
 	}
+
 
 	for (i = 0; i < count; ++i)
 		virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
@@ -1270,8 +1276,8 @@ new_device(int vid)
 	vdev->vmdq_rx_q = vid * queues_per_pool + vmdq_queue_base;
 
 	/*reset ready flag*/
-	vdev->ready = DEVICE_MAC_LEARNING;
 	//vdev->ready = DEVICE_MAC_LEARNING;
+	vdev->ready = 1;
 	vdev->remove = 0;
 
     printf("device_num_min:%d\n",device_num_min);

@@ -2834,7 +2834,8 @@ rte_eth_tx_burst(uint8_t port_id, uint16_t queue_id,
 
 	if (queue_id >= dev->data->nb_tx_queues) {
 		RTE_PMD_DEBUG_TRACE("Invalid TX queue_id=%d\n", queue_id);
-		return 0;
+		printf("invalid tx queue!\n");
+        return 0;
 	}
 #endif
 

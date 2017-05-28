@@ -35,7 +35,7 @@ dep_eal_common_memory.o = /root/lixu/lib/librte_eal/common/eal_common_memory.c \
  /usr/include/aarch64-linux-gnu/bits/stdlib.h /usr/include/inttypes.h \
  /usr/include/aarch64-linux-gnu/sys/queue.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/include/ctype.h /usr/include/xlocale.h /usr/include/errno.h \
  /usr/include/aarch64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
@@ -72,7 +72,7 @@ dep_eal_common_memory.o = /root/lixu/lib/librte_eal/common/eal_common_memory.c \
  /root/lixu/lib/librte_eal/common/eal_private.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h \
  /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \

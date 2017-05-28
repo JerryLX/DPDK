@@ -122,4 +122,4 @@ virtio-net-user.o: \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_byteorder.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_byteorder.h \
  /root/lixu/lib/librte_vhost/vhost_user/vhost-net-user.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_virtio_net.h
+ /root/lixu/lib/librte_vhost/rte_virtio_net.h
