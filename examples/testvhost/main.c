@@ -62,10 +62,11 @@
 /* the maximum number of external ports supported */
 #define MAX_SUP_PORTS 2
 
-#define MBUF_CACHE_SIZE	128
+#define MBUF_CACHE_SIZE	256
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 128		/* Max burst size for RX/TX */
+#define MAX_PKT_BURST 64		/* Max burst size for RX/TX */
+#define MAX_PKT_TX_BURST 64
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */
@@ -80,7 +81,7 @@
 
 /* Configurable number of RX/TX ring descriptors */
 #define RTE_TEST_RX_DESC_DEFAULT 1024
-#define RTE_TEST_TX_DESC_DEFAULT 512
+#define RTE_TEST_TX_DESC_DEFAULT 1024 
 
 #define INVALID_PORT_ID 0xFF
 
@@ -207,7 +208,7 @@ int core_vdev_map[RTE_MAX_LCORE];
 struct mbuf_table {
 	unsigned len;
 	unsigned txq_id;
-	struct rte_mbuf *m_table[MAX_PKT_BURST];
+	struct rte_mbuf *m_table[MAX_PKT_TX_BURST];
 };
 
 /* TX queue for each data core. */
@@ -300,7 +301,6 @@ port_init(uint8_t port)
 	rx_ring_size = RTE_TEST_RX_DESC_DEFAULT;
 	tx_ring_size = RTE_TEST_TX_DESC_DEFAULT;
 	tx_rings = (uint16_t)rte_lcore_count();
-
 	retval = validate_num_devices(MAX_DEVICES);
 	if (retval < 0)
 		return retval;
@@ -942,13 +942,12 @@ do_drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
 	uint16_t count;
     int qid = queue_index % 16;
     queue_index++;
-	if(vid != 0 && vid != 1)
-        printf("wrong vid!!!!!!!!\n");
-    count = rte_eth_tx_burst(vid, qid ,
+    count = rte_eth_tx_burst(vid&1, qid ,
 				 tx_q->m_table, tx_q->len);
-	if (unlikely(count < tx_q->len))
-		free_pkts(&tx_q->m_table[count], tx_q->len - count);
-
+    //if (unlikely(count < tx_q->len))
+	//	free_pkts(&tx_q->m_table[count], tx_q->len - count);
+	free_pkts(&tx_q->m_table[0], tx_q->len );
+    (void)count;
 	tx_q->len = 0;
     //printf("tx drain:%d\n",count);
 }
@@ -1041,7 +1040,7 @@ queue2nic:
 		vdev->stats.tx++;
 	}
     //printf("txq->len:%d,%d\n",tx_q->len,MAX_PKT_BURST);
-	if (unlikely(tx_q->len >= MAX_PKT_BURST))
+	if (unlikely(tx_q->len >= MAX_PKT_TX_BURST))
 		do_drain_mbuf_table(tx_q,vdev->vid);
 }
 
@@ -1075,7 +1074,7 @@ drain_eth_rx(struct vhost_dev *vdev)
     for(qid=0;qid<16;qid++){
     //rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
 	//			    pkts, MAX_PKT_BURST);
-    rx_count = rte_eth_rx_burst(ports[vdev->vid], qid,
+    rx_count = rte_eth_rx_burst((vdev->vid)%2, qid,
 				    pkts, MAX_PKT_BURST);
 //	if (!rx_count)
 //		return;
@@ -1107,14 +1106,14 @@ drain_eth_rx(struct vhost_dev *vdev)
 		rte_atomic64_add(&vdev->stats.rx_atomic, enqueue_count);
 	}
 
-	free_pkts(pkts, rx_count);
+	//free_pkts(pkts, rx_count);
     }
 }
 
 static inline void __attribute__((always_inline))
 drain_virtio_tx(struct vhost_dev *vdev)
 {
-	struct rte_mbuf *pkts[MAX_PKT_BURST];
+	struct rte_mbuf *pkts[MAX_PKT_TX_BURST];
 	uint16_t count;
 	uint16_t i;
 
@@ -1193,7 +1192,9 @@ switch_worker(void *arg __rte_unused)
 				drain_eth_rx(vdev);
 
 			if (likely(!vdev->remove))
-				drain_virtio_tx(vdev);
+			{	
+                drain_virtio_tx(vdev);
+            }
 		}
 	}
 
@@ -1411,16 +1412,19 @@ create_mbuf_pool(uint16_t nr_port, uint32_t nr_switch_core, uint32_t mbuf_size,
 	if (enable_tso)
 		mtu = 64 * 1024;
 
-	nr_mbufs_per_core  = (mtu + mbuf_size) * MAX_PKT_BURST /
-			(mbuf_size - RTE_PKTMBUF_HEADROOM) * MAX_PKT_BURST;
+	nr_mbufs_per_core  = (mtu + mbuf_size) * MAX_PKT_TX_BURST /
+			(mbuf_size - RTE_PKTMBUF_HEADROOM) * MAX_PKT_TX_BURST;
 	nr_mbufs_per_core += nr_rx_desc;
 	nr_mbufs_per_core  = RTE_MAX(nr_mbufs_per_core, nr_mbuf_cache);
 
 	nr_mbufs  = nr_queues * nr_rx_desc;
 	nr_mbufs += nr_mbufs_per_core * nr_switch_core;
 	nr_mbufs *= nr_port;
-
-	mbuf_pool = rte_pktmbuf_pool_create("MBUF_POOL", nr_mbufs,
+	printf("-----------------------------------\n");
+    printf("nr_mbufs=%d\n",nr_mbufs);
+    printf("-----------------------------------\n");
+    nr_mbufs=16*1024*nr_port*8;
+    mbuf_pool = rte_pktmbuf_pool_create("MBUF_POOL", nr_mbufs,
 					    nr_mbuf_cache, 0, mbuf_size,
 					    rte_socket_id());
 	if (mbuf_pool == NULL)

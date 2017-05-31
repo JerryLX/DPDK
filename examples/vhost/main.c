@@ -1114,7 +1114,7 @@ drain_virtio_tx(struct vhost_dev *vdev)
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
 	uint16_t count;
 	uint16_t i;
-
+    printf("vhost_dequeue_burst:vid=%d",vdev->vid);
 	count = rte_vhost_dequeue_burst(vdev->vid, VIRTIO_TXQ, mbuf_pool,
 					pkts, MAX_PKT_BURST);
 
