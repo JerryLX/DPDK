@@ -1481,6 +1481,43 @@ rte_eth_promiscuous_get(uint8_t port_id)
 }
 
 void
+rte_eth_tso_enable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_enable);
+	(*dev->dev_ops->tso_enable)(dev);
+	dev->data->tso = 1;
+}
+
+void
+rte_eth_tso_disable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_disable);
+	dev->data->tso = 0;
+	(*dev->dev_ops->tso_disable)(dev);
+}
+
+int
+rte_eth_tso_get(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -EINVAL);
+
+	dev = &rte_eth_devices[port_id];
+	return dev->data->tso;
+}
+
+void
 rte_eth_allmulticast_enable(uint8_t port_id)
 {
 	struct rte_eth_dev *dev;

@@ -52,7 +52,7 @@ dep_eal_common_dev.o = /root/lixu/lib/librte_eal/common/eal_common_dev.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_devargs.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/lixu/lib/librte_eal/linuxapp/eal/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \

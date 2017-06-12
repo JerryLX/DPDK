@@ -377,6 +377,8 @@ port_init(uint8_t port)
 
 	if (promiscuous)
 		rte_eth_promiscuous_enable(port);
+    
+    //rte_eth_tso_enable(port);
 
 	rte_eth_macaddr_get(port, &vmdq_ports_eth_addr[port]);
 	RTE_LOG(INFO, VHOST_PORT, "Max virtio devices supported: %u\n", num_devices);
@@ -818,7 +820,7 @@ virtio_xmit(struct vhost_dev *dst_vdev, struct vhost_dev *src_vdev,
 	    struct rte_mbuf *m)
 {
 	uint16_t ret;
-
+    m->ol_flags |= PKT_TX_TCP_SEG;
 	ret = rte_vhost_enqueue_burst(dst_vdev->vid, VIRTIO_RXQ, &m, 1);
 	if (enable_stats) {
 		rte_atomic64_inc(&dst_vdev->stats.rx_total_atomic);

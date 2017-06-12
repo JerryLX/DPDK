@@ -162,6 +162,7 @@ enum hnae_led_state {
 #define HNSV2_TXD_IPV6_B   3
 #define HNSV2_TXD_SCTP_B   4
 
+#define HNS_RCB_REG_OFFSET 0x10000
 /* hardware spec ring buffer format */
 struct __packed hnae_desc {
 	__le64 addr;

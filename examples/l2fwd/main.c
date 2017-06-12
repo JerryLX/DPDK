@@ -259,11 +259,11 @@ l2fwd_main_loop(void)
 
 				portid = l2fwd_dst_ports[qconf->rx_port_list[i]];
 				buffer = tx_buffer[portid];
-
-				sent = rte_eth_tx_buffer_flush(portid, 0, buffer);
+                for(qid=0;qid<16;qid++){
+				sent = rte_eth_tx_buffer_flush(portid, qid, buffer);
 				if (sent)
 					port_statistics[portid].tx += sent;
-
+                }
 			}
 
 			/* if timer is enabled */
@@ -296,7 +296,6 @@ l2fwd_main_loop(void)
 			nb_rx = rte_eth_rx_burst((uint8_t) portid, qid,
 						 pkts_burst, MAX_PKT_BURST);
 			port_statistics[portid].rx += nb_rx;
-
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
 				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
@@ -571,6 +570,8 @@ main(int argc, char **argv)
 		if (nb_ports_in_mask % 2) {
 			l2fwd_dst_ports[portid] = last_port;
 			l2fwd_dst_ports[last_port] = portid;
+			//l2fwd_dst_ports[portid] = portid;
+			//l2fwd_dst_ports[last_port] = last_port;
 		}
 		else
 			last_port = portid;
@@ -678,7 +679,7 @@ main(int argc, char **argv)
 		printf("done: \n");
 
 		rte_eth_promiscuous_enable(portid);
-
+        //rte_eth_tso_enable(portid);
 		printf("Port %u, MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n\n",
 				(unsigned) portid,
 				l2fwd_ports_eth_addr[portid].addr_bytes[0],

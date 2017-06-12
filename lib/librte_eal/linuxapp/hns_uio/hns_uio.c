@@ -717,6 +717,13 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         }
         break;
     }
+    case HNS_UIO_IOCTL_TSO:
+    {
+        netif_set_gso_max_size(priv->netdev, 7 * 4096);
+        handle->dev->ops->set_tso_stats(handle, !!uio_para.value);
+        break;
+    
+    }
     default:
 		PRINT(KERN_ERR, "uio ioctl cmd(%d) illegal! range:0-%d.\n", cmd,
 		      HNS_UIO_IOCTL_NUM - 1);
@@ -1364,6 +1371,7 @@ hns_uio_probe(struct platform_device *pdev)
         udev->info.name = DRIVER_UIO_NAME;
         udev->info.version = "1";
         udev->info.priv = (void *)udev;
+        
         udev->info.mem[0].name = "rcb ring";
         udev->info.mem[0].addr = (unsigned long)queue->phy_base;
         udev->info.mem[0].size = NIC_UIO_SIZE * handle->q_num;
@@ -1371,7 +1379,6 @@ hns_uio_probe(struct platform_device *pdev)
         
         udev->info.mem[1].name = "tx_bd";
         udev->info.mem[1].addr = (unsigned long)queue->tx_ring.desc;
-        PRINT(KERN_ERR,"tx_bd addr: %lx\n", (unsigned long)udev->info.mem[1].addr);
         udev->info.mem[1].size = queue->tx_ring.desc_num * 
                             sizeof(queue->tx_ring.desc[0]) *
                             handle->q_num;
@@ -1388,6 +1395,14 @@ hns_uio_probe(struct platform_device *pdev)
         udev->info.mem[3].addr = (unsigned long)(uio_index);
         udev->info.mem[3].size = sizeof(unsigned long);
         udev->info.mem[3].memtype = UIO_MEM_LOGICAL;
+       
+       /* 
+        PRINT(KERN_ERR,"iobase: %p,%d\n", queue->io_base,*(uint32_t *)(queue->io_base+0x20));
+        udev->info.mem[0].name = "io base";
+        udev->info.mem[0].addr = (unsigned long)queue->io_base;
+        udev->info.mem[0].size = HNS_RCB_REG_OFFSET*(12) ;
+        udev->info.mem[0].memtype = UIO_MEM_LOGICAL;
+*/
 
         udev->info.irq_flags = UIO_IRQ_CUSTOM;
         udev->info.handler = hns_uio_nic_irqhandler;

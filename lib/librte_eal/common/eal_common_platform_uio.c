@@ -96,6 +96,7 @@ platform_uio_map_resource(struct rte_platform_device *dev)
 	for (i = 0; i != PLATFORM_MAX_RESOURCE; i++) {
 		phaddr = dev->mem_resource[i].phys_addr;
 		if(!phaddr) continue;
+        
         ret = platform_uio_map_resource_by_index(dev, i,
 				uio_res, map_idx);
 		if (ret)

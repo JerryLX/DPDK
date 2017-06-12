@@ -1,6 +1,6 @@
-dep_main.o = /root/dpdk-stable-16.07.1/examples/l2fwd-crypto/main.c \
+dep_main.o = /root/lixu/examples/l2fwd-crypto/main.c \
  /usr/include/stdc-predef.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
  /usr/include/time.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -63,63 +63,65 @@ dep_main.o = /root/dpdk-stable-16.07.1/examples/l2fwd-crypto/main.c \
  /usr/include/aarch64-linux-gnu/bits/environments.h \
  /usr/include/aarch64-linux-gnu/bits/confname.h \
  /usr/include/aarch64-linux-gnu/bits/unistd.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_atomic.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_atomic_64.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_atomic.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_atomic_64.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_cryptodev.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_kvargs.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_crypto.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_spinlock.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_lcore.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_cryptodev.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_kvargs.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_crypto.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_spinlock.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_lcore.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
  /usr/include/pthread.h /usr/include/sched.h \
  /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_ring.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_prefetch.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_crypto_sym.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_dev.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_cycles.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_cycles_64.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_cycles.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_random.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/generic/rte_byteorder.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_ethdev.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_dev.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_devargs.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_eth_ctrl.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_dev_info.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_ip.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
- /root/dpdk-stable-16.07.1/arm64-armv8a-linuxapp-gcc/include/rte_hexdump.h
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ring.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_prefetch.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_crypto_sym.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_dev.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_cycles.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_cycles_64.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_cycles.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_random.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_byteorder.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_byteorder.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ethdev.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_dev.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_platform.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_devargs.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_eth_ctrl.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_dev_info.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ip.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_hexdump.h

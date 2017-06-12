@@ -213,7 +213,8 @@ enum  {
     HNS_UIO_IOCTL_INIT_MAC,
     HNS_UIO_IOCTL_PROMISCUOUS,
     HNS_UIO_IOCTL_READ_ALL,
-    HNS_UIO_IOCTL_WRITE_ALL
+    HNS_UIO_IOCTL_WRITE_ALL,
+    HNS_UIO_IOCTL_TSO
 };
 
 struct hns_rx_entry {
@@ -275,6 +276,7 @@ struct hns_ring{
 
 struct hns_adapter {
     void *phy_base;
+    void *io_base;
     int cdev_fd;
     int uio_index;
     int stopped;
@@ -292,6 +294,7 @@ struct hns_adapter {
     int rxhead[MAX_QUEUE_NUM];
     int txhead[MAX_QUEUE_NUM];
     int xmitnum[MAX_QUEUE_NUM];
+    int tso;
 };
 
 void eth_hns_rx_queue_release(void *queue);

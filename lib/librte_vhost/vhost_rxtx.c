@@ -113,7 +113,6 @@ virtio_enqueue_offload(struct rte_mbuf *m_buf, struct virtio_net_hdr *net_hdr)
 			break;
 		}
 	}
-
 	if (m_buf->ol_flags & PKT_TX_TCP_SEG) {
 		if (m_buf->ol_flags & PKT_TX_IPV4)
 			net_hdr->gso_type = VIRTIO_NET_HDR_GSO_TCPV4;
@@ -621,8 +620,8 @@ vhost_dequeue_offload(struct virtio_net_hdr *hdr, struct rte_mbuf *m)
 			}
 		}
 	}
-
-	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+//    RTE_LOG(WARNING, VHOST_DATA, "gso type: %u.\n", hdr->gso_type);
+    if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
 		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
 		case VIRTIO_NET_HDR_GSO_TCPV4:
 		case VIRTIO_NET_HDR_GSO_TCPV6:
@@ -789,7 +788,7 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vhost_virtqueue *vq,
 
 	prev->data_len = mbuf_offset;
 	m->pkt_len    += mbuf_offset;
-
+    //RTE_LOG(WARNING, VHOST_DATA, "---------gso type: %u.\n", hdr->gso_type);
 	if (hdr->flags != 0 || hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE)
 		vhost_dequeue_offload(hdr, m);
 
