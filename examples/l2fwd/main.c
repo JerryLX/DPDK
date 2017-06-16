@@ -78,9 +78,9 @@ static volatile bool force_quit;
 
 #define NB_MBUF   32768
 
-#define MAX_PKT_BURST 256
+#define MAX_PKT_BURST 128
 #define BURST_TX_DRAIN_US 100 /* TX drain every ~100us */
-#define MEMPOOL_CACHE_SIZE 256
+#define MEMPOOL_CACHE_SIZE 200
 
 /*
  * Configurable number of RX/TX ring descriptors
@@ -103,13 +103,14 @@ static unsigned int l2fwd_rx_queue_per_lcore = 16;
 
 #define MAX_RX_QUEUE_PER_LCORE 16
 #define MAX_TX_QUEUE_PER_PORT 16
+#define NUM_QUEUE 16
 struct lcore_queue_conf {
 	unsigned n_rx_port;
 	unsigned rx_port_list[MAX_RX_QUEUE_PER_LCORE];
 } __rte_cache_aligned;
 struct lcore_queue_conf lcore_queue_conf[RTE_MAX_LCORE];
 
-static struct rte_eth_dev_tx_buffer *tx_buffer[RTE_MAX_ETHPORTS];
+static struct rte_eth_dev_tx_buffer *tx_buffer[RTE_MAX_ETHPORTS][NUM_QUEUE];
 
 static const struct rte_eth_conf port_conf = {
 	.rxmode = {
@@ -203,7 +204,7 @@ l2fwd_simple_forward(struct rte_mbuf *m, unsigned portid, unsigned qid)
 	/* src addr */
 	ether_addr_copy(&l2fwd_ports_eth_addr[dst_port], &eth->s_addr);
 
-	buffer = tx_buffer[dst_port];
+	buffer = tx_buffer[dst_port][qid];
 	sent = rte_eth_tx_buffer(dst_port, qid, buffer, m);
 	if (sent)
 		port_statistics[dst_port].tx += sent;
@@ -258,11 +259,11 @@ l2fwd_main_loop(void)
 			for (i = 0; i < qconf->n_rx_port; i++) {
 
 				portid = l2fwd_dst_ports[qconf->rx_port_list[i]];
-				buffer = tx_buffer[portid];
                 for(qid=0;qid<16;qid++){
-				sent = rte_eth_tx_buffer_flush(portid, qid, buffer);
-				if (sent)
-					port_statistics[portid].tx += sent;
+				    buffer = tx_buffer[portid][qid];
+				    sent = rte_eth_tx_buffer_flush(portid, qid, buffer);
+				    if (sent)
+					    port_statistics[portid].tx += sent;
                 }
 			}
 
@@ -654,22 +655,23 @@ main(int argc, char **argv)
 				ret, (unsigned) portid);
         }
 		/* Initialize TX buffers */
-		tx_buffer[portid] = rte_zmalloc_socket("tx_buffer",
+		for(qid = 0; qid < 16; qid++){
+        tx_buffer[portid][qid] = rte_zmalloc_socket("tx_buffer",
 				RTE_ETH_TX_BUFFER_SIZE(MAX_PKT_BURST), 0,
 				rte_eth_dev_socket_id(portid));
-		if (tx_buffer[portid] == NULL)
+		if (tx_buffer[portid][qid] == NULL)
 			rte_exit(EXIT_FAILURE, "Cannot allocate buffer for tx on port %u\n",
 					(unsigned) portid);
 
-		rte_eth_tx_buffer_init(tx_buffer[portid], MAX_PKT_BURST);
-
-		ret = rte_eth_tx_buffer_set_err_callback(tx_buffer[portid],
+		rte_eth_tx_buffer_init(tx_buffer[portid][qid], MAX_PKT_BURST);
+        
+		ret = rte_eth_tx_buffer_set_err_callback(tx_buffer[portid][qid],
 				rte_eth_tx_buffer_count_callback,
 				&port_statistics[portid].dropped);
 		if (ret < 0)
 				rte_exit(EXIT_FAILURE, "Cannot set error callback for "
 						"tx buffer on port %u\n", (unsigned) portid);
-
+        }
 		/* Start device */
 		ret = rte_eth_dev_start(portid);
 		if (ret < 0)

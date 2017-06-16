@@ -172,7 +172,7 @@ static void lcore_main(void)
                 printf("%llu ",(unsigned long long)count[qid]);
             printf("\n");
         }
-        for(port=0;port<nb_ports;port++){
+        for(port=0;port<1;port++){
             for (qid = 0 ; qid < 16; qid++){
                 struct rte_mbuf *bufs[BURST_SIZE];
                 const uint16_t nb_rx = rte_eth_rx_burst(port, qid,
@@ -180,7 +180,7 @@ static void lcore_main(void)
                 speed += nb_rx;
            	    count[qid] += nb_rx;
                 if(nb_rx == 0) continue;
-                const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,	bufs, nb_rx);
+                const uint16_t nb_tx = rte_eth_tx_burst(port, qid,	bufs, nb_rx);
            	    tspeed += nb_tx;
             }
         }

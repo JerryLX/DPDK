@@ -1,1 +1,0 @@
-/root/lixu/lib/librte_eal/linuxapp/kni/kni_misc.c
