@@ -69,6 +69,7 @@ kni_fifo_get(struct rte_kni_fifo *fifo, void **data, unsigned num)
 		new_read = (new_read + 1) & (fifo->len - 1);
 	}
 	fifo->read = new_read;
+	//printk("kni->rx_q->read:%d\n",new_read);
 
 	return i;
 }

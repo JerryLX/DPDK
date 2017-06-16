@@ -1282,7 +1282,7 @@ rte_eth_rx_queue_setup(uint8_t port_id, uint16_t rx_queue_id,
 	dev = &rte_eth_devices[port_id];
 	if (rx_queue_id >= dev->data->nb_rx_queues) {
 		RTE_PMD_DEBUG_TRACE("Invalid RX queue_id=%d\n", rx_queue_id);
-		return -EINVAL;
+        return -EINVAL;
 	}
 
 	if (dev->data->dev_started) {
@@ -1478,6 +1478,43 @@ rte_eth_promiscuous_get(uint8_t port_id)
 
 	dev = &rte_eth_devices[port_id];
 	return dev->data->promiscuous;
+}
+
+void
+rte_eth_tso_enable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_enable);
+	(*dev->dev_ops->tso_enable)(dev);
+	dev->data->tso = 1;
+}
+
+void
+rte_eth_tso_disable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_disable);
+	dev->data->tso = 0;
+	(*dev->dev_ops->tso_disable)(dev);
+}
+
+int
+rte_eth_tso_get(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -EINVAL);
+
+	dev = &rte_eth_devices[port_id];
+	return dev->data->tso;
 }
 
 void
@@ -1823,6 +1860,7 @@ rte_eth_dev_info_get(uint8_t port_id, struct rte_eth_dev_info *dev_info)
 	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->dev_infos_get);
 	(*dev->dev_ops->dev_infos_get)(dev, dev_info);
 	dev_info->pci_dev = dev->pci_dev;
+	dev_info->platform_dev = dev->platform_dev;
 	dev_info->driver_name = dev->data->drv_name;
 	dev_info->nb_rx_queues = dev->data->nb_rx_queues;
 	dev_info->nb_tx_queues = dev->data->nb_tx_queues;

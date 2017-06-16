@@ -68,92 +68,32 @@ get_v2rx_desc_bnum(uint32_t bnum_flag, uint16_t *out_bnum)
  * Read value from q->iobase
  * rxtx:
  *      0 for rx 1 for tx
- * @return:
- *      0 for success and negative value for fail.
  */
-
 static int
-dsaf_reg_read(unsigned int uio_index, unsigned long long offset, 
-        unsigned long long* value, int fd, uint16_t queue_id, bool rxtx)
+reg_read(void *io_base, unsigned long long offset, uint16_t queue_id, bool rxtx)
 {
-    struct hns_uio_ioctrl_para args;
-    args.index = uio_index;
-    args.cmd = offset + HNS_RCB_REG_OFFSET * (queue_id);
-    if(rxtx) args.cmd += HNS_RCB_TX_REG_OFFSET;
-    if(ioctl(fd, HNS_UIO_IOCTL_REG_READ, &args) < 0) {
-        PMD_INIT_LOG(ERR, "get value failed, offset: %llu\n!", offset);
-        return -EINVAL;
-    }
-    *value = args.value;
-    return 0;
+    char *addr = io_base;
+    addr += (offset+HNS_RCB_REG_OFFSET*(queue_id));
+    if(rxtx) addr+=HNS_RCB_TX_REG_OFFSET;
+    
+    return *(const volatile uint32_t *)addr;
 }
 
 /**
  * Write value to q->iobase
  * rxtx:
  *      0 for rx 1 for tx
- * @return:
- *      0 for success and negative value for fail.
  */
-    
-static int
-dsaf_reg_write(unsigned int uio_index, unsigned long long offset,
-        unsigned long long value, int fd, uint16_t queue_id, bool rxtx)
+static void
+reg_write(void *io_base, unsigned long long offset, uint16_t queue_id, 
+        bool rxtx, unsigned long long value)
 {
-    struct hns_uio_ioctrl_para args;
-    args.index = uio_index;
-    args.cmd = offset + HNS_RCB_REG_OFFSET * (queue_id);
-    if(rxtx) args.cmd += HNS_RCB_TX_REG_OFFSET;
-    args.value = value;
-    if(ioctl(fd, HNS_UIO_IOCTL_REG_WRITE, &args) < 0) {
-        printf("write error!\n");
-        PMD_INIT_LOG(ERR, "write value failed, offset: %llu\n!", offset);
-        return -EINVAL;
-    }
-    return 0;
+    char *addr = io_base;
+    addr += (offset+HNS_RCB_REG_OFFSET*(queue_id));
+    if(rxtx) addr+=HNS_RCB_TX_REG_OFFSET;
+    *(uint32_t *)addr = value;
 }
 
-static void
-read_all_fbdnum( struct hns_adapter* hns)
-{
-    int* fbd = hns->fbdnum; 
-    struct hns_uio_ioctrl_para *args = 
-        (struct hns_uio_ioctrl_para *)fbd;
-    args->index = hns->uio_index;
-    args->cmd = RCB_REG_FBDNUM;
-    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_READ_ALL, args);
-}
-
-static void
-read_all_txhead(struct hns_adapter *hns)
-{
-    int *txhead = hns->txhead;
-    struct hns_uio_ioctrl_para *args = 
-        (struct hns_uio_ioctrl_para *)txhead;
-    args->index = hns->uio_index;
-    args->cmd = RCB_REG_HEAD+HNS_RCB_TX_REG_OFFSET;
-    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_READ_ALL, args);
-}
-
-static void
-write_all_rxhead( struct hns_adapter* hns)
-{
-    struct hns_uio_ioctrl_para args;
-    memcpy(args.data,hns->rxhead,sizeof(hns->rxhead));
-    args.index = hns->uio_index;
-    args.cmd = RCB_REG_HEAD;
-    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_WRITE_ALL, args);
-}
-
-static void
-write_all_xmit( struct hns_adapter* hns)
-{
-    struct hns_uio_ioctrl_para args;
-    memcpy(args.data,hns->xmitnum,sizeof(hns->xmitnum));
-    args.index = hns->uio_index;
-    args.cmd = RCB_REG_TAIL+HNS_RCB_TX_REG_OFFSET;
-    ioctl(hns->cdev_fd, HNS_UIO_IOCTL_WRITE_ALL, args);
-}
 
 
 static void
@@ -222,7 +162,7 @@ eth_hns_stop(struct rte_eth_dev *dev)
 
 static void
 eth_hns_close(struct rte_eth_dev *dev)
-{
+{   
     struct hns_adapter *hns = dev->data->dev_private;
     eth_hns_stop(dev);
     hns->stopped = 1;
@@ -264,6 +204,7 @@ eth_hns_link_update(struct rte_eth_dev *dev, int wait_to_complete)
 static int
 eth_hns_set_mtu(struct rte_eth_dev *dev, uint16_t mtu)
 {
+    printf("-----------set mtu here!--------------\n");
     struct hns_adapter *hns = dev->data->dev_private;
     struct hns_uio_ioctrl_para args;
     int uio_index = hns->uio_index;
@@ -336,6 +277,7 @@ eth_hns_dev_infos_get(struct rte_eth_dev *dev, struct rte_eth_dev_info *info)
     info->rx_desc_lim.nb_max = hns->desc_num_per_txq;
 //    info->nb_rx_queues = hns->q_num;
 //    info->nb_tx_queues = hns->q_num;
+    info->vmdq_queue_num = 1;
 }
 
 static int
@@ -378,6 +320,41 @@ eth_hns_promisc_disable(struct rte_eth_dev *dev)
     args.value = 0;
     if(ioctl(hns->cdev_fd, HNS_UIO_IOCTL_PROMISCUOUS, &args) < 0) {
         PMD_INIT_LOG(ERR, "Disable promisc mode failed!");
+    }
+}
+
+/**
+ * Enable TSO mode
+ */
+static void
+eth_hns_tso_enable(struct rte_eth_dev *dev)
+{
+    struct hns_adapter *hns = dev->data->dev_private;
+    struct hns_uio_ioctrl_para args;
+    int uio_index = hns->uio_index;
+    hns->tso = 1;
+    args.index = uio_index;
+    args.value = 1;
+    if(ioctl(hns->cdev_fd, HNS_UIO_IOCTL_TSO, &args) < 0) {
+        PMD_INIT_LOG(ERR, "Enable TSO mode failed!");
+    }
+    printf("enable tso\n");
+}
+
+/**
+ * Disable TSO mode
+ */
+static void
+eth_hns_tso_disable(struct rte_eth_dev *dev)
+{
+    struct hns_adapter *hns = dev->data->dev_private;
+    struct hns_uio_ioctrl_para args;
+    int uio_index = hns->uio_index;
+    hns->tso = 0;
+    args.index = uio_index;
+    args.value = 0;
+    if(ioctl(hns->cdev_fd, HNS_UIO_IOCTL_TSO, &args) < 0) {
+        PMD_INIT_LOG(ERR, "Disable TSO mode failed!");
     }
 }
 
@@ -496,11 +473,10 @@ hns_clean_rx_buffers(struct hns_rx_queue *rxq, int cleaned_count)
     if(rxq->next_to_use >= rxq->nb_rx_desc)
         rxq->next_to_use -= rxq->nb_rx_desc;
     hns->rxhead[qid] = cleaned_count;
-//    dsaf_reg_write(hns->uio_index, RCB_REG_HEAD, 
-//            cleaned_count, hns->cdev_fd, qid,0);
-    if(qid == (int)hns->q_num-1){
-        write_all_rxhead(hns);
-    }
+    reg_write(hns->io_base, RCB_REG_HEAD, qid,0,cleaned_count);
+//    if(qid == (int)hns->q_num-1){
+//        write_all_rxhead(hns);
+//    }
 
 }
 
@@ -542,8 +518,10 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
 
     rxq = rte_zmalloc("ethdev RX queue", sizeof(struct hns_rx_queue),
             RTE_CACHE_LINE_SIZE);
-    if(rxq == NULL)
+    if(rxq == NULL){
+        printf("no space for rx_queue\n");
         return -ENOMEM;
+    }
     rxq->mb_pool = mp;
     rxq->nb_rx_desc = hns->desc_num_per_rxq;
     rxq->queue_id = idx;
@@ -560,6 +538,7 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
             sizeof(struct hns_rx_entry) * rxq->nb_rx_desc,
             RTE_CACHE_LINE_SIZE);
     if(rxq->sw_ring == NULL){
+        printf("no space for sw_ring\n");
         eth_hns_rx_queue_release(rxq);
         return -ENOMEM;
     }
@@ -616,6 +595,7 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     uint32_t bnum_flag;
     uint16_t current_num;
     int length;
+   // uint8_t ip_offset;
 //    unsigned long long value;
 
     nb_rx  =0;
@@ -629,18 +609,12 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     current_num = rxq->current_num;
     sw_ring = rxq->sw_ring;
     //get num of packets in desc ring
-//    value = 0;
-//    dsaf_reg_read(hns->uio_index, 
-//            RCB_REG_FBDNUM, &value, hns->cdev_fd, rxq->queue_id,0);
-//    num = value;
-    if(rxq->queue_id == 0){
-        read_all_fbdnum(hns);
-    }
-    num = hns->fbdnum[rxq->queue_id];
+    num = reg_read(hns->io_base, RCB_REG_FBDNUM, rxq->queue_id, 0);
+    /*
     if(num < 16) {
         hns_clean_rx_buffers(rxq, nb_hold);
         return 0;
-    }
+    }*/
     while(nb_rx < nb_pkts && nb_hold < num ){
 next_desc:
         rxdp = &rx_ring[rx_id];
@@ -704,9 +678,10 @@ next_desc:
         /* Initialize the returned mbuf */
         pkt_len = (uint16_t) (rte_le_to_cpu_16(rxd.rx.pkt_len));
         data_len = (uint16_t) (rte_le_to_cpu_16(rxd.rx.size)); 
-        //rxm->data_off = RTE_PKTMBUF_HEADROOM;
+        rxm->data_off = RTE_PKTMBUF_HEADROOM;
         rxm->data_len = data_len;
         rxm->pkt_len = pkt_len;
+        //printf("data_len:%d,%d\n",data_len,pkt_len);
         rxm->port = rxq->port_id;
         rxm->hash.rss = rxd.rx.rss_hash;
         
@@ -716,6 +691,8 @@ next_desc:
             goto next_desc;
         }
         bnum_flag = rte_le_to_cpu_32(rxd.rx.ipoff_bnum_pid_flag);
+       // ip_offset=rte_le_to_cpu_16(hnae_get_field(rxd.rx.ipoff_bnum_pid_flag,HNS_RXD_IPOFFSET_M, HNS_RXD_IPOFFSET_S));
+       // printf("RX ip offset= %u",ip_offset);
         //if(unlikely(!hnae_get_bit(bnum_flag, HNS_RXD_VLD_B))) goto pkt_err;
         //if(unlikely((!rxd.rx.pkt_len) || hnae_get_bit(bnum_flag, HNS_RXD_DROP_B))) goto pkt_err;
         //if(unlikely(hnae_get_bit(bnum_flag, HNS_RXD_L2E_B))) goto pkt_err;
@@ -758,26 +735,16 @@ is_valid_clean_head(struct hns_tx_queue *txq, int h)
 static void
 hns_tx_clean(struct hns_tx_queue *txq)
 {
-    int err;
     unsigned long long value = 0;
     struct hns_adapter *hns;
     int head,qid;
 
-    (void) read_all_txhead;
-    (void) dsaf_reg_read;
     hns = txq->hns;
     qid = txq->queue_id;
-//    if(qid == (int)hns->q_num-1)
-//        read_all_txhead(hns);
-//    head = hns->txhead[qid];
-    err = dsaf_reg_read(hns->uio_index, RCB_REG_HEAD, &value, 
-            hns->cdev_fd, qid,1);
-    if(err)
-        PMD_TX_LOG(DEBUG, "get head failed!");
+
+    value = reg_read(hns->io_base, RCB_REG_HEAD, qid, 1);
     rte_rmb();
-
     head = value;
-
     if(unlikely(!is_valid_clean_head(txq, head))) {
         PMD_TX_LOG(DEBUG, "head is not valid!");
         return;
@@ -790,16 +757,7 @@ hns_tx_clean(struct hns_tx_queue *txq)
 static void
 hns_queue_xmit(struct hns_tx_queue *txq, int buf_num){
     struct hns_adapter *hns = txq->hns;
-    unsigned int uio_index = hns->uio_index;
-//    int qid = txq->queue_id;
-//    hns->xmitnum[qid] = buf_num;
-    (void) dsaf_reg_write;
-    (void)write_all_xmit;
-    dsaf_reg_write(uio_index, RCB_REG_TAIL, 
-            buf_num, hns->cdev_fd, txq->queue_id,1);
-//    if(qid == (int)hns->q_num -1){
-//        write_all_xmit(hns);
-//    }
+    reg_write(hns->io_base, RCB_REG_TAIL, txq->queue_id,1, buf_num);
 }
 
 static inline int
@@ -817,49 +775,105 @@ tx_ring_space(struct hns_tx_queue *txq){
 #define ETH_HLEN 14
 #define VLAN_HLEN 4
 
+#define BD_MAX_SEND_SIZE 8191
+
+
 static void
 fill_desc(struct hns_tx_queue* txq, struct rte_mbuf* rxm, int first,
-         int buf_num, int port_id)
+         int buf_num, int port_id, int offset, int size, int frag_end)
 {
     uint8_t rrcfv = 0;
     uint8_t tvsvsn = 0;
     uint8_t bn_pid = 0;
     uint8_t ip_offset = 0;
-    uint16_t paylen = 0;
+//    uint16_t paylen = 0;
+    uint16_t mss=0;
     uint64_t flag = rxm->ol_flags;
     struct hnae_desc *tx_ring = txq->tx_ring;
     struct hnae_desc *desc = &tx_ring[txq->next_to_use];
-
-    desc->addr = rte_mbuf_data_dma_addr(rxm);
-    desc->tx.send_size = rte_cpu_to_le_16((uint16_t)rxm->data_len);
+    /*if(tso_flag){
+        int frag_buf_num;
+        int sizeoflast;
+        int k;
+        frag_buf_num = (size + BD_MAX_SEND_SIZE - 1) / BD_MAX_SEND_SIZE;
+        sizeoflast = size % BD_MAX_SEND_SIZE;
+        sizeoflast = sizeoflast ? sizeoflast : BD_MAX_SEND_SIZE;
+    }*/
+    desc->addr = rte_mbuf_data_dma_addr(rxm)+offset;
+//    desc->tx.send_size = rte_cpu_to_le_16((uint16_t)rxm->data_len);
+    desc->tx.send_size = size;
     hnae_set_bit(rrcfv, HNSV2_TXD_VLD_B,1);
     hnae_set_field(bn_pid, HNSV2_TXD_BUFNUM_M, 0, buf_num - 1);
     hnae_set_field(bn_pid, HNSV2_TXD_PORTID_M, HNSV2_TXD_PORTID_S, port_id);
+/*    hnae_set_bit(rrcfv, HNSV2_TXD_L3CS_B, 1);
+    hnae_set_bit(rrcfv, HNSV2_TXD_L4CS_B, 1);
+    hnae_set_bit(tvsvsn, HNSV2_TXD_TSE_B, 1);
+    desc->tx.ip_offset = ip_offset;
+    desc->tx.tse_vlan_snap_v6_sctp_nth = tvsvsn;
+    desc->tx.l4_len = 20;
+    desc->tx.mss = 200;
+    desc->tx.paylen = 82;
+*/    //printf("data:%d,pkt:%d\n",rxm->data_len,rxm->pkt_len);
 
     if(first == 1){
         ip_offset = ETH_HLEN;
         if(flag & PKT_TX_VLAN_PKT)
             ip_offset += VLAN_HLEN;    
 
-        if(rxm->packet_type & (RTE_PTYPE_L3_IPV4 & RTE_PTYPE_L3_IPV6)){
+        if(rxm->packet_type & (RTE_PTYPE_L3_IPV4 | RTE_PTYPE_L3_IPV6)){
+  //          printf("ipv4 or ipv6\n");
             hnae_set_bit(rrcfv, HNSV2_TXD_L4CS_B, 1);
-            if(rxm->packet_type & RTE_PTYPE_L3_IPV6)
+            if(rxm->packet_type & RTE_PTYPE_L3_IPV6){
                 hnae_set_bit(tvsvsn, HNSV2_TXD_IPV6_B, 1);
-            else
+    //            printf("ipv6\n");
+            }
+            else{
                 hnae_set_bit(rrcfv, HNSV2_TXD_L3CS_B, 1);
+            }
+            //if(rxm->ol_flags & PKT_TX_TCP_SEG){
+            if(txq->hns->tso && (rxm->ol_flags & PKT_TX_TCP_SEG)){
+                hnae_set_bit(tvsvsn, HNSV2_TXD_TSE_B, 1);
+                mss=BD_MAX_SEND_SIZE;//rxm->tso_segsz;
+                desc->tx.paylen =rte_cpu_to_le_16((uint16_t)rxm->pkt_len) ;//rte_cpu_to_le_16(paylen);
+           }
         }
-        desc->tx.paylen = rte_cpu_to_le_16(paylen);
+ //       printf("ip_offset:%d, size:%d\n",ip_offset,size);
         desc->tx.ip_offset = ip_offset;
+        desc->tx.mss = rte_cpu_to_le_16(mss);
         desc->tx.tse_vlan_snap_v6_sctp_nth = tvsvsn;
+        
         desc->tx.l4_len = rxm->l4_len;
     }
-    hnae_set_bit(rrcfv, HNSV2_TXD_FE_B, rxm->next == NULL?1:0);
+    
+    hnae_set_bit(rrcfv, HNSV2_TXD_FE_B, frag_end);
     desc->tx.bn_pid = bn_pid;
     desc->tx.ra_ri_cs_fe_vld = rrcfv;
     txq->next_to_use++;
     if(txq->next_to_use == txq->nb_tx_desc)
         txq->next_to_use = 0;
-//    rte_hns_prefetch(desc);
+    
+//    printf("in filldesc\n");
+    //    rte_hns_prefetch(desc);
+}
+
+static int
+fill_tso_desc(struct hns_tx_queue* txq, struct rte_mbuf* rxm, int first,
+        int buf_num, int port_id, int offset, int size, int frag_end)
+{
+    int frag_buf_num;
+    int sizeoflast;
+    int k;
+    (void)offset;
+    frag_buf_num = (size + BD_MAX_SEND_SIZE - 1) / BD_MAX_SEND_SIZE;
+    sizeoflast = size % BD_MAX_SEND_SIZE;
+    sizeoflast = sizeoflast ? sizeoflast : BD_MAX_SEND_SIZE;
+//    printf("in fill tso: size:%d,frag:%d\n",size,frag_buf_num);
+    for(k = 0; k < frag_buf_num; k++){
+        fill_desc(txq, rxm , first, buf_num, port_id, BD_MAX_SEND_SIZE * k,
+                (k == frag_buf_num - 1) ? sizeoflast : BD_MAX_SEND_SIZE,
+                frag_end && (k == frag_buf_num - 1) ? 1 : 0);
+    }
+    return frag_buf_num;
 }
 
 static void
@@ -983,15 +997,18 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
     tx_id   = txq->next_to_use;
     (void) hns;
     //printf("next_to_use:%d,next_to_clean:%d\n",txq->next_to_use,txq->next_to_clean);
+//    printf("nb_pkts:%d, space:%d, txq:%d,\n",nb_pkts,tx_ring_space(txq),txq->queue_id);
     for(nb_tx = 0; nb_tx < nb_pkts; nb_tx++) {
         tx_pkt = *tx_pkts++;
 
         nb_buf = tx_pkt->nb_segs;
+        
         if(nb_buf > tx_ring_space(txq)){
             //printf("txq:%d,result found at no ring space!\n",txq->queue_id);
-            //printf("nb_buf:%d, space:%d\n",nb_buf,tx_ring_space(txq));
-            if(nb_tx == 0) 
+           // printf("nb_buf:%d, space:%d\n",nb_buf,tx_ring_space(txq));
+            if(nb_tx == 0){
                 return 0;
+            }
             goto end_of_tx;
         }
 
@@ -999,7 +1016,13 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
         port_id = m_seg->port;
         nb_buf = m_seg->nb_segs;
         for(i = 0; i < nb_buf; i++){
-            fill_desc(txq, m_seg, (i==0), nb_buf, port_id);
+            if(hns->tso){
+                int frags = fill_tso_desc(txq, m_seg, (i==0), nb_buf, port_id,0,rte_cpu_to_le_16((uint16_t)m_seg->pkt_len),m_seg->next == NULL?1:0);
+                nb_hold += (frags-1);
+            }
+            else{
+                fill_desc(txq, m_seg, (i==0), nb_buf, port_id,0,rte_cpu_to_le_16((uint16_t)m_seg->pkt_len),m_seg->next == NULL?1:0);
+            }
             m_seg = m_seg->next;
             tx_id++;
             if((tx_id & 0x3) == 0)
@@ -1013,6 +1036,7 @@ end_of_tx:
     rte_wmb();
     hns_queue_xmit(txq, (unsigned long long)nb_hold);
     hns_tx_clean(txq);
+       // printf("nb_tx:%d\n",nb_tx);
     return nb_tx;
 }
 
@@ -1029,6 +1053,8 @@ static const struct eth_dev_ops eth_hns_ops = {
     .tx_queue_release   = eth_hns_tx_queue_release,
     .promiscuous_enable = eth_hns_promisc_enable,
     .promiscuous_disable = eth_hns_promisc_disable,
+    .tso_enable = eth_hns_tso_enable,
+    .tso_disable = eth_hns_tso_disable,
     .allmulticast_enable = NULL,
     .dev_configure      = eth_hns_configure,
     .mac_addr_set       = eth_hns_mac_addr_set,
@@ -1053,8 +1079,9 @@ eth_hns_dev_init (struct rte_eth_dev *dev){
     //set dev_ops
     dev->dev_ops = &eth_hns_ops;
 
-    //set phy_base
-    hns->phy_base = (void *)pdev->mem_resource[0].addr;
+    
+    //set io_base
+    hns->io_base = (void *)pdev->mem_resource[0].addr;
 
     //set uio_index
     hns->uio_index = uio_index;
@@ -1118,7 +1145,8 @@ eth_hns_dev_init (struct rte_eth_dev *dev){
         return -EINVAL;
     }
 	ether_addr_copy((struct ether_addr *)args.data, &dev->data->mac_addrs[0]);
-
+    dev->data->nb_rx_queues = 16;
+    dev->data->nb_tx_queues = 16;
     return 0;
 }
 

@@ -60,12 +60,12 @@
 #endif
 
 /* the maximum number of external ports supported */
-#define MAX_SUP_PORTS 1
+#define MAX_SUP_PORTS 2
 
 #define MBUF_CACHE_SIZE	128
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 32		/* Max burst size for RX/TX */
+#define MAX_PKT_BURST 8		/* Max burst size for RX/TX */
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */
@@ -295,7 +295,8 @@ port_init(uint8_t port)
 	txconf->txq_flags &= ~ETH_TXQ_FLAGS_NOVLANOFFL;
 
 	/*configure the number of supported virtio devices based on VMDQ limits */
-	num_devices = dev_info.max_vmdq_pools;
+	num_devices = 1;
+	//num_devices = dev_info.max_vmdq_pools;
 
 	rx_ring_size = RTE_TEST_RX_DESC_DEFAULT;
 	tx_ring_size = RTE_TEST_TX_DESC_DEFAULT;
@@ -331,7 +332,8 @@ port_init(uint8_t port)
 		rte_vhost_feature_disable(1ULL << VIRTIO_NET_F_GUEST_TSO6);
 	}
 
-	rx_rings = (uint16_t)dev_info.max_rx_queues;
+	rx_rings = 16;
+	//rx_rings = (uint16_t)dev_info.max_rx_queues;
 	/* Configure ethernet device. */
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0) {
@@ -728,6 +730,7 @@ link_vmdq(struct vhost_dev *vdev, struct rte_mbuf *m)
 	struct ether_hdr *pkt_hdr;
 	int i, ret;
 
+    printf("link_vmdq\n");
 	/* Learn MAC address of guest device from packet */
 	pkt_hdr = rte_pktmbuf_mtod(m, struct ether_hdr *);
 
@@ -768,7 +771,7 @@ link_vmdq(struct vhost_dev *vdev, struct rte_mbuf *m)
 
 	/* Set device as ready for RX. */
 	vdev->ready = DEVICE_RX;
-
+    printf("here!!!!!!!!!!!!!!!\n");
 	return 0;
 }
 
@@ -934,13 +937,16 @@ static inline void __attribute__((always_inline))
 do_drain_mbuf_table(struct mbuf_table *tx_q)
 {
 	uint16_t count;
+    int pid;
 
-	count = rte_eth_tx_burst(ports[0], tx_q->txq_id,
+    pid = tx_q->txq_id == 1?1:0;
+	count = rte_eth_tx_burst(pid, tx_q->txq_id,
 				 tx_q->m_table, tx_q->len);
 	if (unlikely(count < tx_q->len))
 		free_pkts(&tx_q->m_table[count], tx_q->len - count);
 
 	tx_q->len = 0;
+    printf("tx drain:%d\n",count);
 }
 
 /*
@@ -959,7 +965,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
 	if (unlikely(is_broadcast_ether_addr(&nh->d_addr))) {
 		struct vhost_dev *vdev2;
-
+        printf("broadcast!\n");
 		TAILQ_FOREACH(vdev2, &vhost_dev_list, global_vdev_entry) {
 			virtio_xmit(vdev2, vdev, m);
 		}
@@ -968,6 +974,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 
 	/*check if destination is local VM*/
 	if ((vm2vm_mode == VM2VM_SOFTWARE) && (virtio_tx_local(vdev, m) == 0)) {
+        printf("local!\n");
 		rte_pktmbuf_free(m);
 		return;
 	}
@@ -975,6 +982,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 	if (unlikely(vm2vm_mode == VM2VM_HARDWARE)) {
 		if (unlikely(find_local_dest(vdev, m, &offset,
 					     &vlan_tag) != 0)) {
+            printf("not found!\n");
 			rte_pktmbuf_free(m);
 			return;
 		}
@@ -1029,8 +1037,8 @@ queue2nic:
 		vdev->stats.tx_total++;
 		vdev->stats.tx++;
 	}
-
-	if (unlikely(tx_q->len == MAX_PKT_BURST))
+    //printf("txq->len:%d,%d\n",tx_q->len,MAX_PKT_BURST);
+	if (unlikely(tx_q->len >= MAX_PKT_BURST))
 		do_drain_mbuf_table(tx_q);
 }
 
@@ -1058,19 +1066,23 @@ drain_mbuf_table(struct mbuf_table *tx_q)
 static inline void __attribute__((always_inline))
 drain_eth_rx(struct vhost_dev *vdev)
 {
-	uint16_t rx_count, enqueue_count;
+	uint16_t rx_count, enqueue_count, qid;
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
-
-	rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
+    //printf("drain_rx, ports:%d\n",ports[0]);
+    for(qid=0;qid<16;qid++){
+    //rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
+	//			    pkts, MAX_PKT_BURST);
+    rx_count = rte_eth_rx_burst(ports[0], qid,
 				    pkts, MAX_PKT_BURST);
-	if (!rx_count)
-		return;
-
+//	if (!rx_count)
+//		return;
+    if(!rx_count) continue;
 	/*
 	 * When "enable_retry" is set, here we wait and retry when there
 	 * is no enough free slots in the queue to hold @rx_count packets,
 	 * to diminish packet loss.
 	 */
+	//printf("rx_count:%d\n", rx_count);
 	if (enable_retry &&
 	    unlikely(rx_count > rte_vhost_avail_entries(vdev->vid,
 			VIRTIO_RXQ))) {
@@ -1086,12 +1098,14 @@ drain_eth_rx(struct vhost_dev *vdev)
 
 	enqueue_count = rte_vhost_enqueue_burst(vdev->vid, VIRTIO_RXQ,
 						pkts, rx_count);
-	if (enable_stats) {
+	//printf("rx_count:%d, enqueue_count:%d\n", rx_count, enqueue_count);
+    if (enable_stats) {
 		rte_atomic64_add(&vdev->stats.rx_total_atomic, rx_count);
 		rte_atomic64_add(&vdev->stats.rx_atomic, enqueue_count);
 	}
 
 	free_pkts(pkts, rx_count);
+    }
 }
 
 static inline void __attribute__((always_inline))
@@ -1100,15 +1114,17 @@ drain_virtio_tx(struct vhost_dev *vdev)
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
 	uint16_t count;
 	uint16_t i;
-
+    printf("vhost_dequeue_burst:vid=%d",vdev->vid);
 	count = rte_vhost_dequeue_burst(vdev->vid, VIRTIO_TXQ, mbuf_pool,
 					pkts, MAX_PKT_BURST);
 
+    //printf("count:%d\n",count);
 	/* setup VMDq for the first packet */
 	if (unlikely(vdev->ready == DEVICE_MAC_LEARNING) && count) {
 		if (vdev->remove || link_vmdq(vdev, pkts[0]) == -1)
 			free_pkts(pkts, count);
 	}
+
 
 	for (i = 0; i < count; ++i)
 		virtio_tx_route(vdev, pkts[i], vlan_tags[vdev->vid]);
@@ -1148,7 +1164,7 @@ switch_worker(void *arg __rte_unused)
 			break;
 		}
 	}
-
+    //printf("worker: %d\n",lcore_id);
 	while(1) {
 		drain_mbuf_table(tx_q);
 
@@ -1164,12 +1180,13 @@ switch_worker(void *arg __rte_unused)
 		 */
 		TAILQ_FOREACH(vdev, &lcore_info[lcore_id].vdev_list,
 			      lcore_vdev_entry) {
+            //printf("vdev->remove:%d\n",vdev->remove);
 			if (unlikely(vdev->remove)) {
 				unlink_vmdq(vdev);
 				vdev->ready = DEVICE_SAFE_REMOVE;
 				continue;
 			}
-
+            //printf("vdev->ready:%d\n",vdev->ready);
 			if (likely(vdev->ready == DEVICE_RX))
 				drain_eth_rx(vdev);
 
@@ -1193,6 +1210,7 @@ destroy_device(int vid)
 	struct vhost_dev *vdev = NULL;
 	int lcore;
 
+    printf("destory device: %d\n", vid);
 	TAILQ_FOREACH(vdev, &vhost_dev_list, global_vdev_entry) {
 		if (vdev->vid == vid)
 			break;
@@ -1244,6 +1262,7 @@ new_device(int vid)
 	uint32_t device_num_min = num_devices;
 	struct vhost_dev *vdev;
 
+    printf("new device here: %d!!!!!!!!!!!!!\n", vid);
 	vdev = rte_zmalloc("vhost device", sizeof(*vdev), RTE_CACHE_LINE_SIZE);
 	if (vdev == NULL) {
 		RTE_LOG(INFO, VHOST_DATA,
@@ -1257,16 +1276,20 @@ new_device(int vid)
 	vdev->vmdq_rx_q = vid * queues_per_pool + vmdq_queue_base;
 
 	/*reset ready flag*/
-	vdev->ready = DEVICE_MAC_LEARNING;
+	//vdev->ready = DEVICE_MAC_LEARNING;
+	vdev->ready = 1;
 	vdev->remove = 0;
 
+    printf("device_num_min:%d\n",device_num_min);
 	/* Find a suitable lcore to add the device. */
 	RTE_LCORE_FOREACH_SLAVE(lcore) {
-		if (lcore_info[lcore].device_num < device_num_min) {
+		printf("search core: %d, with dev num:%d\n",lcore,lcore_info[lcore].device_num);
+        if (lcore_info[lcore].device_num < device_num_min) {
 			device_num_min = lcore_info[lcore].device_num;
 			core_add = lcore;
 		}
 	}
+    printf("core: %d!\n", core_add);
 	vdev->coreid = core_add;
 
 	TAILQ_INSERT_TAIL(&lcore_info[vdev->coreid].vdev_list, vdev,
@@ -1500,9 +1523,10 @@ main(int argc, char *argv[])
 	}
 
 	/* Launch all data cores. */
-	RTE_LCORE_FOREACH_SLAVE(lcore_id)
-		rte_eal_remote_launch(switch_worker, NULL, lcore_id);
-
+	RTE_LCORE_FOREACH_SLAVE(lcore_id){
+		//printf("start switch:%d\n",lcore_id);
+        rte_eal_remote_launch(switch_worker, NULL, lcore_id);
+    }
 	if (mergeable == 0)
 		rte_vhost_feature_disable(1ULL << VIRTIO_NET_F_MRG_RXBUF);
 

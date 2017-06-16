@@ -1,5 +1,5 @@
-dep_main.o = /root/DPDK/examples/l2fwd/main.c /usr/include/stdc-predef.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_config.h \
+dep_main.o = /root/lixu/examples/l2fwd/main.c /usr/include/stdc-predef.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_config.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/aarch64-linux-gnu/sys/cdefs.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -12,7 +12,8 @@ dep_main.o = /root/DPDK/examples/l2fwd/main.c /usr/include/stdc-predef.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdarg.h \
  /usr/include/aarch64-linux-gnu/bits/stdio_lim.h \
  /usr/include/aarch64-linux-gnu/bits/sys_errlist.h \
- /usr/include/aarch64-linux-gnu/bits/stdio.h /usr/include/stdlib.h \
+ /usr/include/aarch64-linux-gnu/bits/stdio.h \
+ /usr/include/aarch64-linux-gnu/bits/stdio2.h /usr/include/stdlib.h \
  /usr/include/aarch64-linux-gnu/bits/waitflags.h \
  /usr/include/aarch64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
  /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -23,12 +24,15 @@ dep_main.o = /root/DPDK/examples/l2fwd/main.c /usr/include/stdc-predef.h \
  /usr/include/aarch64-linux-gnu/bits/select.h \
  /usr/include/aarch64-linux-gnu/bits/sigset.h \
  /usr/include/aarch64-linux-gnu/bits/time.h \
+ /usr/include/aarch64-linux-gnu/bits/select2.h \
  /usr/include/aarch64-linux-gnu/sys/sysmacros.h \
  /usr/include/aarch64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
  /usr/include/aarch64-linux-gnu/bits/stdlib-bsearch.h \
- /usr/include/aarch64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
+ /usr/include/aarch64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/aarch64-linux-gnu/bits/stdlib.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/aarch64-linux-gnu/bits/string.h \
  /usr/include/aarch64-linux-gnu/bits/string2.h \
+ /usr/include/aarch64-linux-gnu/bits/string3.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdint.h \
  /usr/include/stdint.h /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/inttypes.h /usr/include/aarch64-linux-gnu/sys/queue.h \
@@ -42,8 +46,10 @@ dep_main.o = /root/DPDK/examples/l2fwd/main.c /usr/include/stdc-predef.h \
  /usr/include/asm-generic/socket.h \
  /usr/include/aarch64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
+ /usr/include/aarch64-linux-gnu/bits/socket2.h \
  /usr/include/aarch64-linux-gnu/bits/in.h /usr/include/setjmp.h \
- /usr/include/aarch64-linux-gnu/bits/setjmp.h /usr/include/ctype.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+ /usr/include/aarch64-linux-gnu/bits/setjmp2.h /usr/include/ctype.h \
  /usr/include/errno.h /usr/include/aarch64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/aarch64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
@@ -67,58 +73,58 @@ dep_main.o = /root/DPDK/examples/l2fwd/main.c /usr/include/stdc-predef.h \
  /usr/include/aarch64-linux-gnu/sys/user.h \
  /usr/include/aarch64-linux-gnu/bits/sigthread.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include/stdbool.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_common.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/limits.h \
  /usr/lib/gcc/aarch64-linux-gnu/4.9/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
  /usr/include/aarch64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_log.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_common.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_malloc.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_memory.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_memcpy.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_memcpy_64.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_memcpy.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_memzone.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_eal.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_memory.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_eal.h \
  /usr/include/sched.h /usr/include/aarch64-linux-gnu/bits/sched.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_per_lcore.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_per_lcore.h \
  /usr/include/pthread.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_launch.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_atomic.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_atomic_64.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_atomic.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_cycles.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_cycles_64.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_cycles.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_debug.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_log.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_branch_prediction.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_prefetch.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_prefetch_64.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_prefetch.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_lcore.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_branch_prediction.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_interrupts.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/exec-env/rte_interrupts.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_pci.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_pci_platform.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_random.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_ether.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_mbuf.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_mempool.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_spinlock.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_spinlock.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_ring.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_byteorder.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/generic/rte_byteorder.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_ethdev.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_dev.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_platform.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_devargs.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_ether.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_eth_ctrl.h \
- /root/DPDK/arm64-virtio-linuxapp-gcc/include/rte_dev_info.h
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_launch.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_atomic.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_atomic_64.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_cycles.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_cycles_64.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_cycles.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_debug.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_prefetch.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_lcore.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_interrupts.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_interrupts.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_pci.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_pci_platform.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_random.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_spinlock.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_ring.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_byteorder.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/generic/rte_byteorder.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_ethdev.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_dev.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_platform.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_devargs.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_eth_ctrl.h \
+ /devdata/lhz/DPDK/arm64-armv8a-linuxapp-gcc/include/rte_dev_info.h

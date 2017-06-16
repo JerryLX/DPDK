@@ -1060,6 +1060,12 @@ typedef void (*eth_promiscuous_enable_t)(struct rte_eth_dev *dev);
 typedef void (*eth_promiscuous_disable_t)(struct rte_eth_dev *dev);
 /**< @internal Function used to disable the RX promiscuous mode of an Ethernet device. */
 
+typedef void (*eth_tso_enable_t)(struct rte_eth_dev *dev);
+/**< @internal Function used to enable the TX tso mode of an Ethernet device. */
+
+typedef void (*eth_tso_disable_t)(struct rte_eth_dev *dev);
+/**< @internal Function used to disable the TX tso mode of an Ethernet device. */
+
 typedef void (*eth_allmulticast_enable_t)(struct rte_eth_dev *dev);
 /**< @internal Enable the receipt of all multicast packets by an Ethernet device. */
 
@@ -1425,6 +1431,8 @@ struct eth_dev_ops {
 	eth_dev_close_t            dev_close;     /**< Close device. */
 	eth_promiscuous_enable_t   promiscuous_enable; /**< Promiscuous ON. */
 	eth_promiscuous_disable_t  promiscuous_disable;/**< Promiscuous OFF. */
+	eth_tso_enable_t           tso_enable; /**< TSO ON. */
+	eth_tso_disable_t          tso_disable;/**< TSO OFF. */
 	eth_allmulticast_enable_t  allmulticast_enable;/**< RX multicast ON. */
 	eth_allmulticast_disable_t allmulticast_disable;/**< RX multicast OF. */
 	eth_link_update_t          link_update;   /**< Get device link state. */
@@ -1700,7 +1708,8 @@ struct rte_eth_dev_data {
 		scattered_rx : 1,  /**< RX of scattered packets is ON(1) / OFF(0) */
 		all_multicast : 1, /**< RX all multicast mode ON(1) / OFF(0). */
 		dev_started : 1,   /**< Device state: STARTED(1) / STOPPED(0). */
-		lro         : 1;   /**< RX LRO is ON(1) / OFF(0) */
+		lro         : 1,   /**< RX LRO is ON(1) / OFF(0) */
+        tso         : 1;   /**< TX TSO is ON(1) / OFF(0) */
 	uint8_t rx_queue_state[RTE_MAX_QUEUES_PER_PORT];
 	/** Queues state: STARTED(1) / STOPPED(0) */
 	uint8_t tx_queue_state[RTE_MAX_QUEUES_PER_PORT];
@@ -2218,6 +2227,34 @@ void rte_eth_promiscuous_disable(uint8_t port_id);
  *   - (-1) on error
  */
 int rte_eth_promiscuous_get(uint8_t port_id);
+
+/**
+ * Enable receipt in TSO mode for an Ethernet device.
+ *
+ * @param port_id
+ *   The port identifier of the Ethernet device.
+ */
+void rte_eth_tso_enable(uint8_t port_id);
+
+/**
+ * Disable receipt in TSO mode for an Ethernet device.
+ *
+ * @param port_id
+ *   The port identifier of the Ethernet device.
+ */
+void rte_eth_tso_disable(uint8_t port_id);
+
+/**
+ * Return the value of TSO mode for an Ethernet device.
+ *
+ * @param port_id
+ *   The port identifier of the Ethernet device.
+ * @return
+ *   - (1) if TSO is enabled
+ *   - (0) if TSO is disabled.
+ *   - (-1) on error
+ */
+int rte_eth_tso_get(uint8_t port_id);
 
 /**
  * Enable the receipt of any multicast frame by an Ethernet device.
@@ -2834,7 +2871,8 @@ rte_eth_tx_burst(uint8_t port_id, uint16_t queue_id,
 
 	if (queue_id >= dev->data->nb_tx_queues) {
 		RTE_PMD_DEBUG_TRACE("Invalid TX queue_id=%d\n", queue_id);
-		return 0;
+		printf("invalid tx queue!\n");
+        return 0;
 	}
 #endif
 

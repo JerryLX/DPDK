@@ -689,33 +689,12 @@ long hns_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
                 netdev_err(priv->netdev, "set multicast fail\n");
         break;
     }
-    case HNS_UIO_IOCTL_READ_ALL:
+    case HNS_UIO_IOCTL_TSO:
     {
-        int value[MAX_QUEUE_NUM];
-        int i;
-		struct hnae_queue *queue;
-
-        for(i = 0; i<handle->q_num; i++){
-		    queue = handle->qs[i];
-		    value[i] = (int)dsaf_read_reg(queue->io_base, uio_para.cmd);
-        }
-
-		if (copy_to_user((void __user *)arg, value, sizeof(value)) != 0)
-			return UIO_ERROR;
-
-		break;
-    }
-    case HNS_UIO_IOCTL_WRITE_ALL:
-    {
-        int i;
-        struct hnae_queue *queue;
-	    int *vp = (int *)uio_para.data;
-	    
-        for(i=0; i<handle->q_num; i++){
-            queue = handle->qs[i];
-            dsaf_write_reg(queue->io_base, uio_para.cmd, vp[i]);
-        }
+        netif_set_gso_max_size(priv->netdev, 7 * 4096);
+        handle->dev->ops->set_tso_stats(handle, !!uio_para.value);
         break;
+    
     }
     default:
 		PRINT(KERN_ERR, "uio ioctl cmd(%d) illegal! range:0-%d.\n", cmd,
@@ -1322,13 +1301,8 @@ hns_uio_probe(struct platform_device *pdev)
             goto fail_free_dev;
         }
 
-        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
         hns_kernel_queue_free(handle);
-        PRINT(KERN_DEBUG,"After hns_kernel_queue_free\n");
-        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
         err = hns_user_queue_malloc(handle);
-        PRINT(KERN_DEBUG,"After hns_user_queue_malloc, err: %d\n", err);
-        PRINT(KERN_ERR, "addr: %lx\n",(unsigned long)handle->qs[0]->tx_ring.desc);
 
         vf_cb = (struct hnae_vf_cb *)container_of(
                 handle, struct hnae_vf_cb, ae_handle);
@@ -1353,10 +1327,6 @@ hns_uio_probe(struct platform_device *pdev)
         udev->vf_sum = port_vf[vf_cb->dsaf_dev->dsaf_mode];
         udev->vf_id = handle->vf_id;
    
-//        PRINT(KERN_ERR,"dsaf_mode: %d\n", vf_cb->dsaf_dev->dsaf_mode);
-//        PRINT(KERN_ERR,"vf_sum: %d\n", udev->vf_sum);
-//        PRINT(KERN_ERR,"vf_id: %d\n", udev->vf_id);
-        
         udev->q_num = handle->q_num;
         udev->uio_start = uio_start;
 
@@ -1364,6 +1334,7 @@ hns_uio_probe(struct platform_device *pdev)
         udev->info.name = DRIVER_UIO_NAME;
         udev->info.version = "1";
         udev->info.priv = (void *)udev;
+        
         udev->info.mem[0].name = "rcb ring";
         udev->info.mem[0].addr = (unsigned long)queue->phy_base;
         udev->info.mem[0].size = NIC_UIO_SIZE * handle->q_num;
@@ -1371,7 +1342,6 @@ hns_uio_probe(struct platform_device *pdev)
         
         udev->info.mem[1].name = "tx_bd";
         udev->info.mem[1].addr = (unsigned long)queue->tx_ring.desc;
-        PRINT(KERN_ERR,"tx_bd addr: %lx\n", (unsigned long)udev->info.mem[1].addr);
         udev->info.mem[1].size = queue->tx_ring.desc_num * 
                             sizeof(queue->tx_ring.desc[0]) *
                             handle->q_num;
@@ -1388,7 +1358,7 @@ hns_uio_probe(struct platform_device *pdev)
         udev->info.mem[3].addr = (unsigned long)(uio_index);
         udev->info.mem[3].size = sizeof(unsigned long);
         udev->info.mem[3].memtype = UIO_MEM_LOGICAL;
-
+       
         udev->info.irq_flags = UIO_IRQ_CUSTOM;
         udev->info.handler = hns_uio_nic_irqhandler;
         udev->info.irqcontrol = hns_uio_nic_irqcontrol;
