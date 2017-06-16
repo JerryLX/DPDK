@@ -960,6 +960,7 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 				PMD_TX_LOG(ERR,
 					   "No free tx descriptors to transmit");
 			//	printf("nb_tx=%d,nb_pkts=%d\n",nb_tx,nb_pkts);
+			//	printf("avail:%d,used:%d\n",vq->vq_ring.avail->idx,vq->vq_ring.used->idx);
 			//	printf("no free tx descriptors\n");
 				break;
 			}
@@ -977,10 +978,10 @@ virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
 	if (likely(nb_tx)) {
 		vq_update_avail_idx(vq);
 
-		//if (unlikely(virtqueue_kick_prepare(vq))) {
+		if (unlikely(virtqueue_kick_prepare(vq))) {
 			virtqueue_notify(vq);
-		//	PMD_TX_LOG(DEBUG, "Notified backend after xmit");
-		//}
+			PMD_TX_LOG(DEBUG, "Notified backend after xmit");
+		}
 	}
 	//printf("after transmit %d packets,free count:%d\n",nb_tx,vq->vq_free_cnt);
 	return nb_tx;
