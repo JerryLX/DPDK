@@ -216,7 +216,7 @@ app_ports_check_link(void)
 static void
 app_init_ports(void)
 {
-	uint32_t i;
+	uint32_t i,qid;
 
 	/* Init NIC ports, then start the ports */
 	for (i = 0; i < app.n_ports; i++) {
@@ -229,8 +229,8 @@ app_init_ports(void)
 		/* Init port */
 		ret = rte_eth_dev_configure(
 			port,
-			1,
-			1,
+			16,
+			16,
 			&port_conf);
 		if (ret < 0)
 			rte_panic("Cannot init NIC port %u (%d)\n", port, ret);
@@ -238,9 +238,10 @@ app_init_ports(void)
 		rte_eth_promiscuous_enable(port);
 
 		/* Init RX queues */
+        for(qid=0;qid<16;qid++){
 		ret = rte_eth_rx_queue_setup(
 			port,
-			0,
+			qid,
 			app.port_rx_ring_size,
 			rte_eth_dev_socket_id(port),
 			&rx_conf,
@@ -248,18 +249,18 @@ app_init_ports(void)
 		if (ret < 0)
 			rte_panic("Cannot init RX for port %u (%d)\n",
 				(uint32_t) port, ret);
-
+        
 		/* Init TX queues */
 		ret = rte_eth_tx_queue_setup(
 			port,
-			0,
+			qid,
 			app.port_tx_ring_size,
 			rte_eth_dev_socket_id(port),
 			&tx_conf);
 		if (ret < 0)
 			rte_panic("Cannot init TX for port %u (%d)\n",
 				(uint32_t) port, ret);
-
+        }
 		/* Start port */
 		ret = rte_eth_dev_start(port);
 		if (ret < 0)

@@ -76,7 +76,7 @@ static volatile bool force_quit;
 
 #define RTE_LOGTYPE_L2FWD RTE_LOGTYPE_USER1
 
-#define NB_MBUF   32768
+#define NB_MBUF   65532
 
 #define MAX_PKT_BURST 128
 #define BURST_TX_DRAIN_US 100 /* TX drain every ~100us */

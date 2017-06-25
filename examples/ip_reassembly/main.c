@@ -92,7 +92,7 @@
 #define NB_MBUF 8192
 
 /* allow max jumbo frame 9.5 KB */
-#define JUMBO_FRAME_MAX_SIZE	0x2600
+#define JUMBO_FRAME_MAX_SIZE	0x2500//0x2600
 
 #define	MAX_FLOW_NUM	UINT16_MAX
 #define	MIN_FLOW_NUM	1
@@ -224,14 +224,14 @@ struct l3fwd_ipv4_route {
 };
 
 struct l3fwd_ipv4_route l3fwd_ipv4_route_array[] = {
-		{IPv4(100,10,0,0), 16, 0},
-		{IPv4(100,20,0,0), 16, 1},
-		{IPv4(100,30,0,0), 16, 2},
-		{IPv4(100,40,0,0), 16, 3},
-		{IPv4(100,50,0,0), 16, 4},
-		{IPv4(100,60,0,0), 16, 5},
-		{IPv4(100,70,0,0), 16, 6},
-		{IPv4(100,80,0,0), 16, 7},
+		{IPv4(192,168,10,0), 16, 0},
+		{IPv4(192,168,20,0), 16, 1},
+		{IPv4(192,168,30,0), 16, 2},
+		{IPv4(192,168,40,0), 16, 3},
+		{IPv4(192,168,50,0), 16, 4},
+		{IPv4(192,168,60,0), 16, 5},
+		{IPv4(192,168,70,0), 16, 6},
+		{IPv4(192,168,80,0), 16, 7},
 };
 
 /*
@@ -454,7 +454,7 @@ main_loop(__attribute__((unused)) void *dummy)
 	struct rte_mbuf *pkts_burst[MAX_PKT_BURST];
 	unsigned lcore_id;
 	uint64_t diff_tsc, cur_tsc, prev_tsc;
-	int i, j, nb_rx;
+	int i, j,k, nb_rx;
 	uint8_t portid;
 	struct lcore_queue_conf *qconf;
 	const uint64_t drain_tsc = (rte_get_tsc_hz() + US_PER_S - 1) / US_PER_S * BURST_TX_DRAIN_US;
@@ -506,10 +506,11 @@ main_loop(__attribute__((unused)) void *dummy)
 		for (i = 0; i < qconf->n_rx_queue; ++i) {
 
 			portid = qconf->rx_queue_list[i].portid;
-
-			nb_rx = rte_eth_rx_burst(portid, 0, pkts_burst,
+            for(k=0;k<16;k++){
+			nb_rx = rte_eth_rx_burst(portid, 2, pkts_burst,
 				MAX_PKT_BURST);
-
+            printf("rx! %d,  %d\n",MAX_PKT_BURST, nb_rx);
+            }
 			/* Prefetch first packets */
 			for (j = 0; j < PREFETCH_OFFSET && j < nb_rx; j++) {
 				rte_prefetch0(rte_pktmbuf_mtod(
@@ -1066,11 +1067,10 @@ main(int argc, char **argv)
 		/* get the lcore_id for this port */
 		while (rte_lcore_is_enabled(rx_lcore_id) == 0 ||
 			   qconf->n_rx_queue == (unsigned)rx_queue_per_lcore) {
-
 			rx_lcore_id++;
-			if (rx_lcore_id >= RTE_MAX_LCORE)
-				rte_exit(EXIT_FAILURE, "Not enough cores\n");
-
+			if (rx_lcore_id >= RTE_MAX_LCORE){
+			    rte_exit(EXIT_FAILURE, "Not enough cores\n");
+            }
 			qconf = &lcore_queue_conf[rx_lcore_id];
 		}
 

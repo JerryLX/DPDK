@@ -110,6 +110,29 @@ hns_dev_free_queues(struct rte_eth_dev *dev)
     }
 }
 
+static int
+eth_hns_reta_update(struct rte_eth_dev *dev, 
+        struct rte_eth_rss_reta_entry64 *reta_conf,
+        uint16_t reta_size)
+{
+    (void) dev;
+    (void) reta_conf;
+    (void) reta_size;
+    return 0;
+}
+
+static int
+eth_hns_reta_query(struct rte_eth_dev *dev,
+        struct rte_eth_rss_reta_entry64 *reta_conf,
+        uint16_t reta_size)
+{
+    (void) dev;
+    (void) reta_conf;
+    (void) reta_size;
+    return 0;
+}
+
+
 /**
  * DPDK callback to start the device.
  *
@@ -285,6 +308,12 @@ eth_hns_configure(struct rte_eth_dev *dev)
 {
     (void) dev;
     return 0;
+}
+
+static void
+eth_hns_allmulticast_enable(struct rte_eth_dev *dev)
+{
+    (void) dev;
 }
 
 /**
@@ -580,7 +609,7 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     struct rte_mbuf *first_seg;
     struct rte_mbuf *last_seg;
     struct hnae_desc rxd;           //current desc
-//    struct rte_mbuf *nmb;           //pointer of the new mbuf
+    struct rte_mbuf *nmb;           //pointer of the new mbuf
     struct rte_mbuf *rxm;
     struct hns_adapter *hns;
 
@@ -621,6 +650,15 @@ next_desc:
         rxd = *rxdp;
         rxe = &sw_ring[rx_id];
 
+        nmb = rte_mbuf_raw_alloc(rxq->mb_pool);
+        if (nmb == NULL){
+            PMD_RX_LOG(DEBUG, "RX mbuf alloc failed port_id=%u "
+                        "queue_id=%u", (unsigned) rxq->port_id,
+                        (unsigned) rxq->queue_id);
+            rte_eth_devices[rxq->port_id].data->rx_mbuf_alloc_failed++;
+            break;
+        }
+
         nb_hold++;
         rx_id++;
         if(rx_id == rxq->nb_rx_desc) {
@@ -631,16 +669,6 @@ next_desc:
         length = rte_le_to_cpu_16(rxd.rx.pkt_len); 
         get_v2rx_desc_bnum(bnum_flag, &bnum);
         
-      //  nmb = rte_mbuf_raw_alloc(rxq->mb_pool);
-      //  if(nmb == NULL){
-      //      //printf("no free mbuf\n");
-      //      PMD_RX_LOG(ERR, "RX mbuf alloc failed port_id=%u "
-      //          "queue_id=%u", (unsigned) rxq->port_id,
-      //          (unsigned) rxq->queue_id);
-      //      rte_eth_devices[rxq->port_id].data->rx_mbuf_alloc_failed++;
-      //      break;
-      //  }
-
         if((rx_id & 0x3) == 0){
             rte_hns_prefetch(&rx_ring[rx_id]);
             rte_hns_prefetch(&sw_ring[rx_id]);
@@ -648,7 +676,7 @@ next_desc:
 
         rte_hns_prefetch(sw_ring[rx_id].mbuf);
         rxm = rxe->mbuf;
-      //  rxe->mbuf = nmb;
+        rxe->mbuf = nmb;
 
         dma_addr = 
             rte_cpu_to_le_64(rte_mbuf_data_dma_addr_default(rxm));
@@ -983,6 +1011,7 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
     struct hns_tx_queue *txq;
     struct rte_mbuf *tx_pkt;
     struct rte_mbuf *m_seg;
+    struct rte_mbuf *temp;
     struct hns_adapter *hns;
 
     uint16_t tx_id;
@@ -1023,7 +1052,9 @@ eth_hns_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
             else{
                 fill_desc(txq, m_seg, (i==0), nb_buf, port_id,0,rte_cpu_to_le_16((uint16_t)m_seg->pkt_len),m_seg->next == NULL?1:0);
             }
-            m_seg = m_seg->next;
+            temp = m_seg->next;
+            rte_pktmbuf_free(m_seg);
+            m_seg = temp;
             tx_id++;
             if((tx_id & 0x3) == 0)
                 rte_hns_prefetch(m_seg);
@@ -1055,10 +1086,14 @@ static const struct eth_dev_ops eth_hns_ops = {
     .promiscuous_disable = eth_hns_promisc_disable,
     .tso_enable = eth_hns_tso_enable,
     .tso_disable = eth_hns_tso_disable,
-    .allmulticast_enable = NULL,
+    .allmulticast_enable = eth_hns_allmulticast_enable,
+    .dev_set_link_up = eth_hns_configure,
+    .dev_set_link_down = eth_hns_configure,
     .dev_configure      = eth_hns_configure,
     .mac_addr_set       = eth_hns_mac_addr_set,
     .link_update        = eth_hns_link_update,
+    .reta_update        = eth_hns_reta_update,
+    .reta_query         = eth_hns_reta_query,
 };
 
 static int

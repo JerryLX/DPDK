@@ -95,6 +95,7 @@ extern "C" {
 #include <stdint.h>
 #include <sys/queue.h>
 #include <errno.h>
+#include <string.h>
 #include <rte_common.h>
 #include <rte_memory.h>
 #include <rte_lcore.h>
@@ -353,6 +354,9 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 /* the actual enqueue of pointers on the ring.
  * Placed here since identical code needed in both
  * single and multi producer enqueue functions */
+//#define OPTIMIZATION
+
+#ifndef OPTIMIZATION
 #define ENQUEUE_PTRS() do { \
 	const uint32_t size = r->prod.size; \
 	uint32_t idx = prod_head & mask; \
@@ -375,10 +379,24 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 			r->ring[idx] = obj_table[i]; \
 	} \
 } while(0)
+#else
+#define ENQUEUE_PTRS() do { \
+    (void) i; \
+    const uint32_t size = r->prod.size; \
+    uint32_t idx = prod_head & mask; \
+    if (likely(idx + n < size)) {\
+        memcpy(&(r->ring[idx]), obj_table, n * sizeof(void *));\
+    } else { \
+        memcpy(&(r->ring[idx]), obj_table,(size-idx)*sizeof(void *));\
+        memcpy(r->ring, &(obj_table[size-idx]), (n-size+idx)*sizeof(void *));\
+    }\
+} while(0)  
+#endif
 
 /* the actual copy of pointers on the ring to obj_table.
  * Placed here since identical code needed in both
  * single and multi consumer dequeue functions */
+#ifndef OPTIMIZATION
 #define DEQUEUE_PTRS() do { \
 	uint32_t idx = cons_head & mask; \
 	const uint32_t size = r->cons.size; \
@@ -401,6 +419,19 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 			obj_table[i] = r->ring[idx]; \
 	} \
 } while (0)
+#else
+#define DEQUEUE_PTRS() do { \
+    (void) i; \
+    const uint32_t size = r->cons.size; \
+    uint32_t idx = cons_head & mask; \
+    if (likely(idx + n < size)) {\
+        memcpy(obj_table, &(r->ring[idx]), n * sizeof(void *));\
+    } else { \
+        memcpy(obj_table, &(r->ring[idx]),(size-idx)*sizeof(void *));\
+        memcpy(&(obj_table[size-idx]), r->ring, (n-size+idx)*sizeof(void *));\
+    }\
+} while(0)
+#endif
 
 /**
  * @internal Enqueue several objects on the ring (multi-producers safe).

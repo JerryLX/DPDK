@@ -2113,16 +2113,13 @@ rte_eth_check_reta_mask(struct rte_eth_rss_reta_entry64 *reta_conf,
 			uint16_t reta_size)
 {
 	uint16_t i, num;
-
 	if (!reta_conf)
 		return -EINVAL;
-
 	if (reta_size != RTE_ALIGN(reta_size, RTE_RETA_GROUP_SIZE)) {
 		RTE_PMD_DEBUG_TRACE("Invalid reta size, should be %u aligned\n",
 							RTE_RETA_GROUP_SIZE);
 		return -EINVAL;
 	}
-
 	num = reta_size / RTE_RETA_GROUP_SIZE;
 	for (i = 0; i < num; i++) {
 		if (reta_conf[i].mask)
@@ -2138,15 +2135,12 @@ rte_eth_check_reta_entry(struct rte_eth_rss_reta_entry64 *reta_conf,
 			 uint16_t max_rxq)
 {
 	uint16_t i, idx, shift;
-
 	if (!reta_conf)
 		return -EINVAL;
-
 	if (max_rxq == 0) {
 		RTE_PMD_DEBUG_TRACE("No receive queue is available\n");
 		return -EINVAL;
 	}
-
 	for (i = 0; i < reta_size; i++) {
 		idx = i / RTE_RETA_GROUP_SIZE;
 		shift = i % RTE_RETA_GROUP_SIZE;
@@ -2158,7 +2152,6 @@ rte_eth_check_reta_entry(struct rte_eth_rss_reta_entry64 *reta_conf,
 			return -EINVAL;
 		}
 	}
-
 	return 0;
 }
 
@@ -2172,8 +2165,8 @@ rte_eth_dev_rss_reta_update(uint8_t port_id,
 
 	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -ENODEV);
 	/* Check mask bits */
-	ret = rte_eth_check_reta_mask(reta_conf, reta_size);
-	if (ret < 0)
+    ret = rte_eth_check_reta_mask(reta_conf, reta_size);
+    if (ret < 0)
 		return ret;
 
 	dev = &rte_eth_devices[port_id];
@@ -2181,10 +2174,11 @@ rte_eth_dev_rss_reta_update(uint8_t port_id,
 	/* Check entry value */
 	ret = rte_eth_check_reta_entry(reta_conf, reta_size,
 				dev->data->nb_rx_queues);
-	if (ret < 0)
+    if (ret < 0)
 		return ret;
-
-	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->reta_update, -ENOTSUP);
+	printf("before reta_update\n");
+    RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->reta_update, -ENOTSUP);
+    printf("function: reta_update\n");
 	return (*dev->dev_ops->reta_update)(dev, reta_conf, reta_size);
 }
 

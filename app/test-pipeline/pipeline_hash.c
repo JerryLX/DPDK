@@ -430,24 +430,23 @@ uint64_t test_hash(
 
 void
 app_main_loop_rx_metadata(void) {
-	uint32_t i, j;
+	uint32_t i, j,k;
 	int ret;
 
 	RTE_LOG(INFO, USER1, "Core %u is doing RX (with meta-data)\n",
 		rte_lcore_id());
 
 	for (i = 0; ; i = ((i + 1) & (app.n_ports - 1))) {
-		uint16_t n_mbufs;
-
+		uint16_t n_mbufs=0;
+        for(k=0;k<16;k++){
 		n_mbufs = rte_eth_rx_burst(
 			app.ports[i],
-			0,
+			k,
 			app.mbuf_rx.array,
 			app.burst_size_rx_read);
-
 		if (n_mbufs == 0)
 			continue;
-
+        
 		for (j = 0; j < n_mbufs; j++) {
 			struct rte_mbuf *m;
 			uint8_t *m_data, *key;
@@ -489,5 +488,6 @@ app_main_loop_rx_metadata(void) {
 				(void **) app.mbuf_rx.array,
 				n_mbufs);
 		} while (ret < 0);
+        }
 	}
 }

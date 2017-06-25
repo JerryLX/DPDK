@@ -2345,7 +2345,6 @@ app_config_parse(struct app_params *app, const char *file_name)
 	struct rte_cfgfile *cfg;
 	char **section_names;
 	int i, j, sect_count;
-
 	/* Implicit mempools */
 	create_implicit_mempools(app);
 
@@ -3309,7 +3308,6 @@ app_config_preproc(struct app_params *app)
 		app->preproc_args ? app->preproc_args : "",
 		app->config_file,
 		app->parser_file);
-
 	status = system(buffer);
 	APP_CHECK((WIFEXITED(status) && (WEXITSTATUS(status) == 0)),
 		"Error occurred while pre-processing file \"%s\"\n",

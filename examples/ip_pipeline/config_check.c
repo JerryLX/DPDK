@@ -89,7 +89,6 @@ check_links(struct app_params *app)
 		APP_CHECK((app->n_links == n_links_port_mask),
 			"Not enough links provided in the PORT_MASK\n");
 	}
-
 	for (i = 0; i < app->n_links; i++) {
 		struct app_link_params *link = &app->link_params[i];
 		uint32_t rxq_max, n_rxq, n_txq, link_id, i;
@@ -114,6 +113,8 @@ check_links(struct app_params *app)
 			if (link->rss_qs[i] > rxq_max)
 				rxq_max = link->rss_qs[i];
 
+
+
 		for (i = 1; i <= rxq_max; i++)
 			APP_CHECK((link_rxq_used(link, i)),
 				"%s RXQs are not contiguous (A)\n", link->name);
@@ -124,7 +125,6 @@ check_links(struct app_params *app)
 
 		APP_CHECK((n_rxq == rxq_max + 1),
 			"%s RXQs are not contiguous (B)\n", link->name);
-
 		for (i = 0; i < n_rxq; i++) {
 			char name[APP_PARAM_NAME_SIZE];
 			int pos;
@@ -471,7 +471,7 @@ int
 app_config_check(struct app_params *app)
 {
 	check_mempools(app);
-	check_links(app);
+    check_links(app);
 	check_rxqs(app);
 	check_txqs(app);
 	check_swqs(app);

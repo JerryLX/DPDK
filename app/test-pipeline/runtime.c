@@ -76,29 +76,29 @@
 
 void
 app_main_loop_rx(void) {
-	uint32_t i;
+	uint32_t i,j;
 	int ret;
 
 	RTE_LOG(INFO, USER1, "Core %u is doing RX\n", rte_lcore_id());
 
 	for (i = 0; ; i = ((i + 1) & (app.n_ports - 1))) {
-		uint16_t n_mbufs;
-
+		uint16_t n_mbufs=0;
+        for(j=0;j<16;j++){
 		n_mbufs = rte_eth_rx_burst(
 			app.ports[i],
 			0,
 			app.mbuf_rx.array,
 			app.burst_size_rx_read);
-
 		if (n_mbufs == 0)
 			continue;
-
+        
 		do {
 			ret = rte_ring_sp_enqueue_bulk(
 				app.rings_rx[i],
 				(void **) app.mbuf_rx.array,
 				n_mbufs);
 		} while (ret < 0);
+        }
 	}
 }
 
@@ -137,12 +137,12 @@ app_main_loop_worker(void) {
 
 void
 app_main_loop_tx(void) {
-	uint32_t i;
+	uint32_t i,j;
 
 	RTE_LOG(INFO, USER1, "Core %u is doing TX\n", rte_lcore_id());
 
 	for (i = 0; ; i = ((i + 1) & (app.n_ports - 1))) {
-		uint16_t n_mbufs, n_pkts;
+		uint16_t n_mbufs, n_pkts=0;
 		int ret;
 
 		n_mbufs = app.mbuf_tx[i].n_mbufs;
@@ -161,13 +161,13 @@ app_main_loop_tx(void) {
 			app.mbuf_tx[i].n_mbufs = n_mbufs;
 			continue;
 		}
-
+        for(j=0;j<16;j++){
 		n_pkts = rte_eth_tx_burst(
 			app.ports[i],
-			0,
+			j,
 			app.mbuf_tx[i].array,
 			n_mbufs);
-
+        
 		if (n_pkts < n_mbufs) {
 			uint16_t k;
 
@@ -178,7 +178,7 @@ app_main_loop_tx(void) {
 				rte_pktmbuf_free(pkt_to_free);
 			}
 		}
-
+        } 
 		app.mbuf_tx[i].n_mbufs = 0;
 	}
 }

@@ -85,15 +85,15 @@ dep_hns_ethdev.o = hns_ethdev.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/exec-env/rte_dom0_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ring.h \
+ /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
+ /usr/include/aarch64-linux-gnu/bits/string2.h \
+ /usr/include/aarch64-linux-gnu/bits/string3.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_atomic_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
- /usr/include/string.h /usr/include/aarch64-linux-gnu/bits/string.h \
- /usr/include/aarch64-linux-gnu/bits/string2.h \
- /usr/include/aarch64-linux-gnu/bits/string3.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \

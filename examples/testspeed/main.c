@@ -75,7 +75,7 @@
 #define RX_RING_SIZE 128
 #define TX_RING_SIZE 512
 
-#define NUM_MBUFS 16384
+#define NUM_MBUFS 32768
 #define MBUF_CACHE_SIZE 256
 #define BURST_SIZE 256
 
@@ -182,6 +182,12 @@ static void lcore_main(void)
                 if(nb_rx == 0) continue;
                 const uint16_t nb_tx = rte_eth_tx_burst(port, qid,	bufs, nb_rx);
            	    tspeed += nb_tx;
+                if(unlikely(nb_tx<nb_rx)){
+                    uint16_t buf = nb_tx;
+                    for(;buf<nb_rx;buf++){
+                        rte_pktmbuf_free(bufs[buf]);
+                    }
+                }
             }
         }
     }
