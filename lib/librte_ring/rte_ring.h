@@ -354,6 +354,7 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 /* the actual enqueue of pointers on the ring.
  * Placed here since identical code needed in both
  * single and multi producer enqueue functions */
+
 //#define OPTIMIZATION
 
 #ifndef OPTIMIZATION

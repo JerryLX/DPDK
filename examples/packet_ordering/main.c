@@ -286,7 +286,7 @@ static inline int
 configure_eth_port(uint8_t port_id)
 {
 	struct ether_addr addr;
-	const uint16_t rxRings = 1, txRings = 1;
+	const uint16_t rxRings = 16, txRings = 16;
 	const uint8_t nb_ports = rte_eth_dev_count();
 	int ret;
 	uint16_t q;
@@ -393,7 +393,7 @@ rx_thread(struct rte_ring *ring_out)
 {
 	const uint8_t nb_ports = rte_eth_dev_count();
 	uint32_t seqn = 0;
-	uint16_t i, ret = 0;
+	uint16_t i,j, ret = 0;
 	uint16_t nb_rx_pkts;
 	uint8_t port_id;
 	struct rte_mbuf *pkts[MAX_PKTS_BURST];
@@ -407,13 +407,17 @@ rx_thread(struct rte_ring *ring_out)
 			if ((portmask & (1 << port_id)) != 0) {
 
 				/* receive packets */
-				nb_rx_pkts = rte_eth_rx_burst(port_id, 0,
+                for(j=0;j<16;j++){
+				nb_rx_pkts = rte_eth_rx_burst(port_id, j,
 								pkts, MAX_PKTS_BURST);
+                
 				if (nb_rx_pkts == 0) {
 					RTE_LOG(DEBUG, REORDERAPP,
 					"%s():Received zero packets\n",	__func__);
 					continue;
 				}
+                
+
 				app_stats.rx.rx_pkts += nb_rx_pkts;
 
 				/* mark sequence number */
@@ -429,6 +433,7 @@ rx_thread(struct rte_ring *ring_out)
 									(nb_rx_pkts-ret);
 					pktmbuf_free_bulk(&pkts[ret], nb_rx_pkts - ret);
 				}
+                }
 			}
 		}
 	}
@@ -681,7 +686,7 @@ main(int argc, char **argv)
 		}
 		/* init port */
 		printf("Initializing port %u... done\n", (unsigned) port_id);
-
+        
 		if (configure_eth_port(port_id) != 0)
 			rte_exit(EXIT_FAILURE, "Cannot initialize port %"PRIu8"\n",
 					port_id);
