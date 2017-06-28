@@ -67,7 +67,7 @@ static struct app_params app_params_default = {
 static const struct app_mempool_params mempool_params_default = {
 	.parsed = 0,
 	.buffer_size = 2048 + sizeof(struct rte_mbuf) + RTE_PKTMBUF_HEADROOM,
-	.pool_size = 32 * 1024,
+	.pool_size = 128 * 1024,
 	.cache_size = 256,
 	.cpu_socket_id = 0,
 };

@@ -45,8 +45,7 @@
 do {							\
 	uint64_t t0 = rte_rdtsc_precise();		\
 	int n_pkts = rte_pipeline_run(pipeline->p);	\
-							\
-	if (n_pkts == 0) {				\
+    if (n_pkts == 0) {				\
 		uint64_t t1 = rte_rdtsc_precise();	\
 							\
 		thread->headroom_cycles += t1 - t0;	\
@@ -238,16 +237,16 @@ app_thread(void *arg)
 	struct app_params *app = (struct app_params *) arg;
 	uint32_t core_id = rte_lcore_id(), i, j;
 	struct app_thread_data *t = &app->thread_data[core_id];
-
+printf("thread:%d\n",(int)RTE_DIM(t->regular));
 	for (i = 0; ; i++) {
-		uint32_t n_regular = RTE_MIN(t->n_regular, RTE_DIM(t->regular));
-		uint32_t n_custom = RTE_MIN(t->n_custom, RTE_DIM(t->custom));
-
+		uint32_t n_regular;
+		uint32_t n_custom;
+        n_custom = RTE_MIN(t->n_custom, RTE_DIM(t->custom));
+        n_regular = RTE_MIN(t->n_regular, RTE_DIM(t->regular));
 		/* Run regular pipelines */
 		for (j = 0; j < n_regular; j++) {
 			struct app_thread_pipeline_data *data = &t->regular[j];
 			struct pipeline *p = data->be;
-
 			PIPELINE_RUN_REGULAR(t, p);
 		}
 

@@ -97,7 +97,6 @@ rte_port_ethdev_reader_rx(void *port, struct rte_mbuf **pkts, uint32_t n_pkts)
 	struct rte_port_ethdev_reader *p =
 		(struct rte_port_ethdev_reader *) port;
 	uint16_t rx_pkt_cnt;
-
 	rx_pkt_cnt = rte_eth_rx_burst(p->port_id, p->queue_id, pkts, n_pkts);
 	RTE_PORT_ETHDEV_READER_STATS_PKTS_IN_ADD(p, rx_pkt_cnt);
 	return rx_pkt_cnt;
@@ -197,7 +196,6 @@ static inline void
 send_burst(struct rte_port_ethdev_writer *p)
 {
 	uint32_t nb_tx;
-
 	nb_tx = rte_eth_tx_burst(p->port_id, p->queue_id,
 			 p->tx_buf, p->tx_buf_count);
 

@@ -471,8 +471,9 @@ int
 app_config_check(struct app_params *app)
 {
 	check_mempools(app);
-    check_links(app);
-	check_rxqs(app);
+    //check_links(app);
+	(void) check_links;
+    check_rxqs(app);
 	check_txqs(app);
 	check_swqs(app);
 	check_tms(app);

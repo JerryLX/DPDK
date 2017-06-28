@@ -272,6 +272,19 @@ struct hns_ring{
 
 }*/
 
+struct hns_stats {
+    uint64_t io_err_cnt;
+    uint64_t sw_err_cnt;
+    uint64_t seg_pkt_cnt;
+    uint64_t tx_pkts;
+    uint64_t tx_bytes;
+    uint64_t tx_err_cnt;
+    uint64_t rx_pkts;
+    uint64_t rx_bytes;
+    uint64_t rx_err_cnt;
+
+};
+
 struct hns_adapter {
     void *phy_base;
     void *io_base;
@@ -288,10 +301,7 @@ struct hns_adapter {
     struct hnae_desc *rx_desc[MAX_QUEUE_NUM];
     struct hnae_desc *tx_desc[MAX_QUEUE_NUM];
     struct hns_tx_queue *txq[MAX_QUEUE_NUM];
-    int fbdnum[MAX_QUEUE_NUM];
-    int rxhead[MAX_QUEUE_NUM];
-    int txhead[MAX_QUEUE_NUM];
-    int xmitnum[MAX_QUEUE_NUM];
+    struct hns_stats stats;
     int tso;
 };
 

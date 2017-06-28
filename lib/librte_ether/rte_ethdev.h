@@ -2738,7 +2738,6 @@ rte_eth_rx_burst(uint8_t port_id, uint16_t queue_id,
 #endif
 	int16_t nb_rx = (*dev->rx_pkt_burst)(dev->data->rx_queues[queue_id],
 			rx_pkts, nb_pkts);
-
 #ifdef RTE_ETHDEV_RXTX_CALLBACKS
 	struct rte_eth_rxtx_callback *cb = dev->post_rx_burst_cbs[queue_id];
 

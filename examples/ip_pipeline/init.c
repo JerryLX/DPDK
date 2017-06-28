@@ -326,9 +326,16 @@ app_init_mempool(struct app_params *app)
 				rte_pktmbuf_init, NULL,
 				p->cpu_socket_id,
 				0);
-
-		if (app->mempool[i] == NULL)
-			rte_panic("%s init error\n", p->name);
+printf("%d:size %d\n",i,p->pool_size);
+//        app->mempool[i] = rte_pktmbuf_pool_create(
+//                p->name,
+//                p->pool_size,
+//                p->cache_size,
+//                0,
+//                RTE_MBUF_DEFAULT_BUF_SIZE,
+//                p->cpu_socket_id);
+//		if (app->mempool[i] == NULL)
+//			rte_panic("%s init error\n", p->name);
 	}
 }
 
@@ -1015,7 +1022,7 @@ app_init_link(struct app_params *app)
 			uint32_t rxq_link_id, rxq_queue_id;
 			sscanf(p_rxq->name, "RXQ%" PRIu32 ".%" PRIu32,
 				&rxq_link_id, &rxq_queue_id);
-			if (rxq_link_id != link_id)
+            if (rxq_link_id != link_id)
 				continue;
 
 			status = rte_eth_rx_queue_setup(

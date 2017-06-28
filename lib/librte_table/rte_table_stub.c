@@ -91,7 +91,6 @@ rte_table_stub_lookup(
 	RTE_TABLE_LPM_STATS_PKTS_IN_ADD(stub, n_pkts_in);
 	*lookup_hit_mask = 0;
 	RTE_TABLE_LPM_STATS_PKTS_LOOKUP_MISS(stub, n_pkts_in);
-
 	return 0;
 }
 

@@ -397,7 +397,7 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 
 	/*
 	 * If requested number of buffers not fetched from ready buffer, fetch
-	 * remaining buffers from order buffer
+	 * remaining buffers from order buffer.
 	 */
 	while ((drain_cnt < max_mbufs) &&
 			(order_buf->entries[order_buf->head] != NULL)) {

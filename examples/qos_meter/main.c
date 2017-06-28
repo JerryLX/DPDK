@@ -71,7 +71,7 @@
  * Buffer pool configuration
  *
  ***/
-#define NB_MBUF             8192
+#define NB_MBUF         131072//    8192
 #define MEMPOOL_CACHE_SIZE  256
 
 static struct rte_mempool *pool = NULL;
@@ -138,14 +138,12 @@ app_configure_flow_table(void)
 {
 	uint32_t i, j;
 	int ret;
-
 	for (i = 0, j = 0; i < APP_FLOWS_MAX;
 			i ++, j = (j + 1) % RTE_DIM(PARAMS)) {
 		ret = FUNC_CONFIG(&app_flows[i], &PARAMS[j]);
 		if (ret)
 			return ret;
 	}
-
 	return 0;
 }
 
@@ -182,13 +180,11 @@ main_loop(__attribute__((unused)) void *dummy)
 {
 	uint64_t current_time, last_time = rte_rdtsc();
 	uint32_t lcore_id = rte_lcore_id();
-
 	printf("Core %u: port RX = %d, port TX = %d\n", lcore_id, port_rx, port_tx);
 
 	while (1) {
 		uint64_t time_diff;
 		int i, nb_rx;
-
 		/* Mechanism to avoid stale packets in the output buffer */
 		current_time = rte_rdtsc();
 		time_diff = current_time - last_time;
@@ -197,10 +193,8 @@ main_loop(__attribute__((unused)) void *dummy)
 			rte_eth_tx_buffer_flush(port_tx, NIC_TX_QUEUE, tx_buffer);
 			last_time = current_time;
 		}
-
 		/* Read packet burst from NIC RX */
 		nb_rx = rte_eth_rx_burst(port_rx, NIC_RX_QUEUE, pkts_rx, PKT_RX_BURST_MAX);
-
 		/* Handle packets */
 		for (i = 0; i < nb_rx; i ++) {
 			struct rte_mbuf *pkt = pkts_rx[i];
@@ -333,22 +327,26 @@ main(int argc, char **argv)
 		rte_exit(EXIT_FAILURE, "Buffer pool creation error\n");
 
 	/* NIC init */
-	ret = rte_eth_dev_configure(port_rx, 1, 1, &port_conf);
+	ret = rte_eth_dev_configure(port_rx, 16, 16, &port_conf);
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Port %d configuration error (%d)\n", port_rx, ret);
 
-	ret = rte_eth_rx_queue_setup(port_rx, NIC_RX_QUEUE, NIC_RX_QUEUE_DESC,
+    printf("===============================\n");
+    uint32_t qid;
+    for(qid=0;qid<16;qid++)
+    {
+        ret = rte_eth_rx_queue_setup(port_rx, qid, NIC_RX_QUEUE_DESC,
 				rte_eth_dev_socket_id(port_rx),
 				NULL, pool);
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Port %d RX queue setup error (%d)\n", port_rx, ret);
-
-	ret = rte_eth_tx_queue_setup(port_rx, NIC_TX_QUEUE, NIC_TX_QUEUE_DESC,
+    
+	ret = rte_eth_tx_queue_setup(port_rx, qid, NIC_TX_QUEUE_DESC,
 				rte_eth_dev_socket_id(port_rx),
 				NULL);
 	if (ret < 0)
 	rte_exit(EXIT_FAILURE, "Port %d TX queue setup error (%d)\n", port_rx, ret);
-
+    }
 	ret = rte_eth_dev_configure(port_tx, 1, 1, &port_conf);
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Port %d configuration error (%d)\n", port_tx, ret);
@@ -387,16 +385,18 @@ main(int argc, char **argv)
 	rte_eth_promiscuous_enable(port_tx);
 
 	/* App configuration */
-	ret = app_configure_flow_table();
+    ret = app_configure_flow_table();
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Invalid configure flow table\n");
 
-	/* Launch per-lcore init on every lcore */
+    printf("========before call master\n");	
+    /* Launch per-lcore init on every lcore */
 	rte_eal_mp_remote_launch(main_loop, NULL, CALL_MASTER);
-	RTE_LCORE_FOREACH_SLAVE(lcore_id) {
+	printf("==========after call master\n");
+    RTE_LCORE_FOREACH_SLAVE(lcore_id) {
 		if (rte_eal_wait_lcore(lcore_id) < 0)
 			return -1;
 	}
-
+    (void) lcore_id;
 	return 0;
 }

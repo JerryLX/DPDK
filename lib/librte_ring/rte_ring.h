@@ -866,9 +866,14 @@ rte_ring_enqueue_bulk(struct rte_ring *r, void * const *obj_table,
 		      unsigned n)
 {
 	if (r->prod.sp_enqueue)
+    {
+
 		return rte_ring_sp_enqueue_bulk(r, obj_table, n);
+    }
 	else
-		return rte_ring_mp_enqueue_bulk(r, obj_table, n);
+    {
+        return rte_ring_mp_enqueue_bulk(r, obj_table, n);
+    }
 }
 
 /**
@@ -1221,9 +1226,13 @@ rte_ring_enqueue_burst(struct rte_ring *r, void * const *obj_table,
 		      unsigned n)
 {
 	if (r->prod.sp_enqueue)
-		return rte_ring_sp_enqueue_burst(r, obj_table, n);
+    {
+        return rte_ring_sp_enqueue_burst(r, obj_table, n);
+    }
 	else
-		return rte_ring_mp_enqueue_burst(r, obj_table, n);
+    {
+        return rte_ring_mp_enqueue_burst(r, obj_table, n);
+    }
 }
 
 /**
