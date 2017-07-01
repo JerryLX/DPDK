@@ -109,7 +109,8 @@ static volatile bool force_quit;
 #define MEMPOOL_CACHE_SIZE 200
 
 
-
+static uint8_t port_rx=0;
+static uint8_t port_tx=1;
 /*
  * Configurable number of RX/TX ring descriptors
  */
@@ -240,9 +241,6 @@ app_pkt_handle(struct rte_mbuf *pkt, uint64_t time)
 
 
 
-
-
-
 /* Print out statistics on packets dropped */
 static void
 print_stats(void)
@@ -294,23 +292,21 @@ l2fwd_simple_forward(struct rte_mbuf *m, unsigned portid, unsigned qid)
 {
 	struct ether_hdr *eth;
 	void *tmp;
-	unsigned dst_port;
 	int sent;
 	struct rte_eth_dev_tx_buffer *buffer;
 
-	dst_port = l2fwd_dst_ports[portid];
 	eth = rte_pktmbuf_mtod(m, struct ether_hdr *);
 	/* 02:00:00:00:00:xx */
 	tmp = &eth->d_addr.addr_bytes[0];
-	*((uint64_t *)tmp) = 0x000000000002 + ((uint64_t)dst_port << 40);
+	*((uint64_t *)tmp) = 0x000000000002 + ((uint64_t)portid << 40);
 
 	/* src addr */
-	ether_addr_copy(&l2fwd_ports_eth_addr[dst_port], &eth->s_addr);
+	ether_addr_copy(&l2fwd_ports_eth_addr[portid], &eth->s_addr);
 
-	buffer = tx_buffer[dst_port][qid];
-	sent = rte_eth_tx_buffer(dst_port, qid, buffer, m);
+	buffer = tx_buffer[portid][qid];
+	sent = rte_eth_tx_buffer(portid, qid, buffer, m);
 	if (sent)
-		port_statistics[dst_port].tx += sent;
+		port_statistics[portid].tx += sent;
 }
 
 /* main processing loop */
@@ -359,15 +355,11 @@ l2fwd_main_loop(void)
 		diff_tsc = cur_tsc - prev_tsc;
 		if (unlikely(diff_tsc > drain_tsc)) {
 
-			for (i = 0; i < qconf->n_rx_port; i++) {
-
-				portid = l2fwd_dst_ports[qconf->rx_port_list[i]];
-                for(qid=0;qid<16;qid++){
-				    buffer = tx_buffer[portid][qid];
-				    sent = rte_eth_tx_buffer_flush(portid, qid, buffer);
-				    if (sent)
-					    port_statistics[portid].tx += sent;
-                }
+			for(qid=0;qid<16;qid++){
+				buffer = tx_buffer[port_tx][qid];
+				sent = rte_eth_tx_buffer_flush(port_tx, qid, buffer);
+				if (sent)
+					port_statistics[port_tx].tx += sent;
 			}
 
 			/* if timer is enabled */
@@ -394,22 +386,22 @@ l2fwd_main_loop(void)
 		/*
 		 * Read packet from RX queues
 		 */
-		for (i = 0; i < qconf->n_rx_port; i++) {
-			portid = qconf->rx_port_list[i];
-            for(qid = 0; qid<16;qid++){
-			nb_rx = rte_eth_rx_burst((uint8_t) portid, qid,
+		 for(qid = 0; qid<16;qid++){
+			nb_rx = rte_eth_rx_burst(port_rx, qid,
 						 pkts_burst, MAX_PKT_BURST);
-			port_statistics[portid].rx += nb_rx;
+			port_statistics[port_rx].rx += nb_rx;
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
 				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
 				if(app_pkt_handle(m,cur_tsc)==DROP)
+				{
+					printf("drop here!\n");
 					rte_pktmbuf_free(m);
+				}
 				else
-					l2fwd_simple_forward(m, portid,qid);
+					l2fwd_simple_forward(m, port_tx,qid);
 			}
-            }
-		}
+		 }
 	}
 }
 
@@ -422,17 +414,15 @@ l2fwd_launch_one_lcore(__attribute__((unused)) void *dummy)
 
 /* display usage */
 static void
-l2fwd_usage(const char *prgname)
+print_usage(const char *prgname)
 {
-	printf("%s [EAL options] -- -p PORTMASK [-q NQ]\n"
-	       "  -p PORTMASK: hexadecimal bitmask of ports to configure\n"
-	       "  -q NQ: number of queue (=ports) per lcore (default is 1)\n"
-		   "  -T PERIOD: statistics will be refreshed each PERIOD seconds (0 to disable, 10 default, 86400 maximum)\n",
-	       prgname);
+	printf ("%s [EAL options] -- -p PORTMASK\n"
+		"  -p PORTMASK: hexadecimal bitmask of ports to configure\n",
+		prgname);
 }
 
 static int
-l2fwd_parse_portmask(const char *portmask)
+parse_portmask(const char *portmask)
 {
 	char *end = NULL;
 	unsigned long pm;
@@ -448,107 +438,73 @@ l2fwd_parse_portmask(const char *portmask)
 	return pm;
 }
 
-static unsigned int
-l2fwd_parse_nqueue(const char *q_arg)
-{
-	char *end = NULL;
-	unsigned long n;
 
-	/* parse hexadecimal string */
-	n = strtoul(q_arg, &end, 10);
-	if ((q_arg[0] == '\0') || (end == NULL) || (*end != '\0'))
-		return 0;
-	if (n == 0)
-		return 0;
-	if (n > MAX_RX_QUEUE_PER_LCORE)
-		return 0;
-
-	return n;
-}
-
-static int
-l2fwd_parse_timer_period(const char *q_arg)
-{
-	char *end = NULL;
-	int n;
-
-	/* parse number string */
-	n = strtol(q_arg, &end, 10);
-	if ((q_arg[0] == '\0') || (end == NULL) || (*end != '\0'))
-		return -1;
-	if (n >= MAX_TIMER_PERIOD)
-		return -1;
-
-	return n;
-}
 
 /* Parse the argument given in the command line of the application */
 static int
-l2fwd_parse_args(int argc, char **argv)
+parse_args(int argc, char **argv)
 {
-	int opt, ret, timer_secs;
+	int opt;
 	char **argvopt;
 	int option_index;
 	char *prgname = argv[0];
 	static struct option lgopts[] = {
 		{NULL, 0, 0, 0}
 	};
+	uint64_t port_mask, i, mask;
 
 	argvopt = argv;
 
-	while ((opt = getopt_long(argc, argvopt, "p:q:T:",
-				  lgopts, &option_index)) != EOF) {
-
+	while ((opt = getopt_long(argc, argvopt, "p:", lgopts, &option_index)) != EOF) {
 		switch (opt) {
-		/* portmask */
 		case 'p':
-			l2fwd_enabled_port_mask = l2fwd_parse_portmask(optarg);
-			if (l2fwd_enabled_port_mask == 0) {
-				printf("invalid portmask\n");
-				l2fwd_usage(prgname);
+			port_mask = parse_portmask(optarg);
+			if (port_mask == 0) {
+				printf("invalid port mask (null port mask)\n");
+				print_usage(prgname);
+				return -1;
+			}
+
+			for (i = 0, mask = 1; i < 64; i ++, mask <<= 1){
+				if (mask & port_mask){
+					port_rx = i;
+					port_mask &= ~ mask;
+					break;
+				}
+			}
+
+			for (i = 0, mask = 1; i < 64; i ++, mask <<= 1){
+				if (mask & port_mask){
+					port_tx = i;
+					port_mask &= ~ mask;
+					break;
+				}
+			}
+
+			if (port_mask != 0) {
+				printf("invalid port mask (more than 2 ports)\n");
+				print_usage(prgname);
 				return -1;
 			}
 			break;
-
-		/* nqueue */
-		case 'q':
-			l2fwd_rx_queue_per_lcore = l2fwd_parse_nqueue(optarg);
-			if (l2fwd_rx_queue_per_lcore == 0) {
-				printf("invalid queue number\n");
-				l2fwd_usage(prgname);
-				return -1;
-			}
-			break;
-
-		/* timer period */
-		case 'T':
-			timer_secs = l2fwd_parse_timer_period(optarg);
-			if (timer_secs < 0) {
-				printf("invalid timer period\n");
-				l2fwd_usage(prgname);
-				return -1;
-			}
-			timer_period = timer_secs;
-			break;
-
-		/* long options */
-		case 0:
-			l2fwd_usage(prgname);
-			return -1;
 
 		default:
-			l2fwd_usage(prgname);
+			print_usage(prgname);
 			return -1;
 		}
 	}
 
-	if (optind >= 0)
-		argv[optind-1] = prgname;
+	if (optind <= 1) {
+		print_usage(prgname);
+		return -1;
+	}
 
-	ret = optind-1;
+	argv[optind-1] = prgname;
+
 	optind = 0; /* reset getopt lib */
-	return ret;
+	return 0;
 }
+
 
 /* Check the link status of all ports in up to 9s, and print them finally */
 static void
@@ -643,7 +599,7 @@ main(int argc, char **argv)
 	signal(SIGTERM, signal_handler);
 
 	/* parse application arguments (after the EAL ones) */
-	ret = l2fwd_parse_args(argc, argv);
+	ret = parse_args(argc, argv);
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Invalid L2FWD arguments\n");
 

@@ -102,7 +102,7 @@ extern "C" {
 #include <rte_atomic.h>
 #include <rte_branch_prediction.h>
 #include <rte_memzone.h>
-
+#include <rte_optimization.h>
 #define RTE_TAILQ_RING_NAME "RTE_RING"
 
 enum rte_ring_queue_behavior {

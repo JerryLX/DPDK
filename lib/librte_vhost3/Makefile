@@ -1,6 +1,7 @@
 #   BSD LICENSE
 #
-#   Copyright (C) Cavium networks 2015. All rights reserved.
+#   Copyright(c) 2010-2014 Intel Corporation. All rights reserved.
+#   All rights reserved.
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -12,7 +13,7 @@
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-#     * Neither the name of Cavium networks nor the names of its
+#     * Neither the name of Intel Corporation nor the names of its
 #       contributors may be used to endorse or promote products derived
 #       from this software without specific prior written permission.
 #
@@ -27,36 +28,36 @@
 #   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
 
-#include "common_linuxapp"
+include $(RTE_SDK)/mk/rte.vars.mk
 
-CONFIG_RTE_MACHINE="armv8a"
+# library name
+LIB = librte_vhost.a
 
-CONFIG_RTE_ARCH="arm64"
-CONFIG_RTE_ARCH_ARM64=y
-CONFIG_RTE_ARCH_64=y
+EXPORT_MAP := rte_vhost_version.map
 
-CONFIG_RTE_FORCE_INTRINSICS=y
+LIBABIVER := 3
 
-CONFIG_RTE_TOOLCHAIN="gcc"
-CONFIG_RTE_TOOLCHAIN_GCC=y
+CFLAGS += $(WERROR_FLAGS) -I$(SRCDIR) -O3 -D_FILE_OFFSET_BITS=64
+CFLAGS += -I vhost_user
+LDLIBS += -lpthread
 
-CONFIG_RTE_EAL_IGB_UIO=y
-CONFIG_RTE_EAL_HNS_UIO=y
-CONFIG_RTE_KNI_VHOST=y
-CONFIG_RTE_KNI_KO_DEBUG=n
-CONFIG_RTE_KNI_VHOST_DEBUG_RX=n
-CONFIG_RTE_KNI_VHOST_DEBUG_TX=n
-CONFIG_RTE_LIBRTE_IVSHMEM=n
-CONFIG_RTE_LIBRTE_FM10K_PMD=n
-CONFIG_RTE_LIBRTE_I40E_PMD=n
+ifeq ($(CONFIG_RTE_LIBRTE_VHOST_NUMA),y)
+LDLIBS += -lnuma
+endif
 
-CONFIG_RTE_SCHED_VECTOR=n
-CONFIG_RTE_LIBRTE_PMD_HNS=y
+# all source are stored in SRCS-y
+SRCS-$(CONFIG_RTE_LIBRTE_VHOST) := fd_man.c socket.c vhost.c vhost_user.c \
+				   virtio_net.c
 
-CONFIT_RTE_LIBRTE_VHOST=y
-CONFIG_RTE_LIBRTE_VHOST_USER=y
+# install includes
+SYMLINK-$(CONFIG_RTE_LIBRTE_VHOST)-include += rte_virtio_net.h
 
-OPTIMIZATION=y
+# dependencies
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_eal
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_ether
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_mbuf
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_mempool
+DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_net
 
+include $(RTE_SDK)/mk/rte.lib.mk

@@ -55,6 +55,7 @@
 
 #include <stdint.h>
 #include <rte_common.h>
+#include <rte_optimization.h>
 #include <rte_mempool.h>
 #include <rte_memory.h>
 #include <rte_atomic.h>

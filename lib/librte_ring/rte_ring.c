@@ -171,6 +171,10 @@ rte_ring_create(const char *name, unsigned count, int socket_id,
 	struct rte_ring_list* ring_list = NULL;
 	int ret;
 
+#ifdef OPTIMIZATION
+    printf("RING: OPTIMIZATION mode\n");
+#endif
+
 	ring_list = RTE_TAILQ_CAST(rte_ring_tailq.head, rte_ring_list);
 
 	ring_size = rte_ring_get_memsize(count);
