@@ -57,11 +57,16 @@ EAL_REGISTER_TAILQ(rte_reorder_tailq)
 /* Macros for printing using RTE_LOG */
 #define RTE_LOGTYPE_REORDER	RTE_LOGTYPE_USER1
 
+#define OPTIMIZATION
+
 /* A generic circular buffer */
 struct cir_buffer {
 	unsigned int size;   /**< Number of entries that can be stored */
 	unsigned int mask;   /**< [buffer_size - 1]: used for wrap-around */
 	unsigned int head;   /**< insertion point in buffer */
+#ifdef OPTIMIZATION
+    unsigned int len;
+#endif
 	unsigned int tail;   /**< extraction point in buffer */
 	struct rte_mbuf **entries;
 } __rte_cache_aligned;
@@ -114,12 +119,18 @@ rte_reorder_init(struct rte_reorder_buffer *b, unsigned int bufsize,
 	memset(b, 0, bufsize);
 	snprintf(b->name, sizeof(b->name), "%s", name);
 	b->memsize = bufsize;
-	b->order_buf.size = b->ready_buf.size = size;
+
+#ifdef OPTIMIZATION
+    b->order_buf.size = size << 1;
+    b->order_buf.mask = (size << 1) -1;
+    b->order_buf.entries = (void *)&b[1];
+#else
+    b->order_buf.size = b->ready_buf.size = size;
 	b->order_buf.mask = b->ready_buf.mask = size - 1;
 	b->ready_buf.entries = (void *)&b[1];
 	b->order_buf.entries = RTE_PTR_ADD(&b[1],
 			size * sizeof(b->ready_buf.entries[0]));
-
+#endif
 	return b;
 }
 
@@ -205,8 +216,10 @@ rte_reorder_free_mbufs(struct rte_reorder_buffer *b)
 	for (i = 0; i < b->order_buf.size; i++) {
 		if (b->order_buf.entries[i])
 			rte_pktmbuf_free(b->order_buf.entries[i]);
-		if (b->ready_buf.entries[i])
+#ifndef OPTIMIZATION
+        if (b->ready_buf.entries[i])
 			rte_pktmbuf_free(b->ready_buf.entries[i]);
+#endif
 	}
 }
 
@@ -269,6 +282,7 @@ rte_reorder_find_existing(const char *name)
 	return b;
 }
 
+#ifndef OPTIMIZATION
 static unsigned
 rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 {
@@ -319,6 +333,7 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 	/* Return the number of positions the order_buf head has moved */
 	return order_head_adv;
 }
+#endif
 
 int
 rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
@@ -359,7 +374,18 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 	 *       was previously skipped, so just enqueue the packet for
 	 *       immediate return on the next drain call, or else return error.
 	 */
-	if (offset < b->order_buf.size) {
+#ifdef OPTIMIZATION
+    if (offset < b->order_buf.size) {
+		position = (order_buf->head + offset) & order_buf->mask;
+		order_buf->entries[position] = mbuf;
+	    order_buf->len++;
+    } else {
+		/* Put in handling for enqueue straight to output */
+		rte_errno = ENOSPC;
+		return -1;
+	}
+#else
+    if (offset < b->order_buf.size) {
 		position = (order_buf->head + offset) & order_buf->mask;
 		order_buf->entries[position] = mbuf;
 	} else if (offset < 2 * b->order_buf.size) {
@@ -377,6 +403,7 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 		rte_errno = ERANGE;
 		return -1;
 	}
+#endif
 	return 0;
 }
 
@@ -385,7 +412,36 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 		unsigned max_mbufs)
 {
 	unsigned int drain_cnt = 0;
+#ifdef OPTIMIZATION
+	struct cir_buffer *order_buf = &b->order_buf;
+    unsigned size = order_buf->size;
+    unsigned threshhold = (size >> 1);
+    unsigned i=0;
+    
+    max_mbufs = max_mbufs > order_buf->len?max_mbufs:order_buf->len;
 
+    while (i < threshhold && drain_cnt < max_mbufs){
+        while (order_buf->entries[order_buf->head] == NULL){
+            order_buf->head = (order_buf->head + 1) & order_buf->mask;
+            i++;
+        }
+        while (order_buf->entries[order_buf->head] && drain_cnt < max_mbufs) {
+            mbufs[drain_cnt++] = order_buf->entries[order_buf->head];
+            order_buf->head = (order_buf->head + 1) & order_buf->mask;
+            i++;
+        }
+    }
+    b->min_seqn += i;
+
+	while ((drain_cnt < max_mbufs) &&
+			(order_buf->entries[order_buf->head] != NULL)) {
+		mbufs[drain_cnt++] = order_buf->entries[order_buf->head];
+		order_buf->entries[order_buf->head] = NULL;
+		b->min_seqn++;
+		order_buf->head = (order_buf->head + 1) & order_buf->mask;
+    }
+    order_buf->len -= drain_cnt;
+#else
 	struct cir_buffer *order_buf = &b->order_buf,
 			*ready_buf = &b->ready_buf;
 
@@ -406,6 +462,6 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 		b->min_seqn++;
 		order_buf->head = (order_buf->head + 1) & order_buf->mask;
 	}
-
+#endif
 	return drain_cnt;
 }

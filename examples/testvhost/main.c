@@ -947,8 +947,8 @@ do_drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
     count = rte_eth_tx_burst(vid&1, qid ,
 				 tx_q->m_table, tx_q->len);
     //if (unlikely(count < tx_q->len))
-	//	free_pkts(&tx_q->m_table[count], tx_q->len - count);
-	free_pkts(&tx_q->m_table[0], tx_q->len );
+		free_pkts(&tx_q->m_table[count], tx_q->len - count);
+	//free_pkts(&tx_q->m_table[0], tx_q->len );
     (void)count;
 	tx_q->len = 0;
     //printf("tx drain:%d\n",count);
@@ -1108,7 +1108,7 @@ drain_eth_rx(struct vhost_dev *vdev)
 		rte_atomic64_add(&vdev->stats.rx_atomic, enqueue_count);
 	}
 
-	//free_pkts(pkts, rx_count);
+	free_pkts(pkts, rx_count);
     }
 }
 

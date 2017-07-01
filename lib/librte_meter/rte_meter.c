@@ -80,9 +80,9 @@ rte_meter_srtcm_config(struct rte_meter_srtcm *m, struct rte_meter_srtcm_params 
 	m->te = m->ebs = params->ebs;
 	rte_meter_get_tb_params(hz, params->cir, &m->cir_period, &m->cir_bytes_per_period);
 
-	RTE_LOG(INFO, METER, "Low level srTCM config: \n"
-		"\tCIR period = %" PRIu64 ", CIR bytes per period = %" PRIu64 "\n",
-		m->cir_period, m->cir_bytes_per_period);
+//	RTE_LOG(INFO, METER, "Low level srTCM config: \n"
+//		"\tCIR period = %" PRIu64 ", CIR bytes per period = %" PRIu64 "\n",
+//		m->cir_period, m->cir_bytes_per_period);
 
 	return 0;
 }
