@@ -115,6 +115,7 @@ dep_main.o = /root/lixu/examples/l2fwd/main.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_random.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_ether.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_spinlock.h \

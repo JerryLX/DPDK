@@ -357,7 +357,6 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 
 //#define OPTIMIZATION
 
-#ifndef OPTIMIZATION
 #define ENQUEUE_PTRS() do { \
 	const uint32_t size = r->prod.size; \
 	uint32_t idx = prod_head & mask; \
@@ -380,8 +379,8 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 			r->ring[idx] = obj_table[i]; \
 	} \
 } while(0)
-#else
-#define ENQUEUE_PTRS() do { \
+
+#define ENQUEUE_PTRS_MEMCPY() do { \
     (void) i; \
     const uint32_t size = r->prod.size; \
     uint32_t idx = prod_head & mask; \
@@ -392,12 +391,10 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
         memcpy(r->ring, &(obj_table[size-idx]), (n-size+idx)*sizeof(void *));\
     }\
 } while(0)  
-#endif
 
 /* the actual copy of pointers on the ring to obj_table.
  * Placed here since identical code needed in both
  * single and multi consumer dequeue functions */
-#ifndef OPTIMIZATION
 #define DEQUEUE_PTRS() do { \
 	uint32_t idx = cons_head & mask; \
 	const uint32_t size = r->cons.size; \
@@ -420,8 +417,8 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
 			obj_table[i] = r->ring[idx]; \
 	} \
 } while (0)
-#else
-#define DEQUEUE_PTRS() do { \
+
+#define DEQUEUE_PTRS_MEMCPY() do { \
     (void) i; \
     const uint32_t size = r->cons.size; \
     uint32_t idx = cons_head & mask; \
@@ -432,7 +429,6 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
         memcpy(&(obj_table[size-idx]), r->ring, (n-size+idx)*sizeof(void *));\
     }\
 } while(0)
-#endif
 
 /**
  * @internal Enqueue several objects on the ring (multi-producers safe).
@@ -512,8 +508,14 @@ __rte_ring_mp_do_enqueue(struct rte_ring *r, void * const *obj_table,
 	} while (unlikely(success == 0));
 
 	/* write entries in ring */
-	ENQUEUE_PTRS();
-	rte_smp_wmb();
+#ifdef OPTIMIZATION
+    if(n < 32) 
+        ENQUEUE_PTRS();
+    else ENQUEUE_PTRS_MEMCPY();
+#else
+    ENQUEUE_PTRS();
+#endif
+    rte_smp_wmb();
 
 	/* if we exceed the watermark */
 	if (unlikely(((mask + 1) - free_entries + n) > r->prod.watermark)) {
@@ -607,7 +609,13 @@ __rte_ring_sp_do_enqueue(struct rte_ring *r, void * const *obj_table,
 	r->prod.head = prod_next;
 
 	/* write entries in ring */
-	ENQUEUE_PTRS();
+#ifdef OPTIMIZATION
+    if(n < 32) 
+        ENQUEUE_PTRS();
+    else ENQUEUE_PTRS_MEMCPY();
+#else
+    ENQUEUE_PTRS();
+#endif
 	rte_smp_wmb();
 
 	/* if we exceed the watermark */
@@ -703,7 +711,13 @@ __rte_ring_mc_do_dequeue(struct rte_ring *r, void **obj_table,
 	} while (unlikely(success == 0));
 
 	/* copy in table */
-	DEQUEUE_PTRS();
+//	DEQUEUE_PTRS();
+#ifdef OPTIMIZATION
+    if(n < 32) DEQUEUE_PTRS();
+    else DEQUEUE_PTRS_MEMCPY();
+#else
+    DEQUEUE_PTRS();
+#endif
 	rte_smp_rmb();
 
 	/*
@@ -787,7 +801,15 @@ __rte_ring_sc_do_dequeue(struct rte_ring *r, void **obj_table,
 	r->cons.head = cons_next;
 
 	/* copy in table */
-	DEQUEUE_PTRS();
+//	DEQUEUE_PTRS();
+#ifdef OPTIMIZATION
+    if(n < 32) 
+        DEQUEUE_PTRS();
+    else 
+        DEQUEUE_PTRS_MEMCPY();
+#else
+    DEQUEUE_PTRS();
+#endif
 	rte_smp_rmb();
 
 	__RING_STAT_ADD(r, deq_success, n);

@@ -73,9 +73,9 @@
 #include <rte_mbuf.h>
 #include <rte_ring.h>
 
-#define RING_SIZE 4096
+#define RING_SIZE 16384
 #define MAX_BULK 32
-#define BURST_SIZE 256
+#define BURST_SIZE 128
 #define OPTIMIZATION
 static uint64_t timer_period = 100000000;
 

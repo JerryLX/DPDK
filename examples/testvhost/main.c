@@ -65,8 +65,8 @@
 #define MBUF_CACHE_SIZE	256
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 32		/* Max burst size for RX/TX */
-#define MAX_PKT_TX_BURST 32
+#define MAX_PKT_BURST 64		/* Max burst size for RX/TX */
+#define MAX_PKT_TX_BURST 64
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */

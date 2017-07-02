@@ -296,7 +296,7 @@ l2fwd_main_loop(void)
             for(qid = 0; qid<16;qid++){
 			nb_rx = rte_eth_rx_burst((uint8_t) portid, qid,
 						 pkts_burst, MAX_PKT_BURST);
-			port_statistics[portid].rx += nb_rx;
+            port_statistics[portid].rx += nb_rx;
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
 				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
