@@ -63,9 +63,9 @@
 #include <rte_branch_prediction.h>
 #include <rte_optimization.h>
 
-#ifdef OPTIMIZATION
-#include <rte_ring.h>
-#endif
+//#ifdef OPTIMIZATION
+//#include <rte_ring.h>
+//#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -890,7 +890,7 @@ struct rte_mbuf {
 	/** Timesync flags for use with IEEE1588. */
 	uint16_t timesync;
 //#ifdef OPTIMIZATION
-   struct rte_ring *cache_ring;
+//   struct rte_ring *cache_ring;
 //#endif
 } __rte_cache_aligned;
 
@@ -1419,7 +1419,9 @@ static inline void rte_pktmbuf_reset(struct rte_mbuf *m)
 			RTE_PKTMBUF_HEADROOM : m->buf_len;
 
 	m->data_len = 0;
-    m->cache_ring = NULL;
+//#ifdef OPTIMIZATION
+//    m->cache_ring = NULL;
+//#endif
 	__rte_mbuf_sanity_check(m, 1);
 }
 
@@ -1615,12 +1617,12 @@ __rte_pktmbuf_prefree_seg(struct rte_mbuf *m)
 static inline void __attribute__((always_inline))
 rte_pktmbuf_free_seg(struct rte_mbuf *m)
 {
-#ifdef OPTIMIZATION
-    if(m->cache_ring != NULL){
-        rte_ring_enqueue(m->cache_ring, (void *)m);
-        return;
-    }
-#endif
+//#ifdef OPTIMIZATION
+//    if(m->cache_ring != NULL){
+//        rte_ring_enqueue(m->cache_ring, (void *)m);
+//        return;
+//    }
+//#endif
 	if (likely(NULL != (m = __rte_pktmbuf_prefree_seg(m)))) {
 		m->next = NULL;
 		__rte_mbuf_raw_free(m);
