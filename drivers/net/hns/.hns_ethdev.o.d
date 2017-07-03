@@ -67,6 +67,7 @@ dep_hns_ethdev.o = hns_ethdev.c /usr/include/stdc-predef.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_log.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_common.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \

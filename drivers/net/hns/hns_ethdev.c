@@ -51,6 +51,10 @@ static const struct rte_platform_id platform_id_hns_map[] = {
 #define rte_packet_prefetch(p) rte_prefetch1(p)
 #endif
 
+#ifdef OPTIMIZATION
+#undef OPTIMIZATION
+#endif
+
 static void
 get_v2rx_desc_bnum(uint32_t bnum_flag, uint16_t *out_bnum)
 {
@@ -433,9 +437,20 @@ void
 eth_hns_rx_queue_release(void *queue) {
     if(queue != NULL){
         struct hns_rx_queue *rxq = queue;
+
+#ifdef OPTIMIZATION
+        struct rte_mbuf *bufs[256];
+        int num, i;
+        num = rte_ring_dequeue_burst(rxq->cache_ring, (void **)bufs, 256);
+        for(i=0;i<num;i++){
+            bufs[i]->cache_ring = NULL;
+            rte_pktmbuf_free_seg(bufs[i]);
+        }
+#endif
         hns_rx_queue_release_mbufs(rxq);
         rte_free(rxq->sw_ring);
         rte_free(rxq);
+
     }
 }
 
@@ -552,6 +567,11 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
     struct hns_adapter *hns = dev->data->dev_private;
     struct hns_rx_queue *rxq;
     int i;
+
+#ifdef OPTIMIZATION
+    char cache_ring_name[64];
+#endif
+
     (void) socket;
     (void) nb_desc;
     if(dev->data->rx_queues[idx] != NULL){
@@ -585,14 +605,35 @@ eth_hns_rx_queue_setup(struct rte_eth_dev *dev, uint16_t idx, uint16_t nb_desc,
         eth_hns_rx_queue_release(rxq);
         return -ENOMEM;
     }
+    
+#ifdef OPTIMIZATION
+    snprintf(cache_ring_name, 64, "Port%d RXQ%d Cache",dev->data->port_id, idx);
+    printf("%s\n",cache_ring_name);
+    rxq->cache_ring = rte_ring_create(cache_ring_name, 256, socket, 0);
+    for(i = 0; i < 256; i++){
+        struct rte_mbuf *mbuf = rte_mbuf_raw_alloc(rxq->mb_pool);
+        if(!mbuf){
+            printf("no more mbuf!\n");
+            return -1;
+        }
+        mbuf->cache_ring = rxq->cache_ring;
+        rte_ring_enqueue(rxq->cache_ring,(void *)mbuf);
+    }
+#endif
     for(i = 0;i<rxq->nb_rx_desc;i++){
         struct rte_mbuf *mbuf = rte_mbuf_raw_alloc(rxq->mb_pool);
         if(!mbuf){
             printf("no more mbuf!\n");
             return -1;
         }
+        
+#ifdef OPTIMIZATION
+        mbuf->cache_ring = rxq->cache_ring;
+#endif
         rxq->sw_ring[i].mbuf = mbuf;
     }
+
+
     PMD_INIT_LOG(DEBUG, "sw_ring=%p", rxq->sw_ring);
     rxq->next_to_use = 0;
     rxq->next_to_clean = 0;
@@ -643,6 +684,10 @@ eth_hns_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts, uint16_t nb_pkts)
     uint32_t bnum_flag;
     uint16_t current_num;
     int length;
+
+#ifdef OPTIMIZATION
+    void *nmb_buf[1];
+#endif
    // uint8_t ip_offset;
 //    unsigned long long value;
 
@@ -669,6 +714,17 @@ next_desc:
         rxd = *rxdp;
         rxe = &sw_ring[rx_id];
 
+#ifdef OPTIMIZATION
+        if(rte_ring_dequeue(rxq->cache_ring, 
+                    nmb_buf)<0){
+            PMD_RX_LOG(DEBUG, "RX mbuf alloc failed port_id=%u "
+                        "queue_id=%u", (unsigned) rxq->port_id,
+                        (unsigned) rxq->queue_id);
+            rte_eth_devices[rxq->port_id].data->rx_mbuf_alloc_failed++;
+            break;
+        }
+        nmb = nmb_buf[0];
+#else
         nmb = rte_mbuf_raw_alloc(rxq->mb_pool);
         if (nmb == NULL){
             PMD_RX_LOG(DEBUG, "RX mbuf alloc failed port_id=%u "
@@ -677,7 +733,7 @@ next_desc:
             rte_eth_devices[rxq->port_id].data->rx_mbuf_alloc_failed++;
             break;
         }
-
+#endif
         nb_hold++;
         rx_id++;
         if(rx_id == rxq->nb_rx_desc) {

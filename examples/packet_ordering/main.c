@@ -501,7 +501,7 @@ send_thread(struct send_thread_args *args)
 	int ret;
 	unsigned int i, dret;
 	uint16_t nb_dq_mbufs;
-	uint8_t outp, qid;
+    uint8_t outp, qid=0;
 	unsigned sent;
 	struct rte_mbuf *mbufs[MAX_PKTS_BURST];
 	struct rte_mbuf *rombufs[MAX_PKTS_BURST] = {NULL};
@@ -549,13 +549,14 @@ send_thread(struct send_thread_args *args)
 			}
 		}
 
-            for(qid=0;qid<16;qid++){
+        for(qid=0;qid<16;qid++){
 		/*
 		 * drain MAX_PKTS_BURST of reordered
 		 * mbufs for transmit
 		 */
 		dret = rte_reorder_drain(args->buffer, rombufs, MAX_PKTS_BURST);
-		for (i = 0; i < dret; i++) {
+		if(dret == 0) break;
+        for (i = 0; i < dret; i++) {
 
 			struct rte_eth_dev_tx_buffer *outbuf;
 			uint8_t outp1;

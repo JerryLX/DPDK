@@ -43,7 +43,7 @@ enum policer_action {
 
 enum policer_action policer_table[e_RTE_METER_COLORS][e_RTE_METER_COLORS] =
 {
-	{ GREEN, RED, RED},
+	{ GREEN, YELLOW, RED},
 	{ DROP, YELLOW, RED},
 	{ DROP, DROP, RED}
 };

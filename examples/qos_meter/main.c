@@ -142,7 +142,9 @@ static struct rte_eth_conf port_conf_default = {
 		.mq_mode = ETH_DCB_NONE,
 	},
 };
-
+static uint64_t count_rx=0;
+static uint64_t count_tx=0;
+static uint64_t count_drop=0;
 static unsigned nb_ports;
 
 static struct rte_eth_dev_tx_buffer *tx_buffer[nQUEUE];
@@ -155,16 +157,22 @@ struct rte_meter_trtcm_params app_trtcm_params[] = {
 	{.cir = 1000000 * 46,  .pir = 1500000 * 46,  .cbs = 2048, .pbs = 2048},
 };
 
+
+static volatile bool force_quit;
+
 #define APP_FLOWS_MAX  256
 
 FLOW_METER app_flows[APP_FLOWS_MAX];
+
+static int color[3]={0,0,0};
+
 
 static int
 app_configure_flow_table(void)
 {
 	uint32_t i, j;
 	int ret;
-
+//printf("hz:%lu\n", rte_get_tsc_hz());
 	for (i = 0, j = 0; i < APP_FLOWS_MAX;
 			i ++, j = (j + 1) % RTE_DIM(PARAMS)) {
 		ret = FUNC_CONFIG(&app_flows[i], &PARAMS[j]);
@@ -189,17 +197,18 @@ app_pkt_handle(struct rte_mbuf *pkt, uint64_t time)
 	uint32_t pkt_len = rte_pktmbuf_pkt_len(pkt) - sizeof(struct ether_hdr);
 	uint8_t flow_id = (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
 	input_color = pkt_data[APP_PKT_COLOR_POS];
-	enum policer_action action;
-
+    enum policer_action action;
+//    printf("flow_id = %d, input_color = %d\n", flow_id, input_color); 
 	/* color input is not used for blind modes */
 	output_color = (uint8_t) FUNC_METER(&app_flows[flow_id], time, pkt_len,
 		(enum rte_meter_color) input_color);
-
+    color[output_color]++; 
 	/* Apply policing and set the output color */
 	action = policer_table[input_color][output_color];
+   // printf("input_color= %d, output_color= %d, action= %d\n",input_color, output_color, action);
 	app_set_pkt_color(pkt_data, action);
-
-	return action;
+    return output_color;
+    //return action;
 }
 
 
@@ -277,8 +286,16 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 
 
 
-static __attribute__((noreturn)) int
-main_loop(__attribute__((unused)) void *dummy)
+//static __attribute__((noreturn)) int
+//main_loop(__attribute__((unused)) void *dummy)
+static void main_loop(void);
+static int test_qos_one_core (__attribute__ ((unused)) void *dummy)
+{
+    main_loop();
+    return 0;
+}
+
+static void main_loop(void)
 {
 	uint64_t current_time, last_time = rte_rdtsc();
 	uint32_t lcore_id = rte_lcore_id();
@@ -287,7 +304,7 @@ main_loop(__attribute__((unused)) void *dummy)
 	uint16_t port_rx=0;
 	printf("Core %u: port RX = %d, port TX = %d\n", lcore_id, port_rx, port_tx);
 
-	while (1) {
+	while (!force_quit) {
 		uint64_t time_diff;
 		int i, nb_rx;
 
@@ -301,27 +318,42 @@ main_loop(__attribute__((unused)) void *dummy)
 			}
 			last_time = current_time;
 		}
-
 		/* Read packet burst from NIC RX */
 		for(qid=0;qid<16;qid++){
 			struct rte_mbuf *pkts_rx[BURST_SIZE];
 			nb_rx = rte_eth_rx_burst(port_rx, qid, pkts_rx, BURST_SIZE);
+            count_rx+=nb_rx;
 			/* Handle packets */
 			for (i = 0; i < nb_rx; i ++) {
 				struct rte_mbuf *pkt = pkts_rx[i];
 
 				/* Handle current packet */
-				if (app_pkt_handle(pkt, current_time) == DROP)
-					rte_pktmbuf_free(pkt);
-				else
+				if (  app_pkt_handle(pkt, current_time) == DROP)  //||DROP)
+                {	
+                    count_drop++;
+                    rte_pktmbuf_free(pkt);
+                }
+				else{
+                    count_tx++;
 					rte_eth_tx_buffer(port_tx, qid, tx_buffer[qid], pkt);
+                }
 			}
 		}
-		
-
-		
 	}
 }
+
+static void
+signal_handler(int signum)
+{
+    if(signum == SIGINT || signum == SIGTERM){
+        printf("Signal %d erceived, preparing to exit...\n",
+                signum);
+        force_quit = true;
+    }
+}
+
+
+
 
 
 /* Main function, does initialisation and calls the per-lcore functions */
@@ -338,7 +370,10 @@ main(int argc, char *argv[])
 		rte_exit(EXIT_FAILURE, "Error with EAL initialization\n");
 	argc -= ret;
 	argv += ret;
-
+    
+    force_quit=false;
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
     
 	nb_ports = rte_eth_dev_count();
     printf("num of ports: %d\n", nb_ports);
@@ -366,8 +401,15 @@ main(int argc, char *argv[])
 
 
 	/* Launch per-lcore init on every lcore */
-	rte_eal_mp_remote_launch(main_loop, NULL, CALL_MASTER);
+	rte_eal_mp_remote_launch(test_qos_one_core, NULL, CALL_MASTER);
+    printf("\n============statistics==================\n\n");
+    printf("count_rx   = %lu\n", count_rx);
+    printf("count_tx   = %lu\n", count_tx);
+    printf("count_drop = %lu\n",count_drop);
 
+
+    printf("%d, %d, %d\n", color[0],color[1],color[2]);
+    printf("\n============statistics==================\n\n");
 
 	return 0;
 }

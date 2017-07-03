@@ -3,6 +3,8 @@
 #define _HNS_ETHDEV_H_
 
 #include "hns_compat.h"
+#include <rte_optimization.h>
+#include <rte_ring.h>
 
 #define HNS_RX_HEAD_SIZE 256
 #define MAX_SKB_FRAGS 18
@@ -243,6 +245,10 @@ struct hns_rx_queue{
     uint16_t next_to_clean;
     uint16_t next_to_use;
     uint16_t rx_free_thresh;
+
+#ifdef OPTIMIZATION
+    struct rte_ring* cache_ring;
+#endif
 };
 
 struct hns_tx_queue{
