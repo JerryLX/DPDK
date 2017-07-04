@@ -105,6 +105,11 @@ extern "C" {
 #include <rte_optimization.h>
 #define RTE_TAILQ_RING_NAME "RTE_RING"
 
+#ifdef OPTIMIZATION
+#undef OPTIMIZATION
+#endif
+
+
 enum rte_ring_queue_behavior {
 	RTE_RING_QUEUE_FIXED = 0, /* Enq/Deq a fixed number of items from a ring */
 	RTE_RING_QUEUE_VARIABLE   /* Enq/Deq as many items a possible from ring */

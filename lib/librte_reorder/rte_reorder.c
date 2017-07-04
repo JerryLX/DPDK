@@ -43,6 +43,9 @@
 #include <rte_optimization.h>
 #include "rte_reorder.h"
 
+#ifdef OPTIMIZATION
+#undef OPTIMIZATION
+#endif
 
 TAILQ_HEAD(rte_reorder_list, rte_tailq_entry);
 
@@ -293,11 +296,12 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 	 * has room for those packets.
 	 */
 #ifdef OPTIMIZATION
+    
     while (order_head_adv < n &&
 			(ready_buf->len  + 1) < ready_buf->size) {
 
 		/* if we are blocked waiting on a packet, skip it */
-		while (order_buf->entries[order_buf->head] == NULL) {
+		if (order_buf->entries[order_buf->head] == NULL) {
 			order_buf->head = (order_buf->head + 1) & order_buf->mask;
 			order_head_adv++;
 		}
@@ -315,6 +319,7 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
             ready_buf->len++;
 			if (ready_buf->len == ready_buf->size)
 				break;
+            ready_buf->head = (ready_buf->head + 1) & ready_buf->mask;
 
 		}
 	}
