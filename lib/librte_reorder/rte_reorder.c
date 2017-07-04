@@ -43,9 +43,9 @@
 #include <rte_optimization.h>
 #include "rte_reorder.h"
 
-#ifdef OPTIMIZATION
-#undef OPTIMIZATION
-#endif
+//#ifdef OPTIMIZATION
+//#undef OPTIMIZATION
+//#endif
 
 TAILQ_HEAD(rte_reorder_list, rte_tailq_entry);
 
@@ -296,32 +296,33 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 	 * has room for those packets.
 	 */
 #ifdef OPTIMIZATION
-    
+    unsigned ready_size = ready_buf->size; 
+    unsigned temp = ready_buf->len;
+    unsigned ready_head = ready_buf->tail+temp;
     while (order_head_adv < n &&
-			(ready_buf->len  + 1) < ready_buf->size) {
-
+			(ready_buf->len  + 1) != ready_size) {
 		/* if we are blocked waiting on a packet, skip it */
 		if (order_buf->entries[order_buf->head] == NULL) {
 			order_buf->head = (order_buf->head + 1) & order_buf->mask;
 			order_head_adv++;
 		}
-
 		/* Move all ready entries that fit to the ready_buf */
 		while (order_buf->entries[order_buf->head] != NULL) {
-			ready_buf->entries[ready_buf->head] =
+			ready_buf->entries[ready_head] =
 					order_buf->entries[order_buf->head];
 
 			order_buf->entries[order_buf->head] = NULL;
-			order_head_adv++;
+			//order_head_adv++;
 
 			order_buf->head = (order_buf->head + 1) & order_buf->mask;
 
             ready_buf->len++;
 			if (ready_buf->len == ready_buf->size)
 				break;
-            ready_buf->head = (ready_buf->head + 1) & ready_buf->mask;
-
+            ready_head = (ready_head+1)&ready_buf->mask;
 		}
+        order_head_adv += (ready_buf->len - temp);
+        temp = ready_buf->len;
 	}
 #else
     while (order_head_adv < n &&
@@ -449,10 +450,47 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 
     unsigned int cnt = RTE_MIN(ready_buf->len, max_mbufs);
 	/* Try to fetch requested number of mbufs from ready buffer */
-	while (drain_cnt < cnt) {
-		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
-		ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;
-	}
+//	while (drain_cnt < cnt) {
+//		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+//		ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;
+//	}
+    
+    if(ready_buf->tail + cnt >= ready_buf->size){
+        unsigned right = ready_buf->size-ready_buf->tail;
+        unsigned left = cnt - right;
+        if(right < 8){
+            while(drain_cnt < right){
+        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+		        ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;   
+            }
+        } else {
+            memcpy(mbufs, &(ready_buf->entries[ready_buf->tail]),right*sizeof(struct rte_mbuf*));
+            drain_cnt += right;
+            ready_buf->tail = (ready_buf->tail+right) & ready_buf->mask;
+        }
+        if(left < 8){
+            while(drain_cnt < right){
+        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+		        ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;   
+            }
+        } else {
+            memcpy(&mbufs[drain_cnt], ready_buf->entries,left*sizeof(struct rte_mbuf*));
+            drain_cnt += left;
+            ready_buf->tail = (ready_buf->tail+left) & ready_buf->mask;
+        } 
+    } else {
+        if(cnt < 8){
+            while(drain_cnt < cnt){
+        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+		        ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;   
+            }
+        } else {
+            memcpy(mbufs, &(ready_buf->entries[ready_buf->tail]),cnt*sizeof(struct rte_mbuf*));
+            drain_cnt += cnt;
+            ready_buf->tail = (ready_buf->tail+cnt) & ready_buf->mask;
+        }
+    }
+
     ready_buf->len-=drain_cnt;
 
 	/*
@@ -463,9 +501,9 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 			(order_buf->entries[order_buf->head] != NULL)) {
 		mbufs[drain_cnt++] = order_buf->entries[order_buf->head];
 		order_buf->entries[order_buf->head] = NULL;
-		b->min_seqn++;
 		order_buf->head = (order_buf->head + 1) & order_buf->mask;
 	}
+    b->min_seqn += (drain_cnt - cnt);
 #else
 	struct cir_buffer *order_buf = &b->order_buf,
 			*ready_buf = &b->ready_buf;

@@ -105,9 +105,9 @@ extern "C" {
 #include <rte_optimization.h>
 #define RTE_TAILQ_RING_NAME "RTE_RING"
 
-#ifdef OPTIMIZATION
-#undef OPTIMIZATION
-#endif
+//#ifdef OPTIMIZATION
+//#undef OPTIMIZATION
+//#endif
 
 
 enum rte_ring_queue_behavior {
@@ -360,7 +360,6 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
  * Placed here since identical code needed in both
  * single and multi producer enqueue functions */
 
-//#define OPTIMIZATION
 
 #define ENQUEUE_PTRS() do { \
 	const uint32_t size = r->prod.size; \
@@ -394,6 +393,37 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
     } else { \
         memcpy(&(r->ring[idx]), obj_table,(size-idx)*sizeof(void *));\
         memcpy(r->ring, &(obj_table[size-idx]), (n-size+idx)*sizeof(void *));\
+    }\
+} while(0)  
+
+#define ENQUEUE_PTRS_MERGE() do { \
+    const uint32_t size = r->prod.size; \
+    uint32_t idx = prod_head & mask; \
+    if (likely(idx + n < size)) {\
+        if (n < 8) {\
+		    for (i = 0; i < n; i++, idx++){\
+			    r->ring[idx] = obj_table[i];\
+            }\
+        } else{ \
+            memcpy(&(r->ring[idx]), obj_table, n * sizeof(void *));\
+        }\
+    } else { \
+        uint32_t right = size-idx;\
+        uint32_t left = n-right;\
+        if(right < 8){\
+            for(i=0;i<right;i++,idx++){\
+                r->ring[idx] = obj_table[i];\
+            }\
+        }else{\
+            memcpy(&(r->ring[idx]), obj_table,right*sizeof(void *));\
+        }\
+        if(left<8){\
+            for(i=0;i<left;i++){\
+                r->ring[i] = obj_table[i+right];\
+            }\
+        } else{ \
+            memcpy(r->ring, &(obj_table[right]), left*sizeof(void *));\
+        }\
     }\
 } while(0)  
 
@@ -435,6 +465,36 @@ void rte_ring_dump(FILE *f, const struct rte_ring *r);
     }\
 } while(0)
 
+#define DEQUEUE_PTRS_MERGE() do { \
+    const uint32_t size = r->cons.size; \
+    uint32_t idx = cons_head & mask; \
+    if (likely(idx + n < size)) {\
+        if (n < 8) {\
+		    for (i = 0; i < n; i++, idx++){\
+			    obj_table[i] = r->ring[idx];\
+            }\
+        } else{ \
+            memcpy(obj_table, &(r->ring[idx]), n * sizeof(void *));\
+        }\
+    } else { \
+        uint32_t right = size-idx;\
+        uint32_t left = n-right;\
+        if(right < 8){\
+            for(i=0;i<right;i++,idx++){\
+			    obj_table[i] = r->ring[idx];\
+            }\
+        }else{\
+            memcpy(obj_table, &(r->ring[idx]),right*sizeof(void *));\
+        }\
+        if(left<8){\
+            for(i=0;i<left;i++){\
+                obj_table[i+right] = r->ring[i];\
+            }\
+        } else{ \
+            memcpy(&(obj_table[size-idx]), r->ring, left*sizeof(void *));\
+        }\
+    }\
+} while(0)  
 /**
  * @internal Enqueue several objects on the ring (multi-producers safe).
  *
@@ -517,6 +577,7 @@ __rte_ring_mp_do_enqueue(struct rte_ring *r, void * const *obj_table,
     if(n < 32) 
         ENQUEUE_PTRS();
     else ENQUEUE_PTRS_MEMCPY();
+//    ENQUEUE_PTRS_MERGE();
 #else
     ENQUEUE_PTRS();
 #endif
@@ -618,6 +679,7 @@ __rte_ring_sp_do_enqueue(struct rte_ring *r, void * const *obj_table,
     if(n < 32) 
         ENQUEUE_PTRS();
     else ENQUEUE_PTRS_MEMCPY();
+//    ENQUEUE_PTRS_MERGE();
 #else
     ENQUEUE_PTRS();
 #endif
@@ -720,6 +782,7 @@ __rte_ring_mc_do_dequeue(struct rte_ring *r, void **obj_table,
 #ifdef OPTIMIZATION
     if(n < 32) DEQUEUE_PTRS();
     else DEQUEUE_PTRS_MEMCPY();
+//    DEQUEUE_PTRS_MERGE();
 #else
     DEQUEUE_PTRS();
 #endif
@@ -812,6 +875,7 @@ __rte_ring_sc_do_dequeue(struct rte_ring *r, void **obj_table,
         DEQUEUE_PTRS();
     else 
         DEQUEUE_PTRS_MEMCPY();
+//    DEQUEUE_PTRS_MERGE();
 #else
     DEQUEUE_PTRS();
 #endif

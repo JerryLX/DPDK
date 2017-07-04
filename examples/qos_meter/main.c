@@ -192,21 +192,23 @@ app_set_pkt_color(uint8_t *pkt_data, enum policer_action color)
 static inline int
 app_pkt_handle(struct rte_mbuf *pkt, uint64_t time)
 {
+
 	uint8_t input_color, output_color;
 	uint8_t *pkt_data = rte_pktmbuf_mtod(pkt, uint8_t *);
 	uint32_t pkt_len = rte_pktmbuf_pkt_len(pkt) - sizeof(struct ether_hdr);
 	uint8_t flow_id = (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
 	input_color = pkt_data[APP_PKT_COLOR_POS];
-    enum policer_action action;
+//    enum policer_action action;
 //    printf("flow_id = %d, input_color = %d\n", flow_id, input_color); 
 	/* color input is not used for blind modes */
 	output_color = (uint8_t) FUNC_METER(&app_flows[flow_id], time, pkt_len,
 		(enum rte_meter_color) input_color);
     color[output_color]++; 
+    (void)input_color;
 	/* Apply policing and set the output color */
-	action = policer_table[input_color][output_color];
+//	action = policer_table[input_color][output_color];
    // printf("input_color= %d, output_color= %d, action= %d\n",input_color, output_color, action);
-	app_set_pkt_color(pkt_data, action);
+//	app_set_pkt_color(pkt_data, action);
     return output_color;
     //return action;
 }
@@ -295,6 +297,8 @@ static int test_qos_one_core (__attribute__ ((unused)) void *dummy)
     return 0;
 }
 
+
+
 static void main_loop(void)
 {
 	uint64_t current_time, last_time = rte_rdtsc();
@@ -328,7 +332,7 @@ static void main_loop(void)
 				struct rte_mbuf *pkt = pkts_rx[i];
 
 				/* Handle current packet */
-				if (  app_pkt_handle(pkt, current_time) == DROP)  //||DROP)
+				if ( app_pkt_handle(pkt, current_time) == DROP)  //||DROP)
                 {	
                     count_drop++;
                     rte_pktmbuf_free(pkt);
