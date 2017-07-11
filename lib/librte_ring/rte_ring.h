@@ -574,10 +574,11 @@ __rte_ring_mp_do_enqueue(struct rte_ring *r, void * const *obj_table,
 
 	/* write entries in ring */
 #ifdef OPTIMIZATION
-    if(n < 32) 
-        ENQUEUE_PTRS();
-    else ENQUEUE_PTRS_MEMCPY();
-//    ENQUEUE_PTRS_MERGE();
+//    if(n < 32) 
+//        ENQUEUE_PTRS();
+//    else 
+//        ENQUEUE_PTRS_MEMCPY();
+    ENQUEUE_PTRS_MERGE();
 #else
     ENQUEUE_PTRS();
 #endif
@@ -676,10 +677,11 @@ __rte_ring_sp_do_enqueue(struct rte_ring *r, void * const *obj_table,
 
 	/* write entries in ring */
 #ifdef OPTIMIZATION
-    if(n < 32) 
-        ENQUEUE_PTRS();
-    else ENQUEUE_PTRS_MEMCPY();
-//    ENQUEUE_PTRS_MERGE();
+//    if(n < 32) 
+//        ENQUEUE_PTRS();
+//    else 
+//        ENQUEUE_PTRS_MEMCPY();
+    ENQUEUE_PTRS_MERGE();
 #else
     ENQUEUE_PTRS();
 #endif
@@ -780,9 +782,11 @@ __rte_ring_mc_do_dequeue(struct rte_ring *r, void **obj_table,
 	/* copy in table */
 //	DEQUEUE_PTRS();
 #ifdef OPTIMIZATION
-    if(n < 32) DEQUEUE_PTRS();
-    else DEQUEUE_PTRS_MEMCPY();
-//    DEQUEUE_PTRS_MERGE();
+//    if(n < 32) 
+//         DEQUEUE_PTRS();
+//    else 
+//        DEQUEUE_PTRS_MEMCPY();
+    DEQUEUE_PTRS_MERGE();
 #else
     DEQUEUE_PTRS();
 #endif
@@ -871,11 +875,11 @@ __rte_ring_sc_do_dequeue(struct rte_ring *r, void **obj_table,
 	/* copy in table */
 //	DEQUEUE_PTRS();
 #ifdef OPTIMIZATION
-    if(n < 32) 
-        DEQUEUE_PTRS();
-    else 
-        DEQUEUE_PTRS_MEMCPY();
-//    DEQUEUE_PTRS_MERGE();
+//    if(n < 32) 
+//        DEQUEUE_PTRS();
+//    else 
+//        DEQUEUE_PTRS_MEMCPY();
+    DEQUEUE_PTRS_MERGE();
 #else
     DEQUEUE_PTRS();
 #endif

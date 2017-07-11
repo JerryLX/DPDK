@@ -368,6 +368,104 @@ virtio_dev_rx(struct virtio_net *dev, uint16_t queue_id,
 	return count;
 }
 
+static inline uint32_t __attribute__((always_inline))
+virtio_dev_rx_new(struct virtio_net *dev, uint16_t queue_id,
+	      struct rte_mbuf **pkts, uint32_t count)
+{
+	struct vhost_virtqueue *vq;
+	uint16_t avail_idx, free_entries, start_idx;
+	uint16_t desc_indexes[MAX_PKT_BURST];
+	struct vring_desc *descs;
+	uint16_t used_idx;
+	uint32_t i, sz;
+
+    uint32_t dsize = sizeof(struct vring_desc);
+//	LOG_DEBUG(VHOST_DATA, "(%d) %s\n", dev->vid, __func__);
+//	if (unlikely(!is_valid_virt_queue_idx(queue_id, 0, dev->virt_qp_nb))) {
+//		RTE_LOG(ERR, VHOST_DATA, "(%d) %s: invalid virtqueue idx %d.\n",
+//			dev->vid, __func__, queue_id);
+//		return 0;
+//	}
+
+	vq = dev->virtqueue[queue_id];
+	if (unlikely(vq->enabled == 0))
+		return 0;
+
+	avail_idx = *((volatile uint16_t *)&vq->avail->idx);
+	start_idx = vq->last_used_idx;
+	free_entries = avail_idx - start_idx;
+	count = RTE_MIN(count, free_entries);
+	//count = RTE_MIN(count, (uint32_t)MAX_PKT_BURST);
+	if (count == 0)
+		return 0;
+
+//	LOG_DEBUG(VHOST_DATA, "(%d) start_idx %d | end_idx %d\n",
+//		dev->vid, start_idx, start_idx + count);
+
+	/* Retrieve all of the desc indexes first to avoid caching issues. */
+	rte_prefetch0(&vq->avail->ring[start_idx & (vq->size - 1)]);
+	for (i = 0; i < count; i++) {
+		used_idx = (start_idx + i) & (vq->size - 1);
+		desc_indexes[i] = vq->avail->ring[used_idx];
+		vq->used->ring[used_idx].id = desc_indexes[i];
+		vq->used->ring[used_idx].len = pkts[i]->pkt_len +
+					       dev->vhost_hlen;
+		vhost_log_used_vring(dev, vq,
+			offsetof(struct vring_used, ring[used_idx]),
+			sizeof(vq->used->ring[used_idx]));
+	}
+
+	rte_prefetch0(&vq->desc[desc_indexes[0]]);
+	for (i = 0; i < count; i++) {
+		uint16_t desc_idx = desc_indexes[i];
+		int err;
+
+		if (vq->desc[desc_idx].flags & VRING_DESC_F_INDIRECT) {
+			descs = (struct vring_desc *)(uintptr_t)gpa_to_vva(dev,
+					vq->desc[desc_idx].addr);
+			if (unlikely(!descs)) {
+				count = i;
+				break;
+			}
+
+			desc_idx = 0;
+			sz = vq->desc[desc_idx].len / dsize;
+		} else {
+			descs = vq->desc;
+			sz = vq->size;
+		}
+
+		err = copy_mbuf_to_desc(dev, descs, pkts[i], desc_idx, sz);
+		if (unlikely(err)) {
+			used_idx = (start_idx + i) & (vq->size - 1);
+			vq->used->ring[used_idx].len = dev->vhost_hlen;
+			vhost_log_used_vring(dev, vq,
+				offsetof(struct vring_used, ring[used_idx]),
+				sizeof(vq->used->ring[used_idx]));
+		}
+
+		if (i + 1 < count)
+			rte_prefetch0(&vq->desc[desc_indexes[i+1]]);
+	}
+
+	rte_smp_wmb();
+
+	*(volatile uint16_t *)&vq->used->idx += count;
+	vq->last_used_idx += count;
+	vhost_log_used_vring(dev, vq,
+		offsetof(struct vring_used, idx),
+		sizeof(vq->used->idx));
+
+	/* flush used->idx update before we read avail->flags. */
+	rte_mb();
+
+	/* Kick the guest if necessary. */
+	if (!(vq->avail->flags & VRING_AVAIL_F_NO_INTERRUPT)
+			&& (vq->callfd >= 0))
+		eventfd_write(vq->callfd, (eventfd_t)1);
+	return count;
+}
+
 static inline int __attribute__((always_inline))
 fill_vec_buf(struct virtio_net *dev, struct vhost_virtqueue *vq,
 			 uint32_t avail_idx, uint32_t *vec_idx,
@@ -1197,3 +1295,151 @@ out:
 
 	return i;
 }
+
+//uint16_t
+//rte_vhost_dequeue_burst_new(int vid, uint16_t queue_id,
+//	struct rte_mempool *mbuf_pool, struct rte_mbuf **pkts, uint16_t count)
+//{
+//	struct virtio_net *dev;
+//	struct rte_mbuf *rarp_mbuf = NULL;
+//	struct vhost_virtqueue *vq;
+//	uint32_t desc_indexes[MAX_PKT_BURST];
+//	uint32_t used_idx;
+//	uint32_t i = 0;
+//	uint16_t free_entries;
+//	uint16_t avail_idx;
+//    uint32_t mask = vq->size-1;
+//
+//	dev = get_device(vid);
+//	if (!dev)
+//		return 0;
+//
+//	if (unlikely(!is_valid_virt_queue_idx(queue_id, 1, dev->virt_qp_nb))) {
+//		RTE_LOG(ERR, VHOST_DATA, "(%d) %s: invalid virtqueue idx %d.\n",
+//			dev->vid, __func__, queue_id);
+//		return 0;
+//	}
+//
+//	vq = dev->virtqueue[queue_id];
+//	if (unlikely(vq->enabled == 0))
+//		return 0;
+//
+//	/*
+//	 * Construct a RARP broadcast packet, and inject it to the "pkts"
+//	 * array, to looks like that guest actually send such packet.
+//	 *
+//	 * Check user_send_rarp() for more information.
+//	 *
+//	 * broadcast_rarp shares a cacheline in the virtio_net structure
+//	 * with some fields that are accessed during enqueue and
+//	 * rte_atomic16_cmpset() causes a write if using cmpxchg. This could
+//	 * result in false sharing between enqueue and dequeue.
+//	 *
+//	 * Prevent unnecessary false sharing by reading broadcast_rarp first
+//	 * and only performing cmpset if the read indicates it is likely to
+//	 * be set.
+//	 */
+//
+//	if (unlikely(rte_atomic16_read(&dev->broadcast_rarp) &&
+//			rte_atomic16_cmpset((volatile uint16_t *)
+//				&dev->broadcast_rarp.cnt, 1, 0))) {
+//
+//		rarp_mbuf = rte_pktmbuf_alloc(mbuf_pool);
+//		if (rarp_mbuf == NULL) {
+//			RTE_LOG(ERR, VHOST_DATA,
+//				"Failed to allocate memory for mbuf.\n");
+//			return 0;
+//		}
+//
+//		if (make_rarp_packet(rarp_mbuf, &dev->mac)) {
+//			rte_pktmbuf_free(rarp_mbuf);
+//			rarp_mbuf = NULL;
+//		} else {
+//			count -= 1;
+//		}
+//	}
+//
+//	free_entries = *((volatile uint16_t *)&vq->avail->idx) -
+//			vq->last_avail_idx;
+//	if (free_entries == 0)
+//		goto out;
+//
+//	//LOG_DEBUG(VHOST_DATA, "(%d) %s\n", dev->vid, __func__);
+//
+//	/* Prefetch available and used ring */
+//	avail_idx = vq->last_avail_idx & (vq->size - 1);
+//	used_idx  = vq->last_used_idx  & (vq->size - 1);
+//	rte_prefetch0(&vq->avail->ring[avail_idx]);
+//	rte_prefetch0(&vq->used->ring[used_idx]);
+//
+//	count = RTE_MIN(count, MAX_PKT_BURST);
+//	count = RTE_MIN(count, free_entries);
+////	LOG_DEBUG(VHOST_DATA, "(%d) about to dequeue %u buffers\n",
+////			dev->vid, count);
+//
+//	/* Retrieve all of the head indexes first to avoid caching issues. */
+//	for (i = 0; i < count; i++) {
+//		avail_idx = (vq->last_avail_idx + i) & mask;
+//		used_idx  = (vq->last_used_idx  + i) & mask;
+//		desc_indexes[i] = vq->avail->ring[avail_idx];
+//
+//		update_used_ring(dev, vq, used_idx, desc_indexes[i]);
+//	}
+//
+//	/* Prefetch descriptor index. */
+//	rte_prefetch0(&vq->desc[desc_indexes[0]]);
+//	for (i = 0; i < count; i++) {
+//		struct vring_desc *desc;
+//		uint16_t sz, idx;
+//		int err;
+//
+//		if (likely(i + 1 < count))
+//			rte_prefetch0(&vq->desc[desc_indexes[i + 1]]);
+//
+//		if (vq->desc[desc_indexes[i]].flags & VRING_DESC_F_INDIRECT) {
+//			desc = (struct vring_desc *)(uintptr_t)gpa_to_vva(dev,
+//					vq->desc[desc_indexes[i]].addr);
+//			if (unlikely(!desc))
+//				break;
+//
+//			rte_prefetch0(desc);
+//			sz = vq->desc[desc_indexes[i]].len / sizeof(*desc);
+//			idx = 0;
+//		} else {
+//			desc = vq->desc;
+//			sz = vq->size;
+//			idx = desc_indexes[i];
+//		}
+//
+//		pkts[i] = rte_pktmbuf_alloc(mbuf_pool);
+//		if (unlikely(pkts[i] == NULL)) {
+//			RTE_LOG(ERR, VHOST_DATA,
+//				"Failed to allocate memory for mbuf.\n");
+//			break;
+//		}
+//
+//		err = copy_desc_to_mbuf(dev, desc, sz, pkts[i], idx, mbuf_pool);
+//		if (unlikely(err)) {
+//			rte_pktmbuf_free(pkts[i]);
+//			break;
+//		}
+//
+//	}
+//	vq->last_avail_idx += i;
+//
+//	vq->last_used_idx += i;
+//	update_used_idx(dev, vq, i);
+//
+//out:
+//	if (unlikely(rarp_mbuf != NULL)) {
+//		/*
+//		 * Inject it to the head of "pkts" array, so that switch's mac
+//		 * learning table will get updated first.
+//		 */
+//		memmove(&pkts[1], pkts, i * sizeof(struct rte_mbuf *));
+//		pkts[0] = rarp_mbuf;
+//		i += 1;
+//	}
+//
+//	return i;
+//}

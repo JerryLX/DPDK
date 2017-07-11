@@ -196,7 +196,7 @@ app_pkt_handle(struct rte_mbuf *pkt, uint64_t time)
 	uint8_t input_color, output_color;
 	uint8_t *pkt_data = rte_pktmbuf_mtod(pkt, uint8_t *);
 	uint32_t pkt_len = rte_pktmbuf_pkt_len(pkt) - sizeof(struct ether_hdr);
-	uint8_t flow_id = (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
+    uint8_t flow_id = (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
 	input_color = pkt_data[APP_PKT_COLOR_POS];
 //    enum policer_action action;
 //    printf("flow_id = %d, input_color = %d\n", flow_id, input_color); 
@@ -211,6 +211,39 @@ app_pkt_handle(struct rte_mbuf *pkt, uint64_t time)
 //	app_set_pkt_color(pkt_data, action);
     return output_color;
     //return action;
+}
+
+
+static inline int
+app_pkts_handle(struct rte_mbuf *pkts[BURST_SIZE], uint64_t time, uint64_t burst, uint8_t qid)
+{
+	//uint8_t *pkt_data = rte_pktmbuf_mtod(pkts[0], uint8_t *);
+
+	uint32_t pkt_len = rte_pktmbuf_pkt_len(pkts[0]) - sizeof(struct ether_hdr);
+	
+    uint8_t flow_id = 0;// (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
+	/* color input is not used for blind modes */
+    struct rte_meter_srtcm_color_res res = rte_meter_srtcm_color_blind_burst_check(&app_flows[flow_id], time, pkt_len,burst);
+    color[0]+=res.green;
+    color[1]+=res.yellow;
+    color[2]+=res.red;
+	/* Apply policing and set the output color */
+    uint64_t i=0;
+    //printf("%lu ,%lu, %lu\n",res.green, res.yellow, res.red);
+/*    for(i=0;i<res.green;i++){
+        count_tx++;
+        rte_eth_tx_buffer(1, qid, tx_buffer[qid], pkts[i]);     
+    }
+    for(;i<burst;i++)
+    {
+        count_drop++;
+        rte_pktmbuf_free(pkts[i]);
+    }
+  */  count_tx+=burst;
+    for(i=0;i<burst; i++)
+        rte_eth_tx_buffer(1, qid, tx_buffer[qid],pkts[i]);
+
+    return 0;
 }
 
 
@@ -326,13 +359,15 @@ static void main_loop(void)
 		for(qid=0;qid<16;qid++){
 			struct rte_mbuf *pkts_rx[BURST_SIZE];
 			nb_rx = rte_eth_rx_burst(port_rx, qid, pkts_rx, BURST_SIZE);
+            //printf("nb_rx=%d\n",nb_rx);
+            if(nb_rx==0)
+                continue;
             count_rx+=nb_rx;
 			/* Handle packets */
-			for (i = 0; i < nb_rx; i ++) {
+		    
+          /*  for (i = 0; i < nb_rx; i ++) {
 				struct rte_mbuf *pkt = pkts_rx[i];
-
-				/* Handle current packet */
-				if ( app_pkt_handle(pkt, current_time) == DROP)  //||DROP)
+				if ( app_pkt_handle(pkt, current_time) ==DROP )  //||DROP)
                 {	
                     count_drop++;
                     rte_pktmbuf_free(pkt);
@@ -342,7 +377,13 @@ static void main_loop(void)
 					rte_eth_tx_buffer(port_tx, qid, tx_buffer[qid], pkt);
                 }
 			}
+          
+           */
+            app_pkts_handle(pkts_rx, current_time, nb_rx, qid);
+
+
 		}
+        (void)i;
 	}
 }
 

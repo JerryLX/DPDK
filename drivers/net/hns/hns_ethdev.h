@@ -246,9 +246,9 @@ struct hns_rx_queue{
     uint16_t next_to_use;
     uint16_t rx_free_thresh;
 
-#ifdef OPTIMIZATION
-    struct rte_ring* cache_ring;
-#endif
+//#ifdef OPTIMIZATION
+//    struct rte_ring* cache_ring;
+//#endif
 };
 
 struct hns_tx_queue{

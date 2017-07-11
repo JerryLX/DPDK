@@ -1184,10 +1184,20 @@ typedef uint16_t (*eth_rx_burst_t)(void *rxq,
 				   uint16_t nb_pkts);
 /**< @internal Retrieve input packets from a receive queue of an Ethernet device. */
 
+typedef uint16_t (*eth_rx_burst_remain_t)(void *rxq,
+				   struct rte_mbuf **rx_pkts,
+				   uint16_t nb_pkts);
+/**< @internal Retrieve input packets from a receive queue of an Ethernet device. (private mbuf)*/
+
 typedef uint16_t (*eth_tx_burst_t)(void *txq,
 				   struct rte_mbuf **tx_pkts,
 				   uint16_t nb_pkts);
 /**< @internal Send output packets on a transmit queue of an Ethernet device. */
+
+typedef uint16_t (*eth_tx_burst_remain_t)(void *txq,
+				   struct rte_mbuf **tx_pkts,
+				   uint16_t nb_pkts);
+/**< @internal Send output packets on a transmit queue of an Ethernet device.(private mbuf) */
 
 typedef int (*flow_ctrl_get_t)(struct rte_eth_dev *dev,
 			       struct rte_eth_fc_conf *fc_conf);
@@ -1638,6 +1648,8 @@ enum rte_eth_dev_type {
 struct rte_eth_dev {
 	eth_rx_burst_t rx_pkt_burst; /**< Pointer to PMD receive function. */
 	eth_tx_burst_t tx_pkt_burst; /**< Pointer to PMD transmit function. */
+	eth_rx_burst_remain_t rx_pkt_burst_remain; /**< Pointer to PMD receive function.(private mbuf) */
+	eth_tx_burst_remain_t tx_pkt_burst_remain; /**< Pointer to PMD transmit function. (private mbuf) */
 	struct rte_eth_dev_data *data;  /**< Pointer to device data */
 	const struct eth_driver *driver;/**< Driver for this device */
 	const struct eth_dev_ops *dev_ops; /**< Functions exported by PMD */
@@ -2753,6 +2765,46 @@ rte_eth_rx_burst(uint8_t port_id, uint16_t queue_id,
 	return nb_rx;
 }
 
+static inline uint16_t
+rte_eth_rx_burst_remain(uint8_t port_id, uint16_t queue_id,
+		 struct rte_mbuf **rx_pkts, const uint16_t nb_pkts)
+{
+	struct rte_eth_dev *dev = &rte_eth_devices[port_id];
+
+    int has_remain_function = 1;
+#ifdef RTE_LIBRTE_ETHDEV_DEBUG
+	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, 0);
+	if(*dev->rx_pkt_burst_remain == NULL){
+        RTE_FUNC_PTR_OR_ERR_RET(*dev->rx_pkt_burst, 0);
+        has_remain_function = 0;
+    }
+	if (queue_id >= dev->data->nb_rx_queues) {
+		RTE_PMD_DEBUG_TRACE("Invalid RX queue_id=%d\n", queue_id);
+		return 0;
+	}
+#endif
+    int16_t nb_rx;
+    if(has_remain_function)
+	    nb_rx = (*dev->rx_pkt_burst_remain)(dev->data->rx_queues[queue_id],
+			    rx_pkts, nb_pkts);
+    else
+	    nb_rx = (*dev->rx_pkt_burst)(dev->data->rx_queues[queue_id],
+			    rx_pkts, nb_pkts);
+#ifdef RTE_ETHDEV_RXTX_CALLBACKS
+	struct rte_eth_rxtx_callback *cb = dev->post_rx_burst_cbs[queue_id];
+
+	if (unlikely(cb != NULL)) {
+		do {
+			nb_rx = cb->fn.rx(port_id, queue_id, rx_pkts, nb_rx,
+						nb_pkts, cb->param);
+			cb = cb->next;
+		} while (cb != NULL);
+	}
+#endif
+
+	return nb_rx;
+}
+
 /**
  * Get the number of used descriptors in a specific queue
  *
@@ -2887,6 +2939,42 @@ rte_eth_tx_burst(uint8_t port_id, uint16_t queue_id,
 	}
 #endif
 
+	return (*dev->tx_pkt_burst)(dev->data->tx_queues[queue_id], tx_pkts, nb_pkts);
+}
+
+static inline uint16_t
+rte_eth_tx_burst_remain(uint8_t port_id, uint16_t queue_id,
+		 struct rte_mbuf **tx_pkts, uint16_t nb_pkts)
+{
+	struct rte_eth_dev *dev = &rte_eth_devices[port_id];
+
+    int has_remain_function = 1;
+#ifdef RTE_LIBRTE_ETHDEV_DEBUG
+	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, 0);
+	if(*dev->tx_pkt_burst_remain == NULL){
+        RTE_FUNC_PTR_OR_ERR_RET(*dev->tx_pkt_burst, 0);
+        has_remain_function = 0;
+    }
+	if (queue_id >= dev->data->nb_tx_queues) {
+		RTE_PMD_DEBUG_TRACE("Invalid TX queue_id=%d\n", queue_id);
+		printf("invalid tx queue!\n");
+        return 0;
+	}
+#endif
+
+#ifdef RTE_ETHDEV_RXTX_CALLBACKS
+	struct rte_eth_rxtx_callback *cb = dev->pre_tx_burst_cbs[queue_id];
+
+	if (unlikely(cb != NULL)) {
+		do {
+			nb_pkts = cb->fn.tx(port_id, queue_id, tx_pkts, nb_pkts,
+					cb->param);
+			cb = cb->next;
+		} while (cb != NULL);
+	}
+#endif
+    if(has_remain_function)
+	    return (*dev->tx_pkt_burst_remain)(dev->data->tx_queues[queue_id], tx_pkts, nb_pkts);
 	return (*dev->tx_pkt_burst)(dev->data->tx_queues[queue_id], tx_pkts, nb_pkts);
 }
 

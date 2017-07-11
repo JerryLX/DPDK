@@ -1378,14 +1378,15 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 		/* Lookup */
 		table = &p->tables[table_id];
-		table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
-			&lookup_hit_mask, (void **) p->entries);
+		//table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
+			//&lookup_hit_mask, (void **) p->entries);
+        lookup_hit_mask = 0;
 		lookup_miss_mask = p->pkts_mask & (~lookup_hit_mask);
 
-        //printf("mask:%lx\n",lookup_miss_mask);
+       //printf("mask:%lu, hit=%lu",lookup_miss_mask,lookup_hit_mask);
 		/* Lookup miss */
 		if (lookup_miss_mask != 0) {
-          //  printf("look up miss\n");
+            //printf("look up miss\n");
 			struct rte_pipeline_table_entry *default_entry =
 				table->default_entry;
 
@@ -1393,7 +1394,7 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 			/* Table user actions */
 			if (table->f_action_miss != NULL) {
-			//	printf("action here\n");
+				//printf("action here\n");
                 table->f_action_miss(p,
 					p->pkts,
 					lookup_miss_mask,

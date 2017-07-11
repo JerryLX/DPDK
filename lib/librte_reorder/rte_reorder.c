@@ -364,10 +364,17 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 	uint32_t offset, position;
 	struct cir_buffer *order_buf = &b->order_buf;
 
+#ifdef OPTIMIZATION
 	if (unlikely(!b->is_initialized)) {
 		b->min_seqn = mbuf->seqn;
 		b->is_initialized = 1;
 	}
+#else
+	if (!b->is_initialized) {
+		b->min_seqn = mbuf->seqn;
+		b->is_initialized = 1;
+	}
+#endif
 
 	/*
 	 * calculate the offset from the head pointer we need to go.

@@ -65,8 +65,8 @@
 #define MBUF_CACHE_SIZE	256
 #define MBUF_DATA_SIZE	RTE_MBUF_DEFAULT_BUF_SIZE
 
-#define MAX_PKT_BURST 64		/* Max burst size for RX/TX */
-#define MAX_PKT_TX_BURST 64
+#define MAX_PKT_BURST 32		/* Max burst size for RX/TX */
+#define MAX_PKT_TX_BURST 32
 #define BURST_TX_DRAIN_US 100	/* TX drain every ~100us */
 
 #define BURST_RX_WAIT_US 15	/* Defines how long we wait between retries on RX */
@@ -946,7 +946,10 @@ do_drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
     queue_index++;
     count = rte_eth_tx_burst(vid&1, qid ,
 				 tx_q->m_table, tx_q->len);
-    //if (unlikely(count < tx_q->len))
+    //(void)qid;
+    //(void)vid;
+    //count = 0;
+    if (count < tx_q->len)
 		free_pkts(&tx_q->m_table[count], tx_q->len - count);
 	//free_pkts(&tx_q->m_table[0], tx_q->len );
     (void)count;
@@ -970,7 +973,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 	nh = rte_pktmbuf_mtod(m, struct ether_hdr *);
 	if (unlikely(is_broadcast_ether_addr(&nh->d_addr))) {
 		struct vhost_dev *vdev2;
-        printf("broadcast!\n");
+        //printf("broadcast!\n");
 		TAILQ_FOREACH(vdev2, &vhost_dev_list, global_vdev_entry) {
 			virtio_xmit(vdev2, vdev, m);
 		}
@@ -979,7 +982,7 @@ virtio_tx_route(struct vhost_dev *vdev, struct rte_mbuf *m, uint16_t vlan_tag)
 
 	/*check if destination is local VM*/
 	if ((vm2vm_mode == VM2VM_SOFTWARE) && (virtio_tx_local(vdev, m) == 0)) {
-        printf("local!\n");
+        //printf("local!\n");
 		rte_pktmbuf_free(m);
 		return;
 	}
@@ -1070,18 +1073,21 @@ drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
 static inline void __attribute__((always_inline))
 drain_eth_rx(struct vhost_dev *vdev)
 {
-	uint16_t rx_count, enqueue_count, qid;
+    uint16_t rx_count=0, enqueue_count, qid;
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
     //printf("drain_rx, ports:%d\n",ports[0]);
+    
     for(qid=0;qid<16;qid++){
     //rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
 	//			    pkts, MAX_PKT_BURST);
-    rx_count = rte_eth_rx_burst((vdev->vid)%2, qid,
+    
+        rx_count = rte_eth_rx_burst((vdev->vid)%2, qid,
 				    pkts, MAX_PKT_BURST);
+        
 //	if (!rx_count)
 //		return;
     if(!rx_count) continue;
-	/*
+    /*
 	 * When "enable_retry" is set, here we wait and retry when there
 	 * is no enough free slots in the queue to hold @rx_count packets,
 	 * to diminish packet loss.
@@ -1541,6 +1547,7 @@ main(int argc, char *argv[])
 	if (client_mode)
 		flags |= RTE_VHOST_USER_CLIENT;
 
+    //flags |= RTE_VHOST_USER_DEQUEUE_ZERO_COPY;
 	/* Register vhost(cuse or user) driver to handle vhost messages. */
 	ret = rte_vhost_driver_register(dev_basename, flags);
 	if (ret != 0)
