@@ -282,7 +282,6 @@ platform_probe_all_drivers(struct rte_platform_device *dev)
 	TAILQ_FOREACH(dr, &platform_driver_list, next) {
         //for debug
         RTE_LOG(INFO, EAL, "probing driver: %s\n", dr->name);
-
 		rc = rte_eal_platform_probe_one_driver(dr, dev);
 		if (rc < 0)
 			/* negative value is an error */
@@ -308,7 +307,8 @@ rte_eal_platform_probe(void)
 	int ret = 0;
 
 	TAILQ_FOREACH(dev, &platform_device_list, next) {
-		ret = platform_probe_all_drivers(dev);
+		printf("probe!\n");
+        ret = platform_probe_all_drivers(dev);
 		if (ret < 0)
 			rte_exit(EXIT_FAILURE, "Requested device %s" 
 				 " cannot be used\n", dev->name);

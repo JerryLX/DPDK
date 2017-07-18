@@ -233,7 +233,7 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
 {
     char devname[PATH_MAX]; /* contains the /dev/uioX */
     int uio_num;
-    
+printf("alloc!\n");   
     /* find uio resource */
     uio_num = dev->uio_num;
     if(uio_num < 0){
@@ -284,10 +284,11 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     }
 
     snprintf((*uio_res)->path, sizeof((*uio_res)->path), "%s", devname);
-    memcpy(&(*uio_res)->name, &dev->name, sizeof((*uio_res)->name));
-
+    //memcpy((*uio_res)->name, dev->name, sizeof((*uio_res)->name));
+    strcpy((*uio_res)->name, dev->name);
     return 0;
 error:
+printf("error!\n");   
     platform_uio_free_resource(dev, *uio_res);
     return -1;
 }

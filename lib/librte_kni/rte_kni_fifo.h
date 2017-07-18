@@ -87,6 +87,7 @@ kni_fifo_get(struct rte_kni_fifo *fifo, void **data, unsigned num)
 
 		data[i] = fifo->buffer[new_read];
 		new_read = (new_read + 1) & (fifo->len - 1);
+        rte_prefetch0(&fifo->buffer[new_read]);
 	}
 	fifo->read = new_read;
 	return i;

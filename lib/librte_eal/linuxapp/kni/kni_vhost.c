@@ -82,7 +82,6 @@ kni_vhost_net_tx(struct kni_dev *kni, struct msghdr *m,
 	struct rte_kni_mbuf *pkt_kva = NULL;
 	struct rte_kni_mbuf *pkt_va = NULL;
 	int ret;
-
 	KNI_DBG_TX("tx offset=%d, len=%d, iovlen=%d\n",
 #ifdef HAVE_IOV_ITER_MSGHDR
 		   offset, len, (int)m->msg_iter.iov->iov_len);

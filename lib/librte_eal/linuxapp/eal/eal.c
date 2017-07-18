@@ -860,7 +860,7 @@ rte_eal_init(int argc, char **argv)
 
 	if (rte_eal_intr_init() < 0)
 		rte_panic("Cannot init interrupt-handling thread\n");
-
+printf("here!\n");
 	RTE_LCORE_FOREACH_SLAVE(i) {
 
 		/*
@@ -906,6 +906,7 @@ rte_eal_init(int argc, char **argv)
     if (rte_eal_platform_probe())
         rte_panic("Cannot probe Platform");
 
+printf("probe!\n");
 	rte_eal_mcfg_complete();
 
 	return fctret;

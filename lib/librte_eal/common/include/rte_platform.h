@@ -110,7 +110,7 @@ struct platform_map{
 struct mapped_platform_resource {
     TAILQ_ENTRY(mapped_platform_resource) next;
 
-    char *name;
+    char name[32];
     char path[PATH_MAX];
     int nb_maps;
     struct platform_map maps[PLATFORM_MAX_RESOURCE];
