@@ -44,13 +44,14 @@
 #include <rte_mempool.h>
 #include <rte_ring.h>
 #include <rte_reorder.h>
+#include <rte_cycles.h>
 
 #define RX_DESC_PER_QUEUE 128
 #define TX_DESC_PER_QUEUE 512
 
 #define MAX_PKTS_BURST 128
 #define REORDER_BUFFER_SIZE 8192
-#define MBUF_PER_POOL 65535
+#define MBUF_PER_POOL 131071
 #define MBUF_POOL_CACHE_SIZE 250
 
 #define RING_SIZE 16384
@@ -400,11 +401,20 @@ rx_thread(struct rte_ring *ring_out)
 	uint16_t nb_rx_pkts;
 	uint8_t port_id;
 	struct rte_mbuf *pkts[MAX_PKTS_BURST];
+    
+    uint64_t cur_tsc, prev_tsc = 0;
+    uint64_t speed = 0;
     printf("=============ring_out in rx_thread:%d\n",ring_out->prod.sp_enqueue);
 	RTE_LOG(INFO, REORDERAPP, "%s() started on lcore %u\n", __func__,
 							rte_lcore_id());
 
 	while (!quit_signal) {
+        cur_tsc = rte_rdtsc();
+        if(unlikely(cur_tsc-prev_tsc > 100000000)){
+            printf("current receive speed:%lu\n",speed);
+            prev_tsc = cur_tsc;
+            speed = 0;
+        }
 
 		for (port_id = 0; port_id < nb_ports; port_id++) {
 			if ((portmask & (1 << port_id)) != 0) {
@@ -420,7 +430,7 @@ rx_thread(struct rte_ring *ring_out)
 					continue;
 				}
                 
-
+                speed += nb_rx_pkts;
 				app_stats.rx.rx_pkts += nb_rx_pkts;
 
 				/* mark sequence number */
@@ -507,12 +517,19 @@ send_thread(struct send_thread_args *args)
 	struct rte_mbuf *rombufs[MAX_PKTS_BURST] = {NULL};
 	static struct rte_eth_dev_tx_buffer *tx_buffer[RTE_MAX_ETHPORTS][16];
 
+    uint64_t cur_tsc, prev_tsc = 0;
+    uint64_t speed = 0;
 	RTE_LOG(INFO, REORDERAPP, "%s() started on lcore %u\n", __func__, rte_lcore_id());
 
 	configure_tx_buffers(tx_buffer);
 
 	while (!quit_signal) {
-
+        cur_tsc = rte_rdtsc();
+        if(unlikely(cur_tsc-prev_tsc > 100000000)){
+            printf("current reorder speed:%lu\n",speed);
+            prev_tsc = cur_tsc;
+            speed = 0;
+        }
 		/* deque the mbufs from workers_to_tx ring */
 		nb_dq_mbufs = rte_ring_dequeue_burst(args->ring_in,
 				(void *)mbufs, MAX_PKTS_BURST);
@@ -556,6 +573,7 @@ send_thread(struct send_thread_args *args)
 		 */
 		dret = rte_reorder_drain(args->buffer, rombufs, MAX_PKTS_BURST);
 		if(dret == 0) break;
+        speed += dret;
         for (i = 0; i < dret; i++) {
 
 			struct rte_eth_dev_tx_buffer *outbuf;

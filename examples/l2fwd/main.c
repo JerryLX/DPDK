@@ -296,10 +296,11 @@ l2fwd_main_loop(void)
             for(qid = 0; qid<16;qid++){
 			nb_rx = rte_eth_rx_burst((uint8_t) portid, qid,
 						 pkts_burst, MAX_PKT_BURST);
+            if(!nb_rx) continue;
             port_statistics[portid].rx += nb_rx;
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
-				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
+				//rte_prefetch0(rte_pktmbuf_mtod(m, void *));
 				l2fwd_simple_forward(m, portid,qid);
 			}
             }
@@ -550,11 +551,9 @@ main(int argc, char **argv)
 		rte_socket_id());
 	if (l2fwd_pktmbuf_pool == NULL)
 		rte_exit(EXIT_FAILURE, "Cannot init mbuf pool\n");
-
 	nb_ports = rte_eth_dev_count();
 	if (nb_ports == 0)
 		rte_exit(EXIT_FAILURE, "No Ethernet ports - bye\n");
-
 	/* reset l2fwd_dst_ports */
 	for (portid = 0; portid < RTE_MAX_ETHPORTS; portid++)
 		l2fwd_dst_ports[portid] = 0;

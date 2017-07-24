@@ -116,6 +116,8 @@
 #endif
 
 
+	uint16_t port_tx=0;
+	uint16_t port_rx=1;
 
 /*
  * NIC configuration
@@ -337,8 +339,6 @@ static void main_loop(void)
 	uint64_t current_time, last_time = rte_rdtsc();
 	uint32_t lcore_id = rte_lcore_id();
 	uint16_t qid;
-	uint16_t port_tx=1;
-	uint16_t port_rx=0;
 	printf("Core %u: port RX = %d, port TX = %d\n", lcore_id, port_rx, port_tx);
 
 	while (!force_quit) {
@@ -365,7 +365,7 @@ static void main_loop(void)
             count_rx+=nb_rx;
 			/* Handle packets */
 		    
-          /*  for (i = 0; i < nb_rx; i ++) {
+            for (i = 0; i < nb_rx; i ++) {
 				struct rte_mbuf *pkt = pkts_rx[i];
 				if ( app_pkt_handle(pkt, current_time) ==DROP )  //||DROP)
                 {	
@@ -378,8 +378,8 @@ static void main_loop(void)
                 }
 			}
           
-           */
-            app_pkts_handle(pkts_rx, current_time, nb_rx, qid);
+           
+          // app_pkts_handle(pkts_rx, current_time, nb_rx, qid);
 
 
 		}

@@ -74,7 +74,7 @@
 #define RTE_PIPELINE_STATS_TABLE_DROP1(p, counter)
 
 #endif
-static int lhz=0;
+//static int lhz=0;
 struct rte_port_in {
 	/* Input parameters */
 	struct rte_port_in_ops ops;
@@ -137,7 +137,7 @@ struct rte_pipeline {
 	char name[RTE_PIPELINE_MAX_NAME_SZ];
 	int socket_id;
 	uint32_t offset_port_id;
-    int index;
+    uint32_t index;
 	/* Internal tables */
 	struct rte_port_in ports_in[RTE_PIPELINE_PORT_IN_MAX];
 	struct rte_port_out ports_out[RTE_PIPELINE_PORT_OUT_MAX];
@@ -1343,39 +1343,12 @@ rte_pipeline_action_handler_drop(struct rte_pipeline *p, uint64_t pkts_mask)
 int
 rte_pipeline_run(struct rte_pipeline *p)
 {
-    /*if(p->index==0 && lhz ==0)
-    {
-        p->index++;
-        lhz++;
-        printf("index=%u\n",p->index);
-    }
-    else
-    {
-       printf("index=%x\n",p->index);
-    }*/
 	struct rte_port_in *port_in = p->port_in_next;
 	uint32_t n_pkts, table_id;
     //printf("x=%u \n",p->num_ports_in);
 	if (port_in == NULL)
      return 0;
 
-   // if(p->index==0 && lhz==0)
-   // {
-   //     p->index++;
-   //     lhz++;
-       // port_in = port_in->next;
-   // }
-   // if(p->index==0)
-   // {
-  // lhz++;
-  // printf("lhz=%u\n",lhz);
-  // if(lhz >=2)
-  // {
-      // printf("lhz=%u",lhz);
-    //   lhz =0;
-      //  p->port_in_next = port_in->next;
-   //}
-        // }
 	/* Input port RX */
 	n_pkts = port_in->ops.f_rx(port_in->h_port, p->pkts,
 		port_in->burst_size);
@@ -1384,7 +1357,7 @@ rte_pipeline_run(struct rte_pipeline *p)
 		p->port_in_next = port_in->next;
 		return 0;
 	}
-    lhz++;
+    //lhz++;
 	p->pkts_mask = RTE_LEN2MASK(n_pkts, uint64_t);
 	p->action_mask0[RTE_PIPELINE_ACTION_DROP] = 0;
 	p->action_mask0[RTE_PIPELINE_ACTION_PORT] = 0;
@@ -1511,9 +1484,10 @@ rte_pipeline_run(struct rte_pipeline *p)
 		p->action_mask0[RTE_PIPELINE_ACTION_DROP]);
 
 	/* Pick candidate for next port IN to serve */
-	if(lhz>=32)
+	p->index++;
+    if(p->index>=4)
     {
-        lhz=0;
+    p->index=0;
     p->port_in_next = port_in->next;
     }
 	return (int) n_pkts;

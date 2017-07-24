@@ -799,7 +799,14 @@ rte_eal_init(int argc, char **argv)
 	//for vm do not support pci
 #ifndef RTE_LIBRTE_VIRTIO_PLATFORM_PMD
 	if (rte_eal_pci_init() < 0)
+    {
+        printf("failure PCI ======\n");
 		rte_panic("Cannot init PCI\n");
+    }
+    else
+    {
+        printf("success PCI ========\n");
+    }
 #endif
 
     //by lixu 
@@ -908,7 +915,7 @@ printf("here!\n");
 
 printf("probe!\n");
 	rte_eal_mcfg_complete();
-
+printf("END!!!!!");
 	return fctret;
 }
 
