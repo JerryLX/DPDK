@@ -72,7 +72,6 @@ dep_pipeline_common_fe.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_rdline.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_cirbuf.h \
@@ -95,6 +94,7 @@ dep_pipeline_common_fe.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_pipeline.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_port.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mempool.h \
  /usr/include/inttypes.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_spinlock.h \

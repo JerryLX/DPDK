@@ -63,7 +63,6 @@ dep_thread_fe.o = /root/lixu/examples/ip_pipeline/thread_fe.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_branch_prediction.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_malloc.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_rdline.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/cmdline_cirbuf.h \
@@ -87,6 +86,7 @@ dep_thread_fe.o = /root/lixu/examples/ip_pipeline/thread_fe.c \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_sched.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_prefetch.h \

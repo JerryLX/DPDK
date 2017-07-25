@@ -59,8 +59,8 @@ kni_fifo_put(struct rte_kni_fifo *fifo, void **data, unsigned num)
 	unsigned fifo_write = fifo->write;
 	unsigned fifo_read = fifo->read;
 	unsigned new_write = fifo_write;
-   // rte_prefetch0(&fifo->buffer[fifo_write]);
-   // rte_prefetch0(&data[0]);
+    //rte_prefetch0(&fifo->buffer[fifo_write]);
+    //rte_prefetch0(data[0]);
 	for (i = 0; i < num; i++) {
 		new_write = (new_write + 1) & (fifo->len - 1);
 
@@ -83,7 +83,7 @@ kni_fifo_get(struct rte_kni_fifo *fifo, void **data, unsigned num)
 	unsigned new_read = fifo->read;
 	unsigned fifo_write = fifo->write;
     //rte_prefetch0(&fifo->buffer[new_read]);
-    //rte_prefetch0(&data[0]);
+    //rte_prefetch0(data[0]);
     for (i = 0; i < num; i++) {
 		if (new_read == fifo_write)
 			break;

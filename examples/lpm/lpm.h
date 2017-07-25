@@ -41,9 +41,10 @@ lpm_get_ipv4_dst_port(void *ipv4_hdr,  uint8_t portid, void *lookup_struct)
 	struct rte_lpm *ipv4_l3fwd_lookup_struct =
 		(struct rte_lpm *)lookup_struct;
     uint32_t ip ;   
+    ip = 0x0000ffff;
+    ip = rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr);
+    // (void)ipv4_hdr;
     ip = rand();//&0x0000ffff;
-    //ip = rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr);
-     (void)ipv4_hdr;
     return (uint8_t) ((rte_lpm_lookup(ipv4_l3fwd_lookup_struct,
      ip,
                     &next_hop) == 0) ? next_hop : portid);

@@ -153,7 +153,7 @@ struct rte_pipeline {
 	struct rte_port_in *port_in_next;
 
 	/* Pipeline run structures */
-	struct rte_mbuf *pkts[RTE_PORT_IN_BURST_SIZE_MAX];
+	struct rte_mbuf *pkts[RTE_PORT_IN_BURST_SIZE_MAX*2];
 	struct rte_pipeline_table_entry *entries[RTE_PORT_IN_BURST_SIZE_MAX];
 	uint64_t action_mask0[RTE_PIPELINE_ACTIONS];
 	uint64_t action_mask1[RTE_PIPELINE_ACTIONS];
@@ -1180,6 +1180,7 @@ rte_pipeline_action_handler_port(struct rte_pipeline *p, uint64_t pkts_mask)
 
 		for (i = 0; i < n_pkts; i++) {
 			struct rte_mbuf *pkt = p->pkts[i];
+            rte_prefetch0(&pkt);
 			uint32_t port_out_id = p->entries[i]->port_id;
 			struct rte_port_out *port_out =
 				&p->ports_out[port_out_id];
@@ -1217,6 +1218,7 @@ rte_pipeline_action_handler_port(struct rte_pipeline *p, uint64_t pkts_mask)
 				continue;
 
 			pkt = p->pkts[i];
+            rte_prefetch0(&pkt);
 			port_out_id = p->entries[i]->port_id;
 			port_out = &p->ports_out[port_out_id];
 
@@ -1253,6 +1255,7 @@ rte_pipeline_action_handler_port_meta(struct rte_pipeline *p,
 
 		for (i = 0; i < n_pkts; i++) {
 			struct rte_mbuf *pkt = p->pkts[i];
+            rte_prefetch0(&pkt);
 			uint32_t port_out_id =
 				RTE_MBUF_METADATA_UINT32(pkt,
 					p->offset_port_id);
@@ -1292,6 +1295,7 @@ rte_pipeline_action_handler_port_meta(struct rte_pipeline *p,
 				continue;
 
 			pkt = p->pkts[i];
+            //rte_prefetch0(&pkt);
 			port_out_id = RTE_MBUF_METADATA_UINT32(pkt,
 				p->offset_port_id);
 			port_out = &p->ports_out[port_out_id];
@@ -1345,17 +1349,20 @@ rte_pipeline_run(struct rte_pipeline *p)
 {
 	struct rte_port_in *port_in = p->port_in_next;
 	uint32_t n_pkts, table_id;
+    rte_prefetch0(port_in->next);
     //printf("x=%u \n",p->num_ports_in);
 	if (port_in == NULL)
      return 0;
-
+     int times=0;
+    for(times =0 ;times<1;times++){
 	/* Input port RX */
+        //printf("----%d----\n",times);
 	n_pkts = port_in->ops.f_rx(port_in->h_port, p->pkts,
 		port_in->burst_size);
 	if (n_pkts ==0) {
         //printf("address = %p\n",port_in->next);
 		p->port_in_next = port_in->next;
-		return 0;
+        return 0;
 	}
     //lhz++;
 	p->pkts_mask = RTE_LEN2MASK(n_pkts, uint64_t);
@@ -1379,8 +1386,9 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 		/* Lookup */
 		table = &p->tables[table_id];
-		//table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
-			//&lookup_hit_mask, (void **) p->entries);
+		//rte_prefetch0(table);
+        table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
+			&lookup_hit_mask, (void **) p->entries);
         lookup_hit_mask = 0;
 		lookup_miss_mask = p->pkts_mask & (~lookup_hit_mask);
 
@@ -1413,6 +1421,9 @@ rte_pipeline_run(struct rte_pipeline *p)
 				rte_pipeline_action_handler_port_bulk(p,
 					p->pkts_mask,
 					default_entry->port_id);
+
+                n_pkts = port_in->ops.f_rx(port_in->h_port, p->pkts,
+                                port_in->burst_size);
                // printf("action complete\n");
             }
 			else {
@@ -1482,14 +1493,14 @@ rte_pipeline_run(struct rte_pipeline *p)
 	/* Table reserved action DROP */
 	rte_pipeline_action_handler_drop(p,
 		p->action_mask0[RTE_PIPELINE_ACTION_DROP]);
-
-	/* Pick candidate for next port IN to serve */
-	p->index++;
-    if(p->index>=4)
-    {
-    p->index=0;
-    p->port_in_next = port_in->next;
     }
+	/* Pick candidate for next port IN to serve */
+//	p->index++;
+//    if(p->index>=4)
+  //  {
+//    p->index=0;
+    p->port_in_next = port_in->next;
+//    }
 	return (int) n_pkts;
 }
 

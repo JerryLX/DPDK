@@ -117,7 +117,7 @@
 
 
 uint16_t port_tx=0;
-uint16_t port_rx=1;
+uint16_t port_rx=0;
 
 /*
  * NIC configuration
@@ -220,28 +220,38 @@ static inline int
 app_pkts_handle(struct rte_mbuf *pkts[BURST_SIZE], uint64_t time, uint64_t burst, uint8_t qid)
 {
 	//uint8_t *pkt_data = rte_pktmbuf_mtod(pkts[0], uint8_t *);
-
-	uint32_t pkt_len = rte_pktmbuf_pkt_len(pkts[0]) - sizeof(struct ether_hdr);
-	
+    uint32_t pkt_len_avg=0;
+    uint64_t i;
+    for(i=0;i<burst;i++){
+        pkt_len_avg+=rte_pktmbuf_pkt_len(pkts[0]);
+    }
+    uint8_t *pkt_data;
+    uint8_t input_color;
+    for(i=0;i<burst;i++){
+        pkt_data = rte_pktmbuf_mtod(pkts[i],uint8_t *);
+        input_color = pkt_data[APP_PKT_COLOR_POS];
+    }
+    (void)input_color;
+    pkt_len_avg = pkt_len_avg/burst - sizeof(struct ether_hdr);
     uint8_t flow_id = 0;// (uint8_t)(pkt_data[APP_PKT_FLOW_POS] & (APP_FLOWS_MAX - 1));
 	/* color input is not used for blind modes */
-    struct rte_meter_srtcm_color_res res = rte_meter_srtcm_color_blind_burst_check(&app_flows[flow_id], time, pkt_len,burst);
+    struct rte_meter_srtcm_color_res res = rte_meter_srtcm_color_blind_burst_check(&app_flows[flow_id], time, pkt_len_avg,burst);
     color[0]+=res.green;
     color[1]+=res.yellow;
     color[2]+=res.red;
 	/* Apply policing and set the output color */
-    uint64_t i=0;
     //printf("%lu ,%lu, %lu\n",res.green, res.yellow, res.red);
 /*    for(i=0;i<res.green;i++){
         count_tx++;
-        rte_eth_tx_buffer(1, qid, tx_buffer[qid], pkts[i]);     
+        rte_eth_tx_buffer(port_tx, qid, tx_buffer[qid], pkts[i]);     
     }
     for(;i<burst;i++)
     {
         count_drop++;
         rte_pktmbuf_free(pkts[i]);
     }
-  */  count_tx+=burst;
+  */
+   count_tx+=burst;
     for(i=0;i<burst; i++)
         rte_eth_tx_buffer(port_tx, qid, tx_buffer[qid],pkts[i]);
 

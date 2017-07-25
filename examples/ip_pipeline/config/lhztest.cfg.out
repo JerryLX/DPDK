@@ -6,7 +6,7 @@ log_level = 1
 type = PASS-THROUGH
 core = s0c2
 pktq_in = RXQ0.0 RXQ0.1 RXQ0.2 RXQ0.3 RXQ0.4 RXQ0.5 RXQ0.6 RXQ0.7 RXQ0.8 RXQ0.9 RXQ0.10 RXQ0.11 RXQ0.12 RXQ0.13 RXQ0.14 RXQ0.15
-pktq_out = TXQ1.0 TXQ1.1 TXQ1.2 TXQ1.3 TXQ1.4 TXQ1.5 TXQ1.6 TXQ1.7 TXQ1.8 TXQ1.9 TXQ1.10 TXQ1.11 TXQ1.12 TXQ1.13 TXQ1.14 TXQ1.15
+pktq_out = TXQ0.0 TXQ0.1 TXQ0.2 TXQ0.3 TXQ0.4 TXQ0.5 TXQ0.6 TXQ0.7 TXQ0.8 TXQ0.9 TXQ0.10 TXQ0.11 TXQ0.12 TXQ0.13 TXQ0.14 TXQ0.15
 msgq_in = MSGQ-REQ-PIPELINE0
 msgq_out = MSGQ-RSP-PIPELINE0
 timer_period = 1
@@ -15,7 +15,7 @@ timer_period = 1
 type = PASS-THROUGH
 core = s0c1
 pktq_in = RXQ1.0 RXQ1.1 RXQ1.2 RXQ1.3 RXQ1.4 RXQ1.5 RXQ1.6 RXQ1.7 RXQ1.8 RXQ1.9 RXQ1.10 RXQ1.11 RXQ1.12 RXQ1.13 RXQ1.14 RXQ1.15
-pktq_out = TXQ0.0 TXQ0.1 TXQ0.2 TXQ0.3 TXQ0.4 TXQ0.5 TXQ0.6 TXQ0.7 TXQ0.8 TXQ0.9 TXQ0.10 TXQ0.11 TXQ0.12 TXQ0.13 TXQ0.14 TXQ0.15
+pktq_out = TXQ1.0 TXQ1.1 TXQ1.2 TXQ1.3 TXQ1.4 TXQ1.5 TXQ1.6 TXQ1.7 TXQ1.8 TXQ1.9 TXQ1.10 TXQ1.11 TXQ1.12 TXQ1.13 TXQ1.14 TXQ1.15
 msgq_in = MSGQ-REQ-PIPELINE1
 msgq_out = MSGQ-RSP-PIPELINE1
 timer_period = 1
@@ -214,102 +214,6 @@ mempool = MEMPOOL0
 size = 128
 burst = 32
 
-[TXQ1.0]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.1]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.2]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.3]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.4]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.5]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.6]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.7]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.8]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.9]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.10]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.11]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.12]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.13]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.14]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
-[TXQ1.15]
-size = 512
-burst = 32
-dropless = no
-n_retries = 0
-
 [TXQ0.0]
 size = 512
 burst = 32
@@ -401,6 +305,102 @@ dropless = no
 n_retries = 0
 
 [TXQ0.15]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.0]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.1]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.2]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.3]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.4]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.5]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.6]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.7]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.8]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.9]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.10]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.11]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.12]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.13]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.14]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.15]
 size = 512
 burst = 32
 dropless = no

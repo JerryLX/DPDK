@@ -75,12 +75,12 @@ dep_pipeline_routing.o = \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_atomic_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_atomic.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memzone.h \
- /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_memcpy_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_memcpy.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_sched.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_mbuf.h \
+ /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_optimization.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/rte_prefetch_64.h \
  /root/lixu/arm64-armv8a-linuxapp-gcc/include/generic/rte_prefetch.h \

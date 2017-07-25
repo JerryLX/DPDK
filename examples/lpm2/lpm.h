@@ -42,14 +42,12 @@ lpm_get_ipv4_dst_port(void *ipv4_hdr,  uint8_t portid, void *lookup_struct)
 		(struct rte_trie *)lookup_struct;
     //printf("dst_hdr = %x\n",rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr));
     uint32_t ip ;   
+    ip = rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr);
     ip = rand();
-    //ip = rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr);
-     (void)ipv4_hdr;
+    // (void)ipv4_hdr;
     //printf("ip = %x\n",ip);
-    //        uint32_t ip;
     return (uint8_t) ((rte_trie_lookup(ipv4_l3fwd_lookup_struct,
 		//rte_be_to_cpu_32(((struct ipv4_hdr *)ipv4_hdr)->dst_addr),
-     //   0xc0a80100,       
      ip,
                     &next_hop) == 0) ? next_hop : portid);
 

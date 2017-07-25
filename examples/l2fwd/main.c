@@ -568,10 +568,10 @@ main(int argc, char **argv)
 			continue;
 
 		if (nb_ports_in_mask % 2) {
-			l2fwd_dst_ports[portid] = last_port;
-			l2fwd_dst_ports[last_port] = portid;
-			//l2fwd_dst_ports[portid] = portid;
-			//l2fwd_dst_ports[last_port] = last_port;
+			//l2fwd_dst_ports[portid] = last_port;
+            //l2fwd_dst_ports[last_port] = portid;
+			l2fwd_dst_ports[portid] = portid;
+			l2fwd_dst_ports[last_port] = last_port;
 		}
 		else
 			last_port = portid;

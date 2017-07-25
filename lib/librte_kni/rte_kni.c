@@ -552,6 +552,7 @@ rte_kni_handle_request(struct rte_kni *kni)
 unsigned
 rte_kni_tx_burst(struct rte_kni *kni, struct rte_mbuf **mbufs, unsigned num)
 {
+    //rte_prefetch0(&mbufs[0]);
 	unsigned ret = kni_fifo_put(kni->rx_q, (void **)mbufs, num);
 	/* Get mbufs from free_q and then free them */
 	kni_free_mbufs(kni);
@@ -562,6 +563,7 @@ rte_kni_tx_burst(struct rte_kni *kni, struct rte_mbuf **mbufs, unsigned num)
 unsigned
 rte_kni_rx_burst(struct rte_kni *kni, struct rte_mbuf **mbufs, unsigned num)
 {
+    //rte_prefetch0(&mbufs[0]);
 	unsigned ret = kni_fifo_get(kni->tx_q, (void **)mbufs, num);
 
 	/* If buffers removed, allocate mbufs and then put them into alloc_q */
@@ -624,6 +626,7 @@ kni_allocate_mbufs(struct rte_kni *kni)
 	if (i <= 0)
 		return;
 
+    //rte_prefetch0(&pkts[0]);
 	ret = kni_fifo_put(kni->alloc_q, (void **)pkts, i);
 
 	/* Check if any mbufs not put into alloc_q, and then free them */
