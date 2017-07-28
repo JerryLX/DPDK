@@ -1073,20 +1073,20 @@ drain_mbuf_table(struct mbuf_table *tx_q, uint32_t vid)
 static inline void __attribute__((always_inline))
 drain_eth_rx(struct vhost_dev *vdev)
 {
-    uint16_t rx_count=0, enqueue_count, qid;
+    uint16_t rx_count=0, enqueue_count;
 	struct rte_mbuf *pkts[MAX_PKT_BURST];
     //printf("drain_rx, ports:%d\n",ports[0]);
     
-    for(qid=0;qid<16;qid++){
+    //for(qid=0;qid<16;qid++){
     //rx_count = rte_eth_rx_burst(ports[0], vdev->vmdq_rx_q,
 	//			    pkts, MAX_PKT_BURST);
     
-        rx_count = rte_eth_rx_burst((vdev->vid)%2, qid,
+        rx_count = rte_eth_rx_burst((vdev->vid)%2, 7,
 				    pkts, MAX_PKT_BURST);
         
 //	if (!rx_count)
 //		return;
-    if(!rx_count) continue;
+    if(!rx_count) return;
     /*
 	 * When "enable_retry" is set, here we wait and retry when there
 	 * is no enough free slots in the queue to hold @rx_count packets,
@@ -1115,7 +1115,6 @@ drain_eth_rx(struct vhost_dev *vdev)
 	}
 
 	free_pkts(pkts, rx_count);
-    }
 }
 
 static inline void __attribute__((always_inline))

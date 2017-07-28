@@ -74,7 +74,6 @@
 #define RTE_PIPELINE_STATS_TABLE_DROP1(p, counter)
 
 #endif
-//static int lhz=0;
 struct rte_port_in {
 	/* Input parameters */
 	struct rte_port_in_ops ops;
@@ -137,7 +136,8 @@ struct rte_pipeline {
 	char name[RTE_PIPELINE_MAX_NAME_SZ];
 	int socket_id;
 	uint32_t offset_port_id;
-    uint32_t index;
+	uint32_t index;
+
 	/* Internal tables */
 	struct rte_port_in ports_in[RTE_PIPELINE_PORT_IN_MAX];
 	struct rte_port_out ports_out[RTE_PIPELINE_PORT_OUT_MAX];
@@ -153,7 +153,7 @@ struct rte_pipeline {
 	struct rte_port_in *port_in_next;
 
 	/* Pipeline run structures */
-	struct rte_mbuf *pkts[RTE_PORT_IN_BURST_SIZE_MAX*2];
+	struct rte_mbuf *pkts[RTE_PORT_IN_BURST_SIZE_MAX];
 	struct rte_pipeline_table_entry *entries[RTE_PORT_IN_BURST_SIZE_MAX];
 	uint64_t action_mask0[RTE_PIPELINE_ACTIONS];
 	uint64_t action_mask1[RTE_PIPELINE_ACTIONS];
@@ -1180,7 +1180,6 @@ rte_pipeline_action_handler_port(struct rte_pipeline *p, uint64_t pkts_mask)
 
 		for (i = 0; i < n_pkts; i++) {
 			struct rte_mbuf *pkt = p->pkts[i];
-            rte_prefetch0(&pkt);
 			uint32_t port_out_id = p->entries[i]->port_id;
 			struct rte_port_out *port_out =
 				&p->ports_out[port_out_id];
@@ -1218,7 +1217,6 @@ rte_pipeline_action_handler_port(struct rte_pipeline *p, uint64_t pkts_mask)
 				continue;
 
 			pkt = p->pkts[i];
-            rte_prefetch0(&pkt);
 			port_out_id = p->entries[i]->port_id;
 			port_out = &p->ports_out[port_out_id];
 
@@ -1255,7 +1253,6 @@ rte_pipeline_action_handler_port_meta(struct rte_pipeline *p,
 
 		for (i = 0; i < n_pkts; i++) {
 			struct rte_mbuf *pkt = p->pkts[i];
-            rte_prefetch0(&pkt);
 			uint32_t port_out_id =
 				RTE_MBUF_METADATA_UINT32(pkt,
 					p->offset_port_id);
@@ -1295,7 +1292,6 @@ rte_pipeline_action_handler_port_meta(struct rte_pipeline *p,
 				continue;
 
 			pkt = p->pkts[i];
-            //rte_prefetch0(&pkt);
 			port_out_id = RTE_MBUF_METADATA_UINT32(pkt,
 				p->offset_port_id);
 			port_out = &p->ports_out[port_out_id];
@@ -1349,22 +1345,18 @@ rte_pipeline_run(struct rte_pipeline *p)
 {
 	struct rte_port_in *port_in = p->port_in_next;
 	uint32_t n_pkts, table_id;
-    rte_prefetch0(port_in->next);
-    //printf("x=%u \n",p->num_ports_in);
+
 	if (port_in == NULL)
-     return 0;
-     int times=0;
-    for(times =0 ;times<1;times++){
+		return 0;
+
 	/* Input port RX */
-        //printf("----%d----\n",times);
 	n_pkts = port_in->ops.f_rx(port_in->h_port, p->pkts,
 		port_in->burst_size);
-	if (n_pkts ==0) {
-        //printf("address = %p\n",port_in->next);
+	if (n_pkts == 0) {
 		p->port_in_next = port_in->next;
-        return 0;
+		return 0;
 	}
-    //lhz++;
+
 	p->pkts_mask = RTE_LEN2MASK(n_pkts, uint64_t);
 	p->action_mask0[RTE_PIPELINE_ACTION_DROP] = 0;
 	p->action_mask0[RTE_PIPELINE_ACTION_PORT] = 0;
@@ -1386,24 +1378,22 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 		/* Lookup */
 		table = &p->tables[table_id];
-		//rte_prefetch0(table);
-        table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
-			&lookup_hit_mask, (void **) p->entries);
-        lookup_hit_mask = 0;
+		table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
+			&lookup_hit_mask, (void **) p->entries);//take no time
 		lookup_miss_mask = p->pkts_mask & (~lookup_hit_mask);
 
-       //printf("mask:%lu, hit=%lu",lookup_miss_mask,lookup_hit_mask);
+        //printf("mask:%lx\n",lookup_miss_mask);
 		/* Lookup miss */
 		if (lookup_miss_mask != 0) {
-            //printf("look up miss\n");
+          //  printf("look up miss\n");
 			struct rte_pipeline_table_entry *default_entry =
 				table->default_entry;
 
 			p->pkts_mask = lookup_miss_mask;
 
 			/* Table user actions */
-			if (table->f_action_miss != NULL) {
-				//printf("action here\n");
+			if (table->f_action_miss != NULL) {//not go to
+			//	printf("action here\n");
                 table->f_action_miss(p,
 					p->pkts,
 					lookup_miss_mask,
@@ -1421,12 +1411,9 @@ rte_pipeline_run(struct rte_pipeline *p)
 				rte_pipeline_action_handler_port_bulk(p,
 					p->pkts_mask,
 					default_entry->port_id);
-
-                n_pkts = port_in->ops.f_rx(port_in->h_port, p->pkts,
-                                port_in->burst_size);
                // printf("action complete\n");
             }
-			else {
+			else {//not goto
 				uint32_t pos = default_entry->action;
 
 				RTE_PIPELINE_STATS_TABLE_DROP0(p);
@@ -1440,7 +1427,7 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 //printf("miss over!\n");
 		/* Lookup hit */
-		if (lookup_hit_mask != 0) {
+		if (lookup_hit_mask != 0) {//not go to
 			p->pkts_mask = lookup_hit_mask;
             //printf("lookup hit!\n");
 			/* Table user actions */
@@ -1477,11 +1464,10 @@ rte_pipeline_run(struct rte_pipeline *p)
 		/* Prepare for next iteration */
         //printf("next loop\n");
 		p->pkts_mask = p->action_mask0[RTE_PIPELINE_ACTION_TABLE];
-		//p->pkts_mask = 0;
-        table_id = table->table_next_id;
+		table_id = table->table_next_id;
 		p->action_mask0[RTE_PIPELINE_ACTION_TABLE] = 0;
 	}
-    //printf("111\n");
+
 	/* Table reserved action PORT */
 	rte_pipeline_action_handler_port(p,
 		p->action_mask0[RTE_PIPELINE_ACTION_PORT]);
@@ -1493,14 +1479,10 @@ rte_pipeline_run(struct rte_pipeline *p)
 	/* Table reserved action DROP */
 	rte_pipeline_action_handler_drop(p,
 		p->action_mask0[RTE_PIPELINE_ACTION_DROP]);
-    }
+
 	/* Pick candidate for next port IN to serve */
-//	p->index++;
-//    if(p->index>=4)
-  //  {
-//    p->index=0;
-    p->port_in_next = port_in->next;
-//    }
+	p->port_in_next = port_in->next;//maybe
+
 	return (int) n_pkts;
 }
 

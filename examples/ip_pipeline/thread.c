@@ -68,7 +68,7 @@ do {							\
 #else
 
 #define PIPELINE_RUN_REGULAR(thread, pipeline)		\
-	rte_pipeline_run(pipeline->p)
+    rte_pipeline_run(pipeline->p)
 
 #define PIPELINE_RUN_CUSTOM(thread, data)		\
 	data->f_run(data->be)
@@ -243,7 +243,9 @@ printf("thread:%d\n",(int)RTE_DIM(t->regular));
 		uint32_t n_custom;
         n_custom = RTE_MIN(t->n_custom, RTE_DIM(t->custom));
         n_regular = RTE_MIN(t->n_regular, RTE_DIM(t->regular));
-		/* Run regular pipelines */
+//        printf("n_custom ======%d\n",n_custom);
+        /* Run regular pipelines */
+//        printf("n_regular ======%d\n",n_regular);
 		for (j = 0; j < n_regular; j++) {
 			struct app_thread_pipeline_data *data = &t->regular[j];
 			struct pipeline *p = data->be;

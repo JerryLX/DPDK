@@ -1160,7 +1160,7 @@ static inline struct rte_mbuf *rte_mbuf_raw_alloc(struct rte_mempool *mp)
 	if (rte_mempool_get(mp, &mb) < 0)
 		return NULL;
 	m = (struct rte_mbuf *)mb;
-    //rte_prefetch0(&m->cacheline1);
+//    rte_prefetch0(&m->cacheline1);
 	RTE_ASSERT(rte_mbuf_refcnt_read(m) == 0);
 	rte_mbuf_refcnt_set(m, 1);
 	__rte_mbuf_sanity_check(m, 0);

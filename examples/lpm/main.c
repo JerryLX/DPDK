@@ -130,41 +130,25 @@ struct lcore_params {
 	uint8_t lcore_id;
 } __rte_cache_aligned;
 
+#define PORT_RX 0
 static struct lcore_params lcore_params_array[MAX_LCORE_PARAMS];
 static struct lcore_params lcore_params_array_default[] = {
-	{0, 0, 2},
-	{0, 1, 2},
-	{0, 2, 2},
-	{0, 3, 2},
-	{0, 4, 3},
-	{0, 5, 3},
-	{0, 6, 3},
-	{0, 7, 3},
-    {0, 8, 2},
-	{0, 9, 2},
-	{0, 10, 2},
-	{0, 11, 2},
-	{0, 12, 3},
-	{0, 13, 3},
-	{0, 14, 3},
-	{0, 15, 3},
-    {1, 0, 6},
-	{1, 1, 6},
-	{1, 2, 6},
-	{1, 3, 6},
-	{1, 4, 7},
-	{1, 5, 7},
-	{1, 6, 7},
-	{1, 7, 7},
-	{1, 8, 6},
-	{1, 9, 6},
-	{1, 10, 6},
-	{1, 11, 6},
-	{1, 12, 7},
-	{1, 13, 7},
-	{1, 14, 7},
-	{1, 15, 7},
-
+	{PORT_RX, 0, 2},
+	{PORT_RX, 1, 2},
+	{PORT_RX, 2, 2},
+	{PORT_RX, 3, 2},
+	{PORT_RX, 4, 3},
+	{PORT_RX, 5, 3},
+	{PORT_RX, 6, 3},
+	{PORT_RX, 7, 3},
+    {PORT_RX, 8, 2},
+	{PORT_RX, 9, 2},
+	{PORT_RX, 10, 2},
+	{PORT_RX, 11, 2},
+	{PORT_RX, 12, 3},
+	{PORT_RX, 13, 3},
+	{PORT_RX, 14, 3},
+	{PORT_RX, 15, 3},
 };
 
 static struct lcore_params * lcore_params = lcore_params_array_default;

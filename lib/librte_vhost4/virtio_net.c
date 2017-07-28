@@ -53,7 +53,8 @@
 static inline void __attribute__((always_inline))
 vhost_log_page(uint8_t *log_base, uint64_t page)
 {
-	log_base[page / 8] |= 1 << (page % 8);
+	//log_base[page / 8] |= 1 << (page % 8);
+	log_base[page >> 3] |= 1 << (page & 7);
 }
 
 static inline void __attribute__((always_inline))
@@ -65,14 +66,16 @@ vhost_log_write(struct virtio_net *dev, uint64_t addr, uint64_t len)
 		   !dev->log_base || !len))
 		return;
 
-	if (unlikely(dev->log_size <= ((addr + len - 1) / VHOST_LOG_PAGE / 8)))
+	if (unlikely(dev->log_size <= ((addr + len - 1) / (VHOST_LOG_PAGE >> 3))))
 		return;
 
 	/* To make sure guest memory updates are committed before logging */
 	rte_smp_wmb();
 
-	page = addr / VHOST_LOG_PAGE;
-	while (page * VHOST_LOG_PAGE < addr + len) {
+	page = addr >> 12;
+	//page = addr / VHOST_LOG_PAGE;
+	//while (page * VHOST_LOG_PAGE < addr + len) {
+	while ((page << 12) < addr + len) {
 		vhost_log_page((uint8_t *)(uintptr_t)dev->log_base, page);
 		page += 1;
 	}
@@ -209,7 +212,7 @@ copy_mbuf_to_desc(struct virtio_net *dev, struct vring_desc *descs,
 	if (unlikely(desc->len < dev->vhost_hlen) || !desc_addr)
 		return -1;
 
-	//rte_prefetch0((void *)(uintptr_t)desc_addr);  //delete
+	rte_prefetch0((void *)(uintptr_t)desc_addr);  //delete
 
 	virtio_enqueue_offload(m, &virtio_hdr.hdr);
 	copy_virtio_net_hdr(dev, desc_addr, virtio_hdr);
@@ -241,6 +244,7 @@ copy_mbuf_to_desc(struct virtio_net *dev, struct vring_desc *descs,
 
 			desc = &descs[desc->next];
 			desc_addr = gpa_to_vva(dev, desc->addr);
+	        //rte_prefetch0((void *)(uintptr_t)desc_addr);  //delete
 			
             if (unlikely(!desc_addr))
 				return -1;
@@ -309,7 +313,7 @@ virtio_dev_rx(struct virtio_net *dev, uint16_t queue_id,
 		dev->vid, start_idx, start_idx + count);
 
 	/* Retrieve all of the desc indexes first to avoid caching issues. */
-	rte_prefetch0(&vq->avail->ring[start_idx & mask]); //delete
+	rte_prefetch0(&vq->avail->ring[start_idx & mask]); 
 	for (i = 0; i < count; i++) {
 		used_idx = (start_idx + i) & mask;
 		desc_indexes[i] = vq->avail->ring[used_idx];
@@ -670,7 +674,7 @@ parse_ethernet(struct rte_mbuf *m, uint16_t *l4_proto, void **l4_hdr)
 	case ETHER_TYPE_IPv4:
 		ipv4_hdr = (struct ipv4_hdr *)l3_hdr;
 		*l4_proto = ipv4_hdr->next_proto_id;
-		m->l3_len = (ipv4_hdr->version_ihl & 0x0f) * 4;
+		m->l3_len = (ipv4_hdr->version_ihl & 0x0f) << 2;
 		*l4_hdr = (char *)l3_hdr + m->l3_len;
 		m->ol_flags |= PKT_TX_IPV4;
 		break;
@@ -905,7 +909,8 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vring_desc *descs,
 		 */
 		if (mbuf_avail == 0) {
 			cur = rte_pktmbuf_alloc(mbuf_pool);
-			if (unlikely(cur == NULL)) {
+			//rte_prefetch0(rte_pktmbuf_mtod(cur,void *));
+            if (unlikely(cur == NULL)) {
 				RTE_LOG(ERR, VHOST_DATA, "Failed to "
 					"allocate memory for mbuf.\n");
 				return -1;
@@ -929,8 +934,8 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vring_desc *descs,
 
 	if (hdr)
 		vhost_dequeue_offload(hdr, m);
-
-	return 0;
+	
+    return 0;
 }
 
 static inline void __attribute__((always_inline))
@@ -1046,7 +1051,6 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 
 			if (mbuf_is_consumed(zmbuf->mbuf)) {
 				used_idx = vq->last_used_idx++ & mask;
-				//used_idx = vq->last_used_idx++ & (vq->size - 1);
 				update_used_ring(dev, vq, used_idx,
 						 zmbuf->desc_idx);
 				nr_updated += 1;
@@ -1104,12 +1108,10 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 	LOG_DEBUG(VHOST_DATA, "(%d) %s\n", dev->vid, __func__);
 
 	/* Prefetch available and used ring */
-	//avail_idx = vq->last_avail_idx & (vq->size - 1);
-	//used_idx  = vq->last_used_idx  & (vq->size - 1);
 	avail_idx = vq->last_avail_idx & mask;
 	used_idx  = vq->last_used_idx  & mask;
-	//rte_prefetch2(&vq->avail->ring[avail_idx]);
-	//rte_prefetch2(&vq->used->ring[used_idx]);
+	rte_prefetch0(&vq->avail->ring[avail_idx]);
+	//rte_prefetch0(&vq->used->ring[used_idx]);
 
 	count = RTE_MIN(count, MAX_PKT_BURST);
 	count = RTE_MIN(count, free_entries);
@@ -1118,8 +1120,6 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 
 	/* Retrieve all of the head indexes first to avoid caching issues. */
 	for (i = 0; i < count; i++) {
-		//avail_idx = (vq->last_avail_idx + i) & (vq->size - 1);
-		//used_idx  = (vq->last_used_idx  + i) & (vq->size - 1);
 		avail_idx = (vq->last_avail_idx + i) & mask;
 		used_idx  = (vq->last_used_idx  + i) & mask;
 		desc_indexes[i] = vq->avail->ring[avail_idx];
