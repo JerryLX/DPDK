@@ -485,7 +485,7 @@ copy_mbuf_to_desc_mergeable(struct virtio_net *dev, struct rte_mbuf *m,
 	hdr_mbuf = m;
 	hdr_addr = desc_addr;
 	hdr_phys_addr = buf_vec[vec_idx].buf_addr;
-	rte_prefetch0((void *)(uintptr_t)hdr_addr);
+	//rte_prefetch0((void *)(uintptr_t)hdr_addr);
 
 	virtio_hdr.num_buffers = num_buffers;
 	LOG_DEBUG(VHOST_DATA, "(%d) RX: num merge buffers %d\n",
@@ -505,7 +505,7 @@ copy_mbuf_to_desc_mergeable(struct virtio_net *dev, struct rte_mbuf *m,
 				return -1;
 
 			/* Prefetch buffer address. */
-			rte_prefetch0((void *)(uintptr_t)desc_addr);
+			//rte_prefetch0((void *)(uintptr_t)desc_addr);
 			desc_offset = 0;
 			desc_avail  = buf_vec[vec_idx].buf_len;
 		}
@@ -809,7 +809,7 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vring_desc *descs,
 
 	if (virtio_net_with_host_offload(dev)) {
 		hdr = (struct virtio_net_hdr *)((uintptr_t)desc_addr);
-		rte_prefetch0(hdr);
+		//rte_prefetch0(hdr);
 	}
 
 	/*
@@ -835,7 +835,7 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vring_desc *descs,
 		desc_offset = dev->vhost_hlen;
 	}
 
-	rte_prefetch0((void *)(uintptr_t)(desc_addr + desc_offset));  
+	//rte_prefetch0((void *)(uintptr_t)(desc_addr + desc_offset));  //delete
 
 	PRINT_PACKET(dev, (uintptr_t)(desc_addr + desc_offset), desc_avail, 0);
 
@@ -891,7 +891,7 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vring_desc *descs,
 			if (unlikely(!desc_addr))
 				return -1;
 
-			rte_prefetch0((void *)(uintptr_t)desc_addr); 
+			//rte_prefetch0((void *)(uintptr_t)desc_addr); //delete
 
 			desc_offset = 0;
 			desc_avail  = desc->len;
@@ -1020,6 +1020,7 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 	uint32_t i = 0;
 	uint16_t free_entries;
 	uint16_t avail_idx;
+    uint32_t mask; 
 
 	dev = get_device(vid);
 	if (!dev)
@@ -1035,6 +1036,7 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 	if (unlikely(vq->enabled == 0))
 		return 0;
 
+    mask = vq->size-1;
 	if (unlikely(dev->dequeue_zero_copy)) {
 		struct zcopy_mbuf *zmbuf, *next;
 		int nr_updated = 0;
@@ -1044,7 +1046,7 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 			next = TAILQ_NEXT(zmbuf, next);
 
 			if (mbuf_is_consumed(zmbuf->mbuf)) {
-				used_idx = vq->last_used_idx++ & (vq->size - 1);
+				used_idx = vq->last_used_idx++ & mask;
 				update_used_ring(dev, vq, used_idx,
 						 zmbuf->desc_idx);
 				nr_updated += 1;
@@ -1102,10 +1104,10 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 	LOG_DEBUG(VHOST_DATA, "(%d) %s\n", dev->vid, __func__);
 
 	/* Prefetch available and used ring */
-	avail_idx = vq->last_avail_idx & (vq->size - 1);
-	used_idx  = vq->last_used_idx  & (vq->size - 1);
+	avail_idx = vq->last_avail_idx & mask;
+	used_idx  = vq->last_used_idx  & mask;
 	rte_prefetch0(&vq->avail->ring[avail_idx]);
-	rte_prefetch0(&vq->used->ring[used_idx]);
+	//rte_prefetch0(&vq->used->ring[used_idx]);
 
 	count = RTE_MIN(count, MAX_PKT_BURST);
 	count = RTE_MIN(count, free_entries);
@@ -1114,8 +1116,8 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 
 	/* Retrieve all of the head indexes first to avoid caching issues. */
 	for (i = 0; i < count; i++) {
-		avail_idx = (vq->last_avail_idx + i) & (vq->size - 1);
-		used_idx  = (vq->last_used_idx  + i) & (vq->size - 1);
+		avail_idx = (vq->last_avail_idx + i) & mask;
+		used_idx  = (vq->last_used_idx  + i) & mask;
 		desc_indexes[i] = vq->avail->ring[avail_idx];
 
 		if (likely(dev->dequeue_zero_copy == 0))
@@ -1138,6 +1140,7 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 			if (unlikely(!desc))
 				break;
 
+			rte_prefetch0(desc);
 			sz = vq->desc[desc_indexes[i]].len / sizeof(*desc);
 			idx = 0;
 		} else {
