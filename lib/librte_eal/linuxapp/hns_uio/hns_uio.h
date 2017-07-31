@@ -17,6 +17,7 @@
 #define NIC_MOD_VERSION "iWareV2R2C00B961"
 #define DRIVER_UIO_NAME "hns_uio"
 #define NIC_UIO_SIZE	0x10000
+#define MAX_QUEUE_NUM 32
 #define NUM_MAX		64
 
 enum  {
@@ -34,7 +35,11 @@ enum  {
 	HNS_UIO_IOCTL_REG_READ,
 	HNS_UIO_IOCTL_REG_WRITE,
 	HNS_UIO_IOCTL_SET_PAUSE,
-	HNS_UIO_IOCTL_NUM
+	HNS_UIO_IOCTL_NUM,
+    HNS_UIO_IOCTL_LINK_UPDATE,
+    HNS_UIO_IOCTL_INIT_MAC,
+    HNS_UIO_IOCTL_PROMISCUOUS,
+    HNS_UIO_IOCTL_TSO
 };
 
 struct char_device {
@@ -48,6 +53,7 @@ struct rte_uio_platform_dev {
 	struct device *dev;
     struct hnae_handle *ae_handle;
     struct net_device *netdev;
+    struct phy_device *phy;
     struct device_node *ae_node;
     struct hnae_vf_cb *vf_cb;
     struct uio_info info;
@@ -61,6 +67,7 @@ struct rte_uio_platform_dev {
     char netdev_registered;
     uint16_t bd_number;
     struct net_device_stats nstats;
+    int link; //link state
 
 	struct platform_device *pdev;
     const struct fwnode_handle *fwnode;

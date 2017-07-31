@@ -36,6 +36,13 @@
 #include <stdint.h>
 #include <errno.h>
 #include <sys/queue.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <inttypes.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
 
 #include <rte_memzone.h>
 #include <rte_launch.h>
@@ -44,6 +51,11 @@
 #include <rte_lcore.h>
 #include <rte_debug.h>
 #include <rte_memory.h>
+#include <linux/fb.h>  
+#include <sys/mman.h>  
+#include <sys/ioctl.h>   
+  
+#define PAGE_SIZE 4096 
 
 static int
 lcore_hello(__attribute__((unused)) void *arg)
@@ -58,7 +70,30 @@ int
 main(int argc, char **argv)
 {
 	int ret;
+	// int fd;
 	unsigned lcore_id;
+	// unsigned char *p_map;
+
+	// fd = open("/dev/virtio_cdev",O_RDWR);  
+ //    if(fd < 0)  
+ //    {  
+ //        printf("open fail\n");  
+ //        exit(1);  
+ //    }  
+
+ //    p_map = (unsigned char *)mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,fd, 0);
+ //    printf("%p\n",p_map);
+ //    printf("%d\n",errno);
+ //    {
+ //    	unsigned int test;
+ //    	*(unsigned int *)(p_map+0x14) = 0;
+ //    	test = *(unsigned int *)(p_map+0xc10);
+ //    	printf("host feature: %08x\n",test);
+
+ //    	*(unsigned int *)(p_map+0x030) = 0;
+ //    	test = *(unsigned int *)(p_map+0xc34);
+ //    	printf("host feature: %08x\n",test);
+ //    }
 
 	ret = rte_eal_init(argc, argv);
 	if (ret < 0)

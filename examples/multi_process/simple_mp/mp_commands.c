@@ -54,7 +54,7 @@
 #include <rte_debug.h>
 #include <rte_mempool.h>
 #include <rte_string_fns.h>
-
+#include <rte_cycles.h>
 #include <cmdline_rdline.h>
 #include <cmdline_parse.h>
 #include <cmdline_parse_string.h>
@@ -83,6 +83,7 @@ static void cmd_send_parsed(void *parsed_result,
 		printf("Failed to send message - message discarded\n");
 		rte_mempool_put(message_pool, msg);
 	}
+	current_time=  rte_rdtsc();
 }
 
 cmdline_parse_token_string_t cmd_send_action =

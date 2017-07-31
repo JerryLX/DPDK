@@ -1,0 +1,440 @@
+[EAL]
+n = 4
+log_level = 1
+
+[PIPELINE0]
+type = PASS-THROUGH
+core = s0c2
+pktq_in = RXQ0.0 RXQ0.1 RXQ0.2 RXQ0.3 RXQ0.4 RXQ0.5 RXQ0.6 RXQ0.7 RXQ0.8 RXQ0.9 RXQ0.10 RXQ0.11 RXQ0.12 RXQ0.13 RXQ0.14 RXQ0.15
+pktq_out = TXQ0.0 TXQ0.1 TXQ0.2 TXQ0.3 TXQ0.4 TXQ0.5 TXQ0.6 TXQ0.7 TXQ0.8 TXQ0.9 TXQ0.10 TXQ0.11 TXQ0.12 TXQ0.13 TXQ0.14 TXQ0.15
+msgq_in = MSGQ-REQ-PIPELINE0
+msgq_out = MSGQ-RSP-PIPELINE0
+timer_period = 1
+
+[PIPELINE1]
+type = PASS-THROUGH
+core = s0c1
+pktq_in = RXQ1.0 RXQ1.1 RXQ1.2 RXQ1.3 RXQ1.4 RXQ1.5 RXQ1.6 RXQ1.7 RXQ1.8 RXQ1.9 RXQ1.10 RXQ1.11 RXQ1.12 RXQ1.13 RXQ1.14 RXQ1.15
+pktq_out = TXQ1.0 TXQ1.1 TXQ1.2 TXQ1.3 TXQ1.4 TXQ1.5 TXQ1.6 TXQ1.7 TXQ1.8 TXQ1.9 TXQ1.10 TXQ1.11 TXQ1.12 TXQ1.13 TXQ1.14 TXQ1.15
+msgq_in = MSGQ-REQ-PIPELINE1
+msgq_out = MSGQ-RSP-PIPELINE1
+timer_period = 1
+
+[MEMPOOL0]
+buffer_size = 2304
+pool_size = 131072
+cache_size = 256
+cpu = 0
+
+[LINK0]
+; pmd_id = 0
+promisc = yes
+arp_q = 0
+tcp_syn_q = 0
+ip_local_q = 0
+tcp_local_q = 0
+udp_local_q = 0
+sctp_local_q = 0
+; rss_qs = <NONE>
+; rss_proto_ipv4 = <NONE>
+; rss_proto_ipv6 = <NONE>
+; rss_proto_l2 = <NONE>
+
+[LINK1]
+; pmd_id = 1
+promisc = yes
+arp_q = 0
+tcp_syn_q = 0
+ip_local_q = 0
+tcp_local_q = 0
+udp_local_q = 0
+sctp_local_q = 0
+; rss_qs = <NONE>
+; rss_proto_ipv4 = <NONE>
+; rss_proto_ipv6 = <NONE>
+; rss_proto_l2 = <NONE>
+
+[RXQ0.0]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.1]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.2]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.3]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.4]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.5]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.6]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.7]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.8]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.9]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.10]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.11]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.12]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.13]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.14]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ0.15]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.0]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.1]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.2]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.3]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.4]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.5]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.6]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.7]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.8]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.9]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.10]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.11]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.12]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.13]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.14]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[RXQ1.15]
+mempool = MEMPOOL0
+size = 128
+burst = 32
+
+[TXQ0.0]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.1]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.2]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.3]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.4]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.5]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.6]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.7]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.8]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.9]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.10]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.11]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.12]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.13]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.14]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ0.15]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.0]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.1]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.2]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.3]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.4]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.5]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.6]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.7]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.8]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.9]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.10]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.11]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.12]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.13]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.14]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[TXQ1.15]
+size = 512
+burst = 32
+dropless = no
+n_retries = 0
+
+[MSGQ-REQ-PIPELINE0]
+size = 64
+cpu = 0
+
+[MSGQ-RSP-PIPELINE0]
+size = 64
+cpu = 0
+
+[MSGQ-REQ-CORE-s0c2]
+size = 64
+cpu = 0
+
+[MSGQ-RSP-CORE-s0c2]
+size = 64
+cpu = 0
+
+[MSGQ-REQ-PIPELINE1]
+size = 64
+cpu = 0
+
+[MSGQ-RSP-PIPELINE1]
+size = 64
+cpu = 0
+
+[MSGQ-REQ-CORE-s0c1]
+size = 64
+cpu = 0
+
+[MSGQ-RSP-CORE-s0c1]
+size = 64
+cpu = 0
+

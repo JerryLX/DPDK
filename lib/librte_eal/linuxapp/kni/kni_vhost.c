@@ -82,7 +82,6 @@ kni_vhost_net_tx(struct kni_dev *kni, struct msghdr *m,
 	struct rte_kni_mbuf *pkt_kva = NULL;
 	struct rte_kni_mbuf *pkt_va = NULL;
 	int ret;
-
 	KNI_DBG_TX("tx offset=%d, len=%d, iovlen=%d\n",
 #ifdef HAVE_IOV_ITER_MSGHDR
 		   offset, len, (int)m->msg_iter.iov->iov_len);
@@ -194,11 +193,19 @@ kni_vhost_net_rx(struct kni_dev *kni, struct msghdr *m,
 
 	data_kva = kva->buf_addr + kva->data_off - kni->mbuf_va + kni->mbuf_kva;
 #ifdef HAVE_IOV_ITER_MSGHDR
-	if (unlikely(copy_to_iter(data_kva, pkt_len, &m->msg_iter)))
+	//if (unlikely(copy_to_iter(data_kva, pkt_len, &m->msg_iter)))
+	copy_to_iter(data_kva, pkt_len, &m->msg_iter);
 #else
 	if (unlikely(memcpy_toiovecend(m->msg_iov, data_kva, offset, pkt_len)))
+    {
+        KNI_ERR("copy error\n");
+        goto drop;
+    }
 #endif
-		goto drop;
+    //{
+    //    KNI_ERR("copy error\n");
+    //    goto drop;
+    //}
 
 	/* Update statistics */
 	kni->stats.rx_bytes += pkt_len;
@@ -217,7 +224,7 @@ kni_vhost_net_rx(struct kni_dev *kni, struct msghdr *m,
 drop:
 	/* Update drop statistics */
 	kni->stats.rx_dropped++;
-
+    KNI_DBG_RX("drop!\n");
 	return 0;
 }
 
@@ -295,16 +302,17 @@ kni_chk_vhost_rx(struct kni_dev *kni)
 
 	if (unlikely(BE_STOP & kni->vq_status)) {
 		kni->vq_status |= BE_FINISH;
-		return 0;
+        return 0;
 	}
 
-	if (unlikely(q == NULL))
-		return 0;
-
+	if (unlikely(q == NULL)){
+        return 0;
+    }
 	nb_skb = kni_fifo_count(q->fifo);
 	nb_mbuf = kni_fifo_count(kni->rx_q);
-
-	nb_in = min(nb_mbuf, nb_skb);
+    //if(*(unsigned)(kni->rx_q) != 1022);
+    //printk("kni->rx_q->write:%d, read:%d\n",*(unsigned *)(kni->rx_q),*((unsigned *)(kni->rx_q)+1));
+    nb_in = min(nb_mbuf, nb_skb);
 	nb_in = min(nb_in, (unsigned)RX_BURST_SZ);
 	nb_burst   = (nb_in & ~BURST_MASK);
 	nb_backlog = (nb_in & BURST_MASK);
@@ -345,12 +353,11 @@ kni_chk_vhost_rx(struct kni_dev *kni)
 		KNI_DBG_RX("RX CHK KICK nb_mbuf %d, nb_skb %d, nb_in %d\n",
 			   nb_mbuf, nb_skb, nb_in);
 	}
-
-	return 0;
+    return 0;
 
 except:
 	/* Failing should not happen */
-	KNI_ERR("Fail to enqueue fifo, it shouldn't happen \n");
+    KNI_ERR("Fail to enqueue fifo, it shouldn't happen \n");
 	BUG_ON(1);
 
 	return 0;
@@ -432,13 +439,15 @@ kni_sock_rcvmsg(struct socket *sock,
 #ifdef RTE_KNI_VHOST_VNET_HDR_EN
 	/* no need to copy hdr when no pkt received */
 #ifdef HAVE_IOV_ITER_MSGHDR
-	if (unlikely(copy_to_iter((void *)&vnet_hdr, vnet_hdr_len,
-		&m->msg_iter)))
+	//if (unlikely(copy_to_iter((void *)&vnet_hdr, vnet_hdr_len,
+	//	&m->msg_iter)))
+	copy_to_iter((void *)&vnet_hdr, vnet_hdr_len,
+		&m->msg_iter)
 #else
 	if (unlikely(memcpy_toiovecend(m->msg_iov,
 		(void *)&vnet_hdr, 0, vnet_hdr_len)))
-#endif /* HAVE_IOV_ITER_MSGHDR */
 		return -EFAULT;
+#endif /* HAVE_IOV_ITER_MSGHDR */
 #endif /* RTE_KNI_VHOST_VNET_HDR_EN */
 	KNI_DBG_RX("kni_rcvmsg expect_len %ld, flags 0x%08x, pkt_len %d\n",
 		   (unsigned long)len, q->flags, pkt_len);
@@ -845,10 +854,12 @@ int
 kni_vhost_init(struct kni_dev *kni)
 {
 	struct net_device *dev = kni->net_dev;
+    uint32_t err;
+    err = sysfs_create_group(&dev->dev.kobj, &dev_attr_grp);
 
-	if (sysfs_create_group(&dev->dev.kobj, &dev_attr_grp))
-		sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
-
+	if (err){
+        sysfs_remove_group(&dev->dev.kobj, &dev_attr_grp);
+    }
 	kni->vq_status = BE_STOP;
 
 	KNI_DBG("kni_vhost_init done\n");

@@ -152,6 +152,9 @@ rte_reorder_free(struct rte_reorder_buffer *b);
 int
 rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf);
 
+int
+rte_reorder_insert_opt(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf);
+
 /**
  * Fetch reordered buffers
  *
@@ -171,6 +174,10 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf);
  */
 unsigned int
 rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
+		unsigned max_mbufs);
+
+unsigned int
+rte_reorder_drain_opt(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 		unsigned max_mbufs);
 
 #ifdef __cplusplus

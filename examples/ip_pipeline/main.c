@@ -46,15 +46,14 @@ main(int argc, char **argv)
 	app_config_args(&app, argc, argv);
 
 	app_config_preproc(&app);
-
-	app_config_parse(&app, app.parser_file);
-
-	app_config_check(&app);
-
+	
+    app_config_parse(&app, app.parser_file);
+	
+    app_config_check(&app);
 	/* Init */
 	app_init(&app);
-
-	/* Run-time */
+	
+    /* Run-time */
 	rte_eal_mp_remote_launch(
 		app_thread,
 		(void *) &app,

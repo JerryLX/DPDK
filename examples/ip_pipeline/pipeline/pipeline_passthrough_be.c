@@ -763,7 +763,6 @@ pipeline_passthrough_init(struct pipeline_params *params,
 
 	/* Message handlers */
 	memcpy(p->handlers, handlers, sizeof(p->handlers));
-
 	return p;
 }
 

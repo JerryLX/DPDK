@@ -288,13 +288,13 @@ pci_probe_all_drivers(struct rte_pci_device *dev)
 
 	TAILQ_FOREACH(dr, &pci_driver_list, next) {
 		rc = rte_eal_pci_probe_one_driver(dr, dev);
-		if (rc < 0)
+        if (rc < 0)
 			/* negative value is an error */
 			return -1;
 		if (rc > 0)
 			/* positive value means driver doesn't support it */
 			continue;
-		return 0;
+        return 0;
 	}
 	return 1;
 }
@@ -405,15 +405,20 @@ rte_eal_pci_probe(void)
 
 	if (rte_eal_devargs_type_count(RTE_DEVTYPE_WHITELISTED_PCI) == 0)
 		probe_all = 1;
-
+    printf("probe_all =%d ==============\n",probe_all);
 	TAILQ_FOREACH(dev, &pci_device_list, next) {
 
 		/* set devargs in PCI structure */
 		devargs = pci_devargs_lookup(dev);
-		if (devargs != NULL)
+		if (devargs != NULL){
 			dev->devargs = devargs;
-
-		/* probe all or only whitelisted devices */
+            printf("devargs !=NULL!!=====\n");
+        }
+        else
+        {
+            printf("devargs = NULL!!!======\n");
+        }
+        /* probe all or only whitelisted devices */
 		if (probe_all)
 			ret = pci_probe_all_drivers(dev);
 		else if (devargs != NULL &&

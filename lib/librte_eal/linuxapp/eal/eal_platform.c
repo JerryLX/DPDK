@@ -96,6 +96,7 @@ rte_eal_platform_map_device(struct rte_platform_device *dev)
 
 	switch (dev->kdrv) {
     case RTE_KDRV_HNS_UIO:
+    case RTE_KDRV_PLF_UIO:
         ret = platform_uio_map_resource(dev);
         break;
     default:
@@ -199,7 +200,6 @@ platform_scan_one(const char *dirname, const char *dev_name, int uio_num)
 
     //set uio_num
     dev->uio_num = uio_num;
-        
     RTE_LOG(ERR, EAL, "scaning device %s, uio_num: %d\n", dev_name, uio_num);
     snprintf(filename, sizeof(filename), "%s/uio/uio%u", 
             dirname, uio_num);
@@ -223,9 +223,10 @@ platform_scan_one(const char *dirname, const char *dev_name, int uio_num)
 	if (!ret) {
 		if (!strcmp(driver, "hns_uio"))
 			dev->kdrv = RTE_KDRV_HNS_UIO;
+		else if(!strcmp(driver, "plf_uio"))
+			dev->kdrv = RTE_KDRV_PLF_UIO;
         else{
             dev->kdrv = RTE_KDRV_UNKNOWN;
-            RTE_LOG(INFO, EAL, "%s has a unknown driver: %s\n", dev_name, driver);
         }
     }
     else

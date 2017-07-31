@@ -352,7 +352,8 @@ rte_eth_platform_dev_init(struct rte_platform_driver *platform_drv,
     int pci_drv_size = sizeof(struct rte_pci_driver);
 	eth_drv = (struct eth_driver *)((unsigned long)platform_drv - pci_drv_size);
 	eth_dev = rte_eth_dev_allocate(platform_dev->name, RTE_ETH_DEV_PLATFORM);
-	if (eth_dev == NULL)
+	
+    if (eth_dev == NULL)
 		return -ENOMEM;
 	if (rte_eal_process_type() == RTE_PROC_PRIMARY) {
 		eth_dev->data->dev_private = rte_zmalloc("ethdev private structure",
@@ -1014,7 +1015,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 	}
 
 	dev = &rte_eth_devices[port_id];
-
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->dev_infos_get, -ENOTSUP);
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->dev_configure, -ENOTSUP);
 
@@ -1023,7 +1023,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 		    "port %d must be stopped to allow configuration\n", port_id);
 		return -EBUSY;
 	}
-
 	/* Copy the dev_conf parameter into the dev structure */
 	memcpy(&dev->data->dev_conf, dev_conf, sizeof(dev->data->dev_conf));
 
@@ -1033,7 +1032,6 @@ rte_eth_dev_configure(uint8_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 	 * configured device.
 	 */
 	(*dev->dev_ops->dev_infos_get)(dev, &dev_info);
-
 	if (nb_rx_q == 0 && nb_tx_q == 0) {
 		RTE_PMD_DEBUG_TRACE("ethdev port_id=%d both rx and tx queue cannot be 0\n", port_id);
 		return -EINVAL;
@@ -1196,7 +1194,6 @@ rte_eth_dev_start(uint8_t port_id)
 		return diag;
 
 	rte_eth_dev_config_restore(port_id);
-
 	if (dev->data->dev_conf.intr_conf.lsc == 0) {
 		RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->link_update, -ENOTSUP);
 		(*dev->dev_ops->link_update)(dev, 0);
@@ -1285,7 +1282,7 @@ rte_eth_rx_queue_setup(uint8_t port_id, uint16_t rx_queue_id,
 	dev = &rte_eth_devices[port_id];
 	if (rx_queue_id >= dev->data->nb_rx_queues) {
 		RTE_PMD_DEBUG_TRACE("Invalid RX queue_id=%d\n", rx_queue_id);
-		return -EINVAL;
+        return -EINVAL;
 	}
 
 	if (dev->data->dev_started) {
@@ -1481,6 +1478,43 @@ rte_eth_promiscuous_get(uint8_t port_id)
 
 	dev = &rte_eth_devices[port_id];
 	return dev->data->promiscuous;
+}
+
+void
+rte_eth_tso_enable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_enable);
+	(*dev->dev_ops->tso_enable)(dev);
+	dev->data->tso = 1;
+}
+
+void
+rte_eth_tso_disable(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_RET(port_id);
+	dev = &rte_eth_devices[port_id];
+
+	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->tso_disable);
+	dev->data->tso = 0;
+	(*dev->dev_ops->tso_disable)(dev);
+}
+
+int
+rte_eth_tso_get(uint8_t port_id)
+{
+	struct rte_eth_dev *dev;
+
+	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -EINVAL);
+
+	dev = &rte_eth_devices[port_id];
+	return dev->data->tso;
 }
 
 void
@@ -1826,6 +1860,7 @@ rte_eth_dev_info_get(uint8_t port_id, struct rte_eth_dev_info *dev_info)
 	RTE_FUNC_PTR_OR_RET(*dev->dev_ops->dev_infos_get);
 	(*dev->dev_ops->dev_infos_get)(dev, dev_info);
 	dev_info->pci_dev = dev->pci_dev;
+	dev_info->platform_dev = dev->platform_dev;
 	dev_info->driver_name = dev->data->drv_name;
 	dev_info->nb_rx_queues = dev->data->nb_rx_queues;
 	dev_info->nb_tx_queues = dev->data->nb_tx_queues;
@@ -1861,10 +1896,9 @@ void
 rte_eth_macaddr_get(uint8_t port_id, struct ether_addr *mac_addr)
 {
 	struct rte_eth_dev *dev;
-
 	RTE_ETH_VALID_PORTID_OR_RET(port_id);
 	dev = &rte_eth_devices[port_id];
-	ether_addr_copy(&dev->data->mac_addrs[0], mac_addr);
+    ether_addr_copy(&dev->data->mac_addrs[0], mac_addr);
 }
 
 
@@ -2079,16 +2113,13 @@ rte_eth_check_reta_mask(struct rte_eth_rss_reta_entry64 *reta_conf,
 			uint16_t reta_size)
 {
 	uint16_t i, num;
-
 	if (!reta_conf)
 		return -EINVAL;
-
 	if (reta_size != RTE_ALIGN(reta_size, RTE_RETA_GROUP_SIZE)) {
 		RTE_PMD_DEBUG_TRACE("Invalid reta size, should be %u aligned\n",
 							RTE_RETA_GROUP_SIZE);
 		return -EINVAL;
 	}
-
 	num = reta_size / RTE_RETA_GROUP_SIZE;
 	for (i = 0; i < num; i++) {
 		if (reta_conf[i].mask)
@@ -2104,15 +2135,12 @@ rte_eth_check_reta_entry(struct rte_eth_rss_reta_entry64 *reta_conf,
 			 uint16_t max_rxq)
 {
 	uint16_t i, idx, shift;
-
 	if (!reta_conf)
 		return -EINVAL;
-
 	if (max_rxq == 0) {
 		RTE_PMD_DEBUG_TRACE("No receive queue is available\n");
 		return -EINVAL;
 	}
-
 	for (i = 0; i < reta_size; i++) {
 		idx = i / RTE_RETA_GROUP_SIZE;
 		shift = i % RTE_RETA_GROUP_SIZE;
@@ -2124,7 +2152,6 @@ rte_eth_check_reta_entry(struct rte_eth_rss_reta_entry64 *reta_conf,
 			return -EINVAL;
 		}
 	}
-
 	return 0;
 }
 
@@ -2138,8 +2165,8 @@ rte_eth_dev_rss_reta_update(uint8_t port_id,
 
 	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -ENODEV);
 	/* Check mask bits */
-	ret = rte_eth_check_reta_mask(reta_conf, reta_size);
-	if (ret < 0)
+    ret = rte_eth_check_reta_mask(reta_conf, reta_size);
+    if (ret < 0)
 		return ret;
 
 	dev = &rte_eth_devices[port_id];
@@ -2147,10 +2174,11 @@ rte_eth_dev_rss_reta_update(uint8_t port_id,
 	/* Check entry value */
 	ret = rte_eth_check_reta_entry(reta_conf, reta_size,
 				dev->data->nb_rx_queues);
-	if (ret < 0)
+    if (ret < 0)
 		return ret;
-
-	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->reta_update, -ENOTSUP);
+	printf("before reta_update\n");
+    RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->reta_update, -ENOTSUP);
+    printf("function: reta_update\n");
 	return (*dev->dev_ops->reta_update)(dev, reta_conf, reta_size);
 }
 
@@ -3480,6 +3508,26 @@ rte_eth_copy_pci_info(struct rte_eth_dev *eth_dev, struct rte_pci_device *pci_de
 	eth_dev->data->kdrv = pci_dev->kdrv;
 	eth_dev->data->numa_node = pci_dev->numa_node;
 	eth_dev->data->drv_name = pci_dev->driver->name;
+}
+
+void
+rte_eth_copy_platform_info(struct rte_eth_dev *eth_dev, struct rte_platform_device *platform_dev)
+{
+	if ((eth_dev == NULL) || (platform_dev == NULL)) {
+		RTE_PMD_DEBUG_TRACE("NULL pointer eth_dev=%p platform_dev=%p\n",
+				eth_dev, platform_dev);
+		return;
+	}
+
+	eth_dev->data->dev_flags = 0;
+	if (platform_dev->driver->drv_flags & RTE_PCI_DRV_INTR_LSC)
+		eth_dev->data->dev_flags |= RTE_ETH_DEV_INTR_LSC;
+	if (platform_dev->driver->drv_flags & RTE_PCI_DRV_DETACHABLE)
+		eth_dev->data->dev_flags |= RTE_ETH_DEV_DETACHABLE;
+
+	eth_dev->data->kdrv = platform_dev->kdrv;
+	eth_dev->data->numa_node = platform_dev->numa_node;
+	eth_dev->data->drv_name = platform_dev->driver->name;
 }
 
 int

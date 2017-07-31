@@ -89,9 +89,10 @@ cpu_core_map_init(uint32_t n_max_sockets,
 	map_size = n_max_sockets * n_max_cores_per_socket * n_max_ht_per_core;
 	map_mem_size = sizeof(struct cpu_core_map) + map_size * sizeof(int);
 	map = (struct cpu_core_map *) malloc(map_mem_size);
-	if (map == NULL)
+	if (map == NULL){
+        printf("Memory allocation fail: map!\n");
 		return NULL;
-
+    }
 	/* Initialization */
 	map->n_max_sockets = n_max_sockets;
 	map->n_max_cores_per_socket = n_max_cores_per_socket;
@@ -102,19 +103,21 @@ cpu_core_map_init(uint32_t n_max_sockets,
 
 	for (i = 0; i < map_size; i++)
 		map->map[i] = -1;
-
+//    printf("eal_initialized=%d\n",eal_initialized);
 	status = (eal_initialized) ?
 		cpu_core_map_compute_eal(map) :
 		cpu_core_map_compute_linux(map);
 
 	if (status) {
 		free(map);
+        printf("Initialization fail: compute\n");
 		return NULL;
 	}
 
 	status = cpu_core_map_compute_and_check(map);
 	if (status) {
 		free(map);
+        printf("Initialization fail: check\n");
 		return NULL;
 	}
 
@@ -182,16 +185,18 @@ cpu_core_map_compute_and_check(struct cpu_core_map *map)
 	uint32_t socket_id, core_id, ht_id;
 
 	/* Compute n_ht_per_core, n_cores_per_socket, n_sockets */
-	for (ht_id = 0; ht_id < map->n_max_ht_per_core; ht_id++) {
+	for (ht_id = 0; ht_id < map->n_max_ht_per_core; ht_id++) 
+    {
 		if (map->map[ht_id] == -1)
 			break;
-
 		map->n_ht_per_core++;
 	}
 
 	if (map->n_ht_per_core == 0)
-		return -1;
-
+    {
+        printf("map->n_ht_per_core\n");
+        return -1;
+    }
 	for (core_id = 0; core_id < map->n_max_cores_per_socket; core_id++) {
 		uint32_t pos = core_id * map->n_max_ht_per_core;
 
@@ -201,9 +206,10 @@ cpu_core_map_compute_and_check(struct cpu_core_map *map)
 		map->n_cores_per_socket++;
 	}
 
-	if (map->n_cores_per_socket == 0)
-		return -1;
-
+	if (map->n_cores_per_socket == 0){
+	    printf("map->n_core_per_cocket\n");
+        return -1;
+    }
 	for (socket_id = 0; socket_id < map->n_max_sockets; socket_id++) {
 		uint32_t pos = socket_id * map->n_max_cores_per_socket *
 			map->n_max_ht_per_core;
@@ -215,8 +221,10 @@ cpu_core_map_compute_and_check(struct cpu_core_map *map)
 	}
 
 	if (map->n_sockets == 0)
-		return -1;
-
+    {   
+        printf("map->n_socket\n");
+        return -1;
+    }
 	/* Check that each socket has exactly the same number of cores
 	and that each core has exactly the same number of hyper-threads */
 	for (socket_id = 0; socket_id < map->n_sockets; socket_id++) {
@@ -231,8 +239,8 @@ cpu_core_map_compute_and_check(struct cpu_core_map *map)
 				if (((ht_id < map->n_ht_per_core) &&
 					(map->map[pos] == -1)) ||
 					((ht_id >= map->n_ht_per_core) &&
-					(map->map[pos] != -1)))
-					return -1;
+					(map->map[pos] != -1))){
+					return -1;}
 			}
 
 		for ( ; core_id < map->n_max_cores_per_socket; core_id++)
@@ -245,7 +253,9 @@ cpu_core_map_compute_and_check(struct cpu_core_map *map)
 					ht_id);
 
 				if (map->map[pos] != -1)
-					return -1;
+                {   
+                    return -1;
+                }
 			}
 	}
 
@@ -300,7 +310,6 @@ cpu_core_map_get_core_id_linux(int lcore_id)
 	}
 
 	fclose(fd);
-
 	core_id = atoi(buffer);
 	return core_id;
 }
@@ -334,32 +343,32 @@ cpu_core_map_get_socket_id_linux(int lcore_id)
 int
 cpu_core_map_compute_linux(struct cpu_core_map *map)
 {
-	uint32_t socket_id, core_id, ht_id;
+    uint32_t socket_id, core_id, ht_id;
 	int n_lcores;
 
 	n_lcores = cpu_core_map_get_n_lcores_linux();
 	if (n_lcores <= 0)
 		return -1;
-
+//    printf("before compute.....\n");
 	/* Compute map */
 	for (socket_id = 0; socket_id < map->n_max_sockets; socket_id++) {
 		uint32_t n_detected, core_id_contig;
 		int lcore_id;
 
 		n_detected = 0;
+        
 		for (lcore_id = 0; lcore_id < n_lcores; lcore_id++) {
-			int lcore_socket_id =
-				cpu_core_map_get_socket_id_linux(lcore_id);
+            int lcore_socket_id =
+				cpu_core_map_get_socket_id_linux(lcore_id)%256;
 
 #if !defined(RTE_ARCH_PPC_64)
 			if (lcore_socket_id < 0)
 				return -1;
 #endif
-
 			if (((uint32_t) lcore_socket_id) == socket_id)
 				n_detected++;
 		}
-
+  //      printf("n_detected=%d\n",n_detected);
 		core_id_contig = 0;
 
 		for (core_id = 0; n_detected ; core_id++) {
@@ -368,7 +377,7 @@ cpu_core_map_compute_linux(struct cpu_core_map *map)
 			for (lcore_id = 0; lcore_id < n_lcores; lcore_id++) {
 				int lcore_socket_id =
 					cpu_core_map_get_socket_id_linux(
-					lcore_id);
+					lcore_id)%256;
 
 #if !defined(RTE_ARCH_PPC_64)
 				if (lcore_socket_id < 0)
@@ -388,11 +397,12 @@ cpu_core_map_compute_linux(struct cpu_core_map *map)
 #else
 				if (((uint32_t) lcore_socket_id == socket_id)) {
 #endif
+
 					uint32_t pos = cpu_core_map_pos(map,
 						socket_id,
 						core_id_contig,
 						ht_id);
-
+     //               printf("map->map[pos]=%d\n",lcore_id);
 					map->map[pos] = lcore_id;
 					ht_id++;
 					n_detected--;

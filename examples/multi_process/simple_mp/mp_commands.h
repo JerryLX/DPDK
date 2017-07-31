@@ -38,7 +38,7 @@ extern const unsigned string_size;
 extern struct rte_ring *send_ring;
 extern struct rte_mempool *message_pool;
 extern volatile int quit;
-
+extern uint64_t current_time;
 extern cmdline_parse_ctx_t simple_mp_ctx[];
 
 #endif /* _SIMPLE_MP_COMMANDS_H_ */

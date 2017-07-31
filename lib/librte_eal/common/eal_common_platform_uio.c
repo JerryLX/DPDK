@@ -25,8 +25,8 @@ platform_uio_map_secondary(struct rte_platform_device *dev)
 	struct mapped_platform_res_list *uio_res_list =
 			RTE_TAILQ_CAST(rte_platform_uio_tailq.head, mapped_platform_res_list);
 
-	TAILQ_FOREACH(uio_res, uio_res_list, next) {
 
+	TAILQ_FOREACH(uio_res, uio_res_list, next) {
 		/* skip this element if it doesn't match our platform name */
         if(strlen(uio_res->name)!=strlen(dev->name) || 
                 strncmp(uio_res->name,dev->name,strlen(uio_res->name)))
@@ -36,7 +36,7 @@ platform_uio_map_secondary(struct rte_platform_device *dev)
 			/*
 			 * open devname, to mmap it
 			 */
-			fd = open(uio_res->maps[i].path, O_RDWR);
+            fd = open(uio_res->maps[i].path, O_RDWR);
 			if (fd < 0) {
 				RTE_LOG(ERR, EAL, "Cannot open %s: %s\n",
 					uio_res->maps[i].path, strerror(errno));
@@ -94,12 +94,10 @@ platform_uio_map_resource(struct rte_platform_device *dev)
         return ret;
 
 	for (i = 0; i != PLATFORM_MAX_RESOURCE; i++) {
-		/* skip empty BAR */
 		phaddr = dev->mem_resource[i].phys_addr;
-		if (phaddr == 0)
-			continue;
-
-		ret = platform_uio_map_resource_by_index(dev, i,
+		if(!phaddr) continue;
+        
+        ret = platform_uio_map_resource_by_index(dev, i,
 				uio_res, map_idx);
 		if (ret)
 			goto error;
@@ -108,7 +106,7 @@ platform_uio_map_resource(struct rte_platform_device *dev)
 	}
 
 	uio_res->nb_maps = map_idx;
-
+    
 	TAILQ_INSERT_TAIL(uio_res_list, uio_res, next);
 
 	return 0;

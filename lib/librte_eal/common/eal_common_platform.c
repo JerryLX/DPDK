@@ -235,18 +235,27 @@ rte_eal_platform_probe_one_driver(struct rte_platform_driver *dr, struct rte_pla
     const struct rte_platform_id *id;
 	for (id = dr->id_table; id->name != NULL; id++) {
 		/* check if device's identifiers match the driver's ones */
+
         len = strlen(id->name);
-        if(len != strlen(dev->name) ||
+        printf("scanning, dev name: %s, id name: %s, len:%d\n",dev->name, id->name,len);
+
+        if(len == 6 && !strncmp(id->name,"virtio",6)){
+            if(!strstr(dev->name, "virtio")){
+                continue;
+            }
+        }
+        else if(len != strlen(dev->name) ||
                 strncmp(id->name, dev->name, len)) 
             continue;
 
 		if (dr->drv_flags & RTE_PLATFORM_DRV_NEED_MAPPING) {
 			/* map resources for devices that use plf_uio */
-			ret = rte_eal_platform_map_device(dev);
+			
+            ret = rte_eal_platform_map_device(dev);
+
 			if (ret != 0)
 				return ret;
 		}
-
 		/* reference driver structure */
 		dev->driver = dr;
 
@@ -273,7 +282,6 @@ platform_probe_all_drivers(struct rte_platform_device *dev)
 	TAILQ_FOREACH(dr, &platform_driver_list, next) {
         //for debug
         RTE_LOG(INFO, EAL, "probing driver: %s\n", dr->name);
-
 		rc = rte_eal_platform_probe_one_driver(dr, dev);
 		if (rc < 0)
 			/* negative value is an error */
@@ -299,7 +307,8 @@ rte_eal_platform_probe(void)
 	int ret = 0;
 
 	TAILQ_FOREACH(dev, &platform_device_list, next) {
-		ret = platform_probe_all_drivers(dev);
+		printf("probe!\n");
+        ret = platform_probe_all_drivers(dev);
 		if (ret < 0)
 			rte_exit(EXIT_FAILURE, "Requested device %s" 
 				 " cannot be used\n", dev->name);

@@ -61,6 +61,7 @@ const char *platform_get_sysfs_path(void);
 #define PLATFORM_NAME_MAX_LEN (32)
 
 /** Calculate offset. */
+#define PAGE_SIZE (sysconf(_SC_PAGESIZE))
 #define UIO_OFFSET(n) ((n) * PAGE_SIZE)
 
 /**
@@ -109,7 +110,7 @@ struct platform_map{
 struct mapped_platform_resource {
     TAILQ_ENTRY(mapped_platform_resource) next;
 
-    char *name;
+    char name[32];
     char path[PATH_MAX];
     int nb_maps;
     struct platform_map maps[PLATFORM_MAX_RESOURCE];

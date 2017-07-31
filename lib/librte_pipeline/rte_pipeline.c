@@ -74,7 +74,6 @@
 #define RTE_PIPELINE_STATS_TABLE_DROP1(p, counter)
 
 #endif
-
 struct rte_port_in {
 	/* Input parameters */
 	struct rte_port_in_ops ops;
@@ -137,6 +136,7 @@ struct rte_pipeline {
 	char name[RTE_PIPELINE_MAX_NAME_SZ];
 	int socket_id;
 	uint32_t offset_port_id;
+	uint32_t index;
 
 	/* Internal tables */
 	struct rte_port_in ports_in[RTE_PIPELINE_PORT_IN_MAX];
@@ -1156,17 +1156,17 @@ rte_pipeline_action_handler_port_bulk(struct rte_pipeline *p,
 
 	/* Output port user actions */
 	if (port_out->f_action != NULL) {
-		port_out->f_action(p, p->pkts, pkts_mask, port_out->arg_ah);
+        port_out->f_action(p, p->pkts, pkts_mask, port_out->arg_ah);
 
 		RTE_PIPELINE_STATS_AH_DROP_READ(p,
 			port_out->n_pkts_dropped_by_ah);
 	}
-
 	/* Output port TX */
 	if (p->pkts_mask != 0)
 		port_out->ops.f_tx_bulk(port_out->h_port,
 			p->pkts,
 			p->pkts_mask);
+//printf("get here out\n");
 }
 
 static inline void
@@ -1379,19 +1379,22 @@ rte_pipeline_run(struct rte_pipeline *p)
 		/* Lookup */
 		table = &p->tables[table_id];
 		table->ops.f_lookup(table->h_table, p->pkts, p->pkts_mask,
-			&lookup_hit_mask, (void **) p->entries);
+			&lookup_hit_mask, (void **) p->entries);//take no time
 		lookup_miss_mask = p->pkts_mask & (~lookup_hit_mask);
 
+        //printf("mask:%lx\n",lookup_miss_mask);
 		/* Lookup miss */
 		if (lookup_miss_mask != 0) {
+          //  printf("look up miss\n");
 			struct rte_pipeline_table_entry *default_entry =
 				table->default_entry;
 
 			p->pkts_mask = lookup_miss_mask;
 
 			/* Table user actions */
-			if (table->f_action_miss != NULL) {
-				table->f_action_miss(p,
+			if (table->f_action_miss != NULL) {//not go to
+			//	printf("action here\n");
+                table->f_action_miss(p,
 					p->pkts,
 					lookup_miss_mask,
 					default_entry,
@@ -1403,11 +1406,14 @@ rte_pipeline_run(struct rte_pipeline *p)
 
 			/* Table reserved actions */
 			if ((default_entry->action == RTE_PIPELINE_ACTION_PORT) &&
-				(p->pkts_mask != 0))
+				(p->pkts_mask != 0)){
+                //printf("action port\n");
 				rte_pipeline_action_handler_port_bulk(p,
 					p->pkts_mask,
 					default_entry->port_id);
-			else {
+               // printf("action complete\n");
+            }
+			else {//not goto
 				uint32_t pos = default_entry->action;
 
 				RTE_PIPELINE_STATS_TABLE_DROP0(p);
@@ -1419,10 +1425,11 @@ rte_pipeline_run(struct rte_pipeline *p)
 			}
 		}
 
+//printf("miss over!\n");
 		/* Lookup hit */
-		if (lookup_hit_mask != 0) {
+		if (lookup_hit_mask != 0) {//not go to
 			p->pkts_mask = lookup_hit_mask;
-
+            //printf("lookup hit!\n");
 			/* Table user actions */
 			if (table->f_action_hit != NULL) {
 				table->f_action_hit(p,
@@ -1430,7 +1437,6 @@ rte_pipeline_run(struct rte_pipeline *p)
 					lookup_hit_mask,
 					p->entries,
 					table->arg_ah);
-
 				RTE_PIPELINE_STATS_AH_DROP_READ(p,
 					table->n_pkts_dropped_by_lkp_hit_ah);
 			}
@@ -1456,6 +1462,7 @@ rte_pipeline_run(struct rte_pipeline *p)
 		}
 
 		/* Prepare for next iteration */
+        //printf("next loop\n");
 		p->pkts_mask = p->action_mask0[RTE_PIPELINE_ACTION_TABLE];
 		table_id = table->table_next_id;
 		p->action_mask0[RTE_PIPELINE_ACTION_TABLE] = 0;
@@ -1474,7 +1481,7 @@ rte_pipeline_run(struct rte_pipeline *p)
 		p->action_mask0[RTE_PIPELINE_ACTION_DROP]);
 
 	/* Pick candidate for next port IN to serve */
-	p->port_in_next = port_in->next;
+	p->port_in_next = port_in->next;//maybe
 
 	return (int) n_pkts;
 }

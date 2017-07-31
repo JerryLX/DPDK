@@ -70,7 +70,7 @@
 #include <cmdline_socket.h>
 #include <cmdline.h>
 #include "mp_commands.h"
-
+#include <rte_cycles.h>
 #define RTE_LOGTYPE_APP RTE_LOGTYPE_USER1
 
 static const char *_MSG_POOL = "MSG_POOL";
@@ -81,6 +81,8 @@ const unsigned string_size = 64;
 struct rte_ring *send_ring, *recv_ring;
 struct rte_mempool *message_pool;
 volatile int quit = 0;
+
+uint64_t current_time=0;
 
 static int
 lcore_recv(__attribute__((unused)) void *arg)
@@ -94,8 +96,18 @@ lcore_recv(__attribute__((unused)) void *arg)
 			usleep(5);
 			continue;
 		}
-		printf("core %u: Received '%s'\n", lcore_id, (char *)msg);
-		rte_mempool_put(message_pool, msg);
+		if(strcmp(msg,"ACK")!=0){
+
+			printf("core %u: Received '%s'\n", lcore_id, (char *)msg);
+		}
+		else{
+			printf("Received ACK time: %lu \n",rte_rdtsc()-current_time);
+		}
+			rte_mempool_put(message_pool, msg);
+		if(strcmp(msg, "ACK")!=0){
+			snprintf((char*)msg, string_size,"%s", "ACK");
+			rte_ring_enqueue(send_ring,msg);
+		}
 	}
 
 	return 0;

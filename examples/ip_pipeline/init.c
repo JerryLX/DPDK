@@ -326,9 +326,16 @@ app_init_mempool(struct app_params *app)
 				rte_pktmbuf_init, NULL,
 				p->cpu_socket_id,
 				0);
-
-		if (app->mempool[i] == NULL)
-			rte_panic("%s init error\n", p->name);
+printf("%d:size %d\n",i,p->pool_size);
+//        app->mempool[i] = rte_pktmbuf_pool_create(
+//                p->name,
+//                p->pool_size,
+//                p->cache_size,
+//                0,
+//                RTE_MBUF_DEFAULT_BUF_SIZE,
+//                p->cpu_socket_id);
+//		if (app->mempool[i] == NULL)
+//			rte_panic("%s init error\n", p->name);
 	}
 }
 
@@ -906,7 +913,7 @@ app_get_cpu_socket_id(uint32_t pmd_id)
 
 static inline int
 app_link_rss_enabled(struct app_link_params *cp)
-{
+{   
 	return (cp->n_rss_qs) ? 1 : 0;
 }
 
@@ -919,17 +926,18 @@ app_link_rss_setup(struct app_link_params *cp)
 	int status;
 
     /* Get RETA size */
-	memset(&dev_info, 0, sizeof(dev_info));
+    memset(&dev_info, 0, sizeof(dev_info));
 	rte_eth_dev_info_get(cp->pmd_id, &dev_info);
-
-	if (dev_info.reta_size == 0)
-		rte_panic("%s (%u): RSS setup error (null RETA size)\n",
+    dev_info.reta_size=64;
+	if (dev_info.reta_size == 0){
+	    printf("cp->name: %s, %d\n",cp->name, cp->pmd_id);
+        rte_panic("%s (%u): RSS setup error (null RETA size)\n",
 			cp->name, cp->pmd_id);
-
-	if (dev_info.reta_size > ETH_RSS_RETA_SIZE_512)
+    }
+    if (dev_info.reta_size > ETH_RSS_RETA_SIZE_512){
 		rte_panic("%s (%u): RSS setup error (RETA size too big)\n",
 			cp->name, cp->pmd_id);
-
+    }
 	/* Setup RETA contents */
 	memset(reta_conf, 0, sizeof(reta_conf));
 
@@ -944,12 +952,12 @@ app_link_rss_setup(struct app_link_params *cp)
 		reta_conf[reta_id].reta[reta_pos] =
 			(uint16_t) cp->rss_qs[rss_qs_pos];
 	}
-
 	/* RETA update */
 	status = rte_eth_dev_rss_reta_update(cp->pmd_id,
 		reta_conf,
 		dev_info.reta_size);
-	if (status != 0)
+    printf("status=%d\n",status);
+    if (status != 0)
 		rte_panic("%s (%u): RSS setup error (RETA update failed)\n",
 			cp->name, cp->pmd_id);
 }
@@ -1003,18 +1011,18 @@ app_init_link(struct app_params *app)
 		rte_eth_macaddr_get(p_link->pmd_id,
 			(struct ether_addr *) &p_link->mac_addr);
 
-		if (p_link->promisc)
+		if (p_link->promisc){
 			rte_eth_promiscuous_enable(p_link->pmd_id);
-
+            APP_LOG(app, HIGH, "Promisc enable success!");
+        }
 		/* RXQ */
 		for (j = 0; j < app->n_pktq_hwq_in; j++) {
-			struct app_pktq_hwq_in_params *p_rxq =
+            struct app_pktq_hwq_in_params *p_rxq =
 				&app->hwq_in_params[j];
 			uint32_t rxq_link_id, rxq_queue_id;
-
 			sscanf(p_rxq->name, "RXQ%" PRIu32 ".%" PRIu32,
 				&rxq_link_id, &rxq_queue_id);
-			if (rxq_link_id != link_id)
+            if (rxq_link_id != link_id)
 				continue;
 
 			status = rte_eth_rx_queue_setup(
@@ -1032,7 +1040,7 @@ app_init_link(struct app_params *app)
 					p_rxq->name,
 					status);
 		}
-
+        
 		/* TXQ */
 		for (j = 0; j < app->n_pktq_hwq_out; j++) {
 			struct app_pktq_hwq_out_params *p_txq =
@@ -1058,21 +1066,25 @@ app_init_link(struct app_params *app)
 					p_txq->name,
 					status);
 		}
-
+        APP_LOG(app, HIGH, "Queue setup success!");
 		/* LINK START */
 		status = rte_eth_dev_start(p_link->pmd_id);
 		if (status < 0)
 			rte_panic("Cannot start %s (error %" PRId32 ")\n",
 				p_link->name, status);
+        APP_LOG(app, HIGH, "Link start success!");
 
-		/* LINK FILTERS */
-		app_link_set_arp_filter(app, p_link);
+        /* LINK FILTERS */
+        app_link_set_arp_filter(app, p_link);
 		app_link_set_tcp_syn_filter(app, p_link);
 		if (app_link_rss_enabled(p_link))
-			app_link_rss_setup(p_link);
-
+        {	
+            app_link_rss_setup(p_link);
+            printf("rss_setup!\n");
+        }
 		/* LINK UP */
 		app_link_up_internal(app, p_link);
+        APP_LOG(app, HIGH, "link up success!");
 	}
 
 	app_check_link(app);

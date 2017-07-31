@@ -44,7 +44,7 @@
 
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
-#define BURST_SIZE 32
+#define BURST_SIZE 256
 
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = { .max_rx_pkt_len = ETHER_MAX_LEN, },
@@ -100,14 +100,16 @@ static inline int
 port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 {
 	struct rte_eth_conf port_conf = port_conf_default;
-	const uint16_t rx_rings = 1, tx_rings = 1;
+	const uint16_t rx_rings = 16, tx_rings = 16;
 	int retval;
 	uint16_t q;
 
 	if (port >= rte_eth_dev_count())
 		return -1;
 
-	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
+
+    printf("init port: %d\n", port);
+    retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0)
 		return retval;
 
@@ -117,7 +119,6 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 		if (retval < 0)
 			return retval;
 	}
-
 	for (q = 0; q < tx_rings; q++) {
 		retval = rte_eth_tx_queue_setup(port, q, TX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL);
@@ -125,10 +126,11 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 			return retval;
 	}
 
-	retval  = rte_eth_dev_start(port);
-	if (retval < 0)
+	retval  = rte_eth_dev_start(port);	
+    if (retval < 0)
 		return retval;
-
+    printf("after start port\n");
+    
 	struct ether_addr addr;
 
 	rte_eth_macaddr_get(port, &addr);
@@ -154,6 +156,7 @@ static  __attribute__((noreturn)) void
 lcore_main(void)
 {
 	uint8_t port;
+    uint8_t qid;
 
 	for (port = 0; port < nb_ports; port++)
 		if (rte_eth_dev_socket_id(port) > 0 &&
@@ -167,19 +170,25 @@ lcore_main(void)
 			rte_lcore_id());
 	for (;;) {
 		for (port = 0; port < nb_ports; port++) {
-			struct rte_mbuf *bufs[BURST_SIZE];
-			const uint16_t nb_rx = rte_eth_rx_burst(port, 0,
+			for (qid = 0; qid < 16; qid++){
+            struct rte_mbuf *bufs[BURST_SIZE];
+			const uint16_t nb_rx = rte_eth_rx_burst(port, qid,
 					bufs, BURST_SIZE);
 			if (unlikely(nb_rx == 0))
 				continue;
-			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
+            //printf("recv packet,%d!\n",nb_rx);
+			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, qid,
 					bufs, nb_rx);
+            //if(nb_tx > 0){
+            //    printf("transmit packet,%d!\n",nb_tx);
+            //}
 			if (unlikely(nb_tx < nb_rx)) {
 				uint16_t buf;
 
 				for (buf = nb_tx; buf < nb_rx; buf++)
 					rte_pktmbuf_free(bufs[buf]);
 			}
+            }
 		}
 	}
 }
@@ -198,8 +207,9 @@ main(int argc, char *argv[])
 		rte_exit(EXIT_FAILURE, "Error with EAL initialization\n");
 	argc -= ret;
 	argv += ret;
-
+    
 	nb_ports = rte_eth_dev_count();
+    printf("num of ports: %d\n", nb_ports);
 	if (nb_ports < 2 || (nb_ports & 1))
 		rte_exit(EXIT_FAILURE, "Error: number of ports must be even\n");
 
@@ -214,6 +224,8 @@ main(int argc, char *argv[])
 		if (port_init(portid, mbuf_pool) != 0)
 			rte_exit(EXIT_FAILURE, "Cannot init port %"PRIu8"\n",
 					portid);
+
+    printf("after port init\n");
 
 	if (rte_lcore_count() > 1)
 		printf("\nWARNING: Too much enabled lcores - "

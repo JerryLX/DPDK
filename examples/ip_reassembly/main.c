@@ -92,7 +92,7 @@
 #define NB_MBUF 8192
 
 /* allow max jumbo frame 9.5 KB */
-#define JUMBO_FRAME_MAX_SIZE	0x2600
+#define JUMBO_FRAME_MAX_SIZE  0x2500//	0x2600
 
 #define	MAX_FLOW_NUM	UINT16_MAX
 #define	MIN_FLOW_NUM	1
@@ -224,9 +224,9 @@ struct l3fwd_ipv4_route {
 };
 
 struct l3fwd_ipv4_route l3fwd_ipv4_route_array[] = {
-		{IPv4(100,10,0,0), 16, 0},
-		{IPv4(100,20,0,0), 16, 1},
-		{IPv4(100,30,0,0), 16, 2},
+		{IPv4(192,168,0,0), 16, 0},
+		{IPv4(192,168,1,0), 16, 1},
+		{IPv4(192,168,2,0), 16, 2},
 		{IPv4(100,40,0,0), 16, 3},
 		{IPv4(100,50,0,0), 16, 4},
 		{IPv4(100,60,0,0), 16, 5},
@@ -509,7 +509,6 @@ main_loop(__attribute__((unused)) void *dummy)
 
 			nb_rx = rte_eth_rx_burst(portid, 0, pkts_burst,
 				MAX_PKT_BURST);
-
 			/* Prefetch first packets */
 			for (j = 0; j < PREFETCH_OFFSET && j < nb_rx; j++) {
 				rte_prefetch0(rte_pktmbuf_mtod(
@@ -1073,7 +1072,6 @@ main(int argc, char **argv)
 
 			qconf = &lcore_queue_conf[rx_lcore_id];
 		}
-
 		socket = rte_lcore_to_socket_id(portid);
 		if (socket == SOCKET_ID_ANY)
 			socket = 0;

@@ -795,8 +795,19 @@ rte_eal_init(int argc, char **argv)
 
 	rte_config_init();
 
+	//by lixu
+	//for vm do not support pci
+#ifndef RTE_LIBRTE_VIRTIO_PLATFORM_PMD
 	if (rte_eal_pci_init() < 0)
+    {
+        printf("failure PCI ======\n");
 		rte_panic("Cannot init PCI\n");
+    }
+    else
+    {
+        printf("success PCI ========\n");
+    }
+#endif
 
     //by lixu 
     if (rte_eal_platform_init() < 0)
@@ -856,7 +867,7 @@ rte_eal_init(int argc, char **argv)
 
 	if (rte_eal_intr_init() < 0)
 		rte_panic("Cannot init interrupt-handling thread\n");
-
+printf("here!\n");
 	RTE_LCORE_FOREACH_SLAVE(i) {
 
 		/*
@@ -902,8 +913,9 @@ rte_eal_init(int argc, char **argv)
     if (rte_eal_platform_probe())
         rte_panic("Cannot probe Platform");
 
+printf("probe!\n");
 	rte_eal_mcfg_complete();
-
+printf("END!!!!!");
 	return fctret;
 }
 

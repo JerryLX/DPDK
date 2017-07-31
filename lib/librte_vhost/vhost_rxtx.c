@@ -113,7 +113,6 @@ virtio_enqueue_offload(struct rte_mbuf *m_buf, struct virtio_net_hdr *net_hdr)
 			break;
 		}
 	}
-
 	if (m_buf->ol_flags & PKT_TX_TCP_SEG) {
 		if (m_buf->ol_flags & PKT_TX_IPV4)
 			net_hdr->gso_type = VIRTIO_NET_HDR_GSO_TCPV4;
@@ -188,6 +187,7 @@ copy_mbuf_to_desc(struct virtio_net *dev, struct vhost_virtqueue *vq,
 
 			desc = &vq->desc[desc->next];
 			desc_addr = gpa_to_vva(dev, desc->addr);
+	        rte_prefetch0((void *)(uintptr_t)desc_addr);
 			if (unlikely(!desc_addr))
 				return -1;
 
@@ -621,8 +621,8 @@ vhost_dequeue_offload(struct virtio_net_hdr *hdr, struct rte_mbuf *m)
 			}
 		}
 	}
-
-	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+//    RTE_LOG(WARNING, VHOST_DATA, "gso type: %u.\n", hdr->gso_type);
+    if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
 		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
 		case VIRTIO_NET_HDR_GSO_TCPV4:
 		case VIRTIO_NET_HDR_GSO_TCPV6:
@@ -789,7 +789,7 @@ copy_desc_to_mbuf(struct virtio_net *dev, struct vhost_virtqueue *vq,
 
 	prev->data_len = mbuf_offset;
 	m->pkt_len    += mbuf_offset;
-
+    //RTE_LOG(WARNING, VHOST_DATA, "---------gso type: %u.\n", hdr->gso_type);
 	if (hdr->flags != 0 || hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE)
 		vhost_dequeue_offload(hdr, m);
 
@@ -810,18 +810,24 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 	uint16_t avail_idx;
 
 	dev = get_device(vid);
-	if (!dev)
-		return 0;
+	if (!dev){
+		printf("dev error\n");
+        return 0;
+    }
 
 	if (unlikely(!is_valid_virt_queue_idx(queue_id, 1, dev->virt_qp_nb))) {
 		RTE_LOG(ERR, VHOST_DATA, "(%d) %s: invalid virtqueue idx %d.\n",
 			dev->vid, __func__, queue_id);
-		return 0;
+		printf("invalid vritqueue\n");
+        return 0;
 	}
 
 	vq = dev->virtqueue[queue_id];
-	if (unlikely(vq->enabled == 0))
-		return 0;
+	if (unlikely(vq->enabled == 0)){
+		
+		printf("not enable\n");
+        return 0;
+    }
 
 	/*
 	 * Construct a RARP broadcast packet, and inject it to the "pkts"
@@ -835,6 +841,7 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 		if (rarp_mbuf == NULL) {
 			RTE_LOG(ERR, VHOST_DATA,
 				"Failed to allocate memory for mbuf.\n");
+			printf("failed alloc\n");
 			return 0;
 		}
 
@@ -848,9 +855,9 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 
 	avail_idx =  *((volatile uint16_t *)&vq->avail->idx);
 	free_entries = avail_idx - vq->last_used_idx;
-	if (free_entries == 0)
-		goto out;
-
+    if (free_entries == 0){
+        goto out;
+    }
 	LOG_DEBUG(VHOST_DATA, "(%d) %s\n", dev->vid, __func__);
 
 	/* Prefetch available ring to retrieve head indexes. */
@@ -887,12 +894,16 @@ rte_vhost_dequeue_burst(int vid, uint16_t queue_id,
 		if (unlikely(pkts[i] == NULL)) {
 			RTE_LOG(ERR, VHOST_DATA,
 				"Failed to allocate memory for mbuf.\n");
-			break;
+			printf("failed alloc\n");
+            break;
 		}
 		err = copy_desc_to_mbuf(dev, vq, pkts[i], desc_indexes[i],
 					mbuf_pool);
 		if (unlikely(err)) {
 			rte_pktmbuf_free(pkts[i]);
+			RTE_LOG(ERR, VHOST_DATA,
+				"Copy Error.\n");
+			printf("failed copy\n");
 			break;
 		}
 	}

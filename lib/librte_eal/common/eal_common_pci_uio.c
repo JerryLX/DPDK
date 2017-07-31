@@ -122,7 +122,6 @@ pci_uio_map_resource(struct rte_pci_device *dev)
 	/* secondary processes - use already recorded details */
 	if (rte_eal_process_type() != RTE_PROC_PRIMARY)
 		return pci_uio_map_secondary(dev);
-
 	/* allocate uio resource */
 	ret = pci_uio_alloc_resource(dev, &uio_res);
 	if (ret)

@@ -44,7 +44,11 @@
 
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
-#define BURST_SIZE 32
+#define BURST_SIZE 16
+
+static uint64_t timer_period = 10000000;
+static uint64_t speed = 0;
+static uint64_t tspeed = 0;
 
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = { .max_rx_pkt_len = ETHER_MAX_LEN }
@@ -69,23 +73,29 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 
 	/* Configure the Ethernet device. */
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
-	if (retval != 0)
+	if (retval != 0){
+		printf("configure fail%d\n",retval);
 		return retval;
+	}
 
 	/* Allocate and set up 1 RX queue per Ethernet port. */
 	for (q = 0; q < rx_rings; q++) {
 		retval = rte_eth_rx_queue_setup(port, q, RX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL, mbuf_pool);
-		if (retval < 0)
+		if (retval < 0){
+			printf("rx%d fail,retval%d\n",q,retval);
 			return retval;
+		}
 	}
 
 	/* Allocate and set up 1 TX queue per Ethernet port. */
 	for (q = 0; q < tx_rings; q++) {
 		retval = rte_eth_tx_queue_setup(port, q, TX_RING_SIZE,
 				rte_eth_dev_socket_id(port), NULL);
-		if (retval < 0)
+		if (retval < 0){
+			printf("tx%d fail\n",q);
 			return retval;
+		}
 	}
 
 	/* Start the Ethernet port. */
@@ -118,7 +128,7 @@ lcore_main(void)
 {
 	const uint8_t nb_ports = rte_eth_dev_count();
 	uint8_t port;
-
+	uint64_t cur_tsc, prev_tsc;
 	/*
 	 * Check that the port is on the same NUMA node as the polling thread
 	 * for best performance.
@@ -135,13 +145,21 @@ lcore_main(void)
 			rte_lcore_id());
 
 	/* Run until the application is quit or killed. */
+	prev_tsc = 0;
 	for (;;) {
 		/*
 		 * Receive packets on a port and forward them on the paired
 		 * port. The mapping is 0 -> 1, 1 -> 0, 2 -> 3, 3 -> 2, etc.
 		 */
-		for (port = 0; port < nb_ports; port++) {
-
+		cur_tsc = rte_rdtsc();
+		if(unlikely(cur_tsc-prev_tsc>timer_period)){
+			printf("current speed: %lu\n",speed);   
+			printf("current tx speed: %lu\n",tspeed);   
+		        prev_tsc = cur_tsc;
+		        speed = 0;
+			tspeed = 0;
+		}
+		for (port = 0; port < nb_ports-1; port++) {
 			/* Get burst of RX packets, from first port of pair. */
 			struct rte_mbuf *bufs[BURST_SIZE];
 			const uint16_t nb_rx = rte_eth_rx_burst(port, 0,
@@ -149,13 +167,15 @@ lcore_main(void)
 
 			if (unlikely(nb_rx == 0))
 				continue;
-
+			speed+= nb_rx;
 			/* Send burst of TX packets, to second port of pair. */
 			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
 					bufs, nb_rx);
-
+			//const uint16_t nb_tx=0;
+			tspeed += nb_tx;
 			/* Free any unsent packets. */
 			if (unlikely(nb_tx < nb_rx)) {
+				//printf("drop: %d\n",nb_rx-nb_tx);
 				uint16_t buf;
 				for (buf = nb_tx; buf < nb_rx; buf++)
 					rte_pktmbuf_free(bufs[buf]);
@@ -182,7 +202,7 @@ main(int argc, char *argv[])
 
 	argc -= ret;
 	argv += ret;
-
+	printf("hello\n");
 	/* Check that there is an even number of ports to send/receive on. */
 	nb_ports = rte_eth_dev_count();
 	if (nb_ports < 2 || (nb_ports & 1))

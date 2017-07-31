@@ -36,4 +36,5 @@ DIRS-$(CONFIG_RTE_EAL_IGB_UIO) += igb_uio
 DIRS-$(CONFIG_RTE_KNI_KMOD) += kni
 DIRS-$(CONFIG_RTE_LIBRTE_XEN_DOM0) += xen_dom0
 DIRS-$(CONFIG_RTE_EAL_HNS_UIO) += hns_uio
+DIRS-$(CONFIG_RTE_EAL_HNS_VIRTIO_UIO) += plf_uio
 include $(RTE_SDK)/mk/rte.subdir.mk

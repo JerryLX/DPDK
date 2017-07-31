@@ -40,7 +40,6 @@
 #include <rte_eal_memconfig.h>
 #include <rte_errno.h>
 #include <rte_malloc.h>
-
 #include "rte_reorder.h"
 
 TAILQ_HEAD(rte_reorder_list, rte_tailq_entry);
@@ -57,11 +56,13 @@ EAL_REGISTER_TAILQ(rte_reorder_tailq)
 /* Macros for printing using RTE_LOG */
 #define RTE_LOGTYPE_REORDER	RTE_LOGTYPE_USER1
 
+
 /* A generic circular buffer */
 struct cir_buffer {
 	unsigned int size;   /**< Number of entries that can be stored */
 	unsigned int mask;   /**< [buffer_size - 1]: used for wrap-around */
 	unsigned int head;   /**< insertion point in buffer */
+    unsigned int len;
 	unsigned int tail;   /**< extraction point in buffer */
 	struct rte_mbuf **entries;
 } __rte_cache_aligned;
@@ -114,12 +115,12 @@ rte_reorder_init(struct rte_reorder_buffer *b, unsigned int bufsize,
 	memset(b, 0, bufsize);
 	snprintf(b->name, sizeof(b->name), "%s", name);
 	b->memsize = bufsize;
-	b->order_buf.size = b->ready_buf.size = size;
+
+    b->order_buf.size = b->ready_buf.size = size;
 	b->order_buf.mask = b->ready_buf.mask = size - 1;
 	b->ready_buf.entries = (void *)&b[1];
 	b->order_buf.entries = RTE_PTR_ADD(&b[1],
 			size * sizeof(b->ready_buf.entries[0]));
-
 	return b;
 }
 
@@ -185,6 +186,7 @@ exit:
 	return b;
 }
 
+
 void
 rte_reorder_reset(struct rte_reorder_buffer *b)
 {
@@ -205,7 +207,7 @@ rte_reorder_free_mbufs(struct rte_reorder_buffer *b)
 	for (i = 0; i < b->order_buf.size; i++) {
 		if (b->order_buf.entries[i])
 			rte_pktmbuf_free(b->order_buf.entries[i]);
-		if (b->ready_buf.entries[i])
+        if (b->ready_buf.entries[i])
 			rte_pktmbuf_free(b->ready_buf.entries[i]);
 	}
 }
@@ -289,8 +291,8 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 	 * move at least n packets to ready buffer, assuming ready buffer
 	 * has room for those packets.
 	 */
-	while (order_head_adv < n &&
-			((ready_buf->head + 1) & ready_buf->mask) != ready_buf->tail) {
+    while (order_head_adv < n &&
+			((ready_buf->head + 1)& ready_buf->mask) != ready_buf->tail) {
 
 		/* if we are blocked waiting on a packet, skip it */
 		if (order_buf->entries[order_buf->head] == NULL) {
@@ -311,7 +313,7 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 			if (((ready_buf->head + 1) & ready_buf->mask) == ready_buf->tail)
 				break;
 
-			ready_buf->head = (ready_buf->head + 1) & ready_buf->mask;
+            ready_buf->head = (ready_buf->head + 1) & ready_buf->mask;
 		}
 	}
 
@@ -320,6 +322,60 @@ rte_reorder_fill_overflow(struct rte_reorder_buffer *b, unsigned n)
 	return order_head_adv;
 }
 
+static unsigned
+rte_reorder_fill_overflow_opt(struct rte_reorder_buffer *b, unsigned n)
+{
+    /*
+     * 1. Move all ready entries that fit to the ready_buf
+     * 2. check if we meet the minimum needed (n).
+     * 3. If not, then skip any gaps and keep moving.
+     * 4. If at any point the ready buffer is full, stop
+     * 5. Return the number of positions the order_buf head has moved
+     */
+
+    struct cir_buffer *order_buf = &b->order_buf,
+            *ready_buf = &b->ready_buf;
+
+    unsigned int order_head_adv = 0;
+
+    /*
+     * move at least n packets to ready buffer, assuming ready buffer
+     * has room for those packets.
+     */
+    //unsigned ready_size = ready_buf->size; 
+    unsigned ready_head = (ready_buf->tail+ready_buf->len)&ready_buf->mask;
+    while (order_head_adv < n &&
+            (ready_buf->len ) != ready_buf->size) {
+        /* if we are blocked waiting on a packet, skip it */
+        if (order_buf->entries[order_buf->head] == NULL) {
+            order_buf->head = (order_buf->head + 1) & order_buf->mask;
+            order_head_adv++;
+        }
+        /* Move all ready entries that fit to the ready_buf */
+        while (order_buf->entries[order_buf->head] != NULL) {
+            ready_buf->entries[ready_head] =
+                    order_buf->entries[order_buf->head];
+
+            order_buf->entries[order_buf->head] = NULL;
+            order_head_adv++;
+
+            order_buf->head = (order_buf->head + 1) & order_buf->mask;
+
+            ready_buf->len++;
+            if (ready_buf->len == ready_buf->size)
+                break;
+            ready_head = (ready_head+1)&ready_buf->mask;
+        }
+        //order_head_adv += (ready_buf->len - temp);
+        //temp = ready_buf->len;
+    }
+
+    b->min_seqn += order_head_adv;
+    /* Return the number of positions the order_buf head has moved */
+    return order_head_adv;
+}
+
+
 int
 rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 {
@@ -327,6 +383,65 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 	struct cir_buffer *order_buf = &b->order_buf;
 
 	if (!b->is_initialized) {
+		b->min_seqn = mbuf->seqn;
+		b->is_initialized = 1;
+	}
+	/*
+	 * calculate the offset from the head pointer we need to go.
+	 * The subtraction takes care of the sequence number wrapping.
+	 * For example (using 16-bit for brevity):
+	 *	min_seqn  = 0xFFFD
+	 *	mbuf_seqn = 0x0010
+	 *	offset    = 0x0010 - 0xFFFD = 0x13
+	 */
+	offset = mbuf->seqn - b->min_seqn;
+
+	/*
+	 * action to take depends on offset.
+	 * offset < buffer->size: the mbuf fits within the current window of
+	 *    sequence numbers we can reorder. EXPECTED CASE.
+	 * offset > buffer->size: the mbuf is outside the current window. There
+	 *    are a number of cases to consider:
+	 *    1. The packet sequence is just outside the window, then we need
+	 *       to see about shifting the head pointer and taking any ready
+	 *       to return packets out of the ring. If there was a delayed
+	 *       or dropped packet preventing drains from shifting the window
+	 *       this case will skip over the dropped packet instead, and any
+	 *       packets dequeued here will be returned on the next drain call.
+	 *    2. The packet sequence number is vastly outside our window, taken
+	 *       here as having offset greater than twice the buffer size. In
+	 *       this case, the packet is probably an old or late packet that
+	 *       was previously skipped, so just enqueue the packet for
+	 *       immediate return on the next drain call, or else return error.
+	 */
+    if (offset < b->order_buf.size) {
+		position = (order_buf->head + offset) & order_buf->mask;
+		order_buf->entries[position] = mbuf;
+	} else if (offset < 2 * b->order_buf.size ) {
+		if (rte_reorder_fill_overflow(b, offset + 1 - order_buf->size)
+				< (offset + 1 - order_buf->size)) {
+			/* Put in handling for enqueue straight to output */
+			rte_errno = ENOSPC;
+			return -1;
+		}
+		offset = mbuf->seqn - b->min_seqn;
+		position = (order_buf->head + offset) & order_buf->mask;
+		order_buf->entries[position] = mbuf;
+	} else {
+		/* Put in handling for enqueue straight to output */
+		rte_errno = ERANGE;
+		return -1;
+	}
+	return 0;
+}
+
+int
+rte_reorder_insert_opt(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
+{
+	uint32_t offset, position;
+	struct cir_buffer *order_buf = &b->order_buf;
+
+	if (unlikely(!b->is_initialized)) {
 		b->min_seqn = mbuf->seqn;
 		b->is_initialized = 1;
 	}
@@ -359,11 +474,11 @@ rte_reorder_insert(struct rte_reorder_buffer *b, struct rte_mbuf *mbuf)
 	 *       was previously skipped, so just enqueue the packet for
 	 *       immediate return on the next drain call, or else return error.
 	 */
-	if (offset < b->order_buf.size) {
+    if (offset < b->order_buf.size) {
 		position = (order_buf->head + offset) & order_buf->mask;
 		order_buf->entries[position] = mbuf;
-	} else if (offset < 2 * b->order_buf.size) {
-		if (rte_reorder_fill_overflow(b, offset + 1 - order_buf->size)
+	} else if (offset < ( b->order_buf.size << 1)) {
+		if (rte_reorder_fill_overflow_opt(b, offset + 1 - order_buf->size)
 				< (offset + 1 - order_buf->size)) {
 			/* Put in handling for enqueue straight to output */
 			rte_errno = ENOSPC;
@@ -385,7 +500,6 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 		unsigned max_mbufs)
 {
 	unsigned int drain_cnt = 0;
-
 	struct cir_buffer *order_buf = &b->order_buf,
 			*ready_buf = &b->ready_buf;
 
@@ -397,7 +511,7 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 
 	/*
 	 * If requested number of buffers not fetched from ready buffer, fetch
-	 * remaining buffers from order buffer
+	 * remaining buffers from order buffer.
 	 */
 	while ((drain_cnt < max_mbufs) &&
 			(order_buf->entries[order_buf->head] != NULL)) {
@@ -406,6 +520,78 @@ rte_reorder_drain(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
 		b->min_seqn++;
 		order_buf->head = (order_buf->head + 1) & order_buf->mask;
 	}
+	return drain_cnt;
+}
 
+unsigned int
+rte_reorder_drain_opt(struct rte_reorder_buffer *b, struct rte_mbuf **mbufs,
+		unsigned max_mbufs)
+{
+	unsigned int drain_cnt = 0;
+	struct cir_buffer *order_buf = &b->order_buf,
+			*ready_buf = &b->ready_buf;
+
+    unsigned int cnt = RTE_MIN(ready_buf->len, max_mbufs);
+	/* Try to fetch requested number of mbufs from ready buffer */
+	while (drain_cnt < cnt) {
+		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+		ready_buf->tail = (ready_buf->tail + 1) & ready_buf->mask;
+	}
+   
+//    unsigned int ready_size = ready_buf->size;
+//    int mbuf_size = sizeof(struct rte_mbuf*);
+//    if(ready_buf->tail + cnt > ready_size){
+//        unsigned right = ready_size-ready_buf->tail;
+//        unsigned left = cnt - right;
+//        if(right < 8){
+//            while(drain_cnt < right){
+//        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+//		        ready_buf->tail++;   
+//            }
+//            ready_buf->tail = 0;
+//        } else {
+//            memcpy(mbufs, &(ready_buf->entries[ready_buf->tail]),right*mbuf_size);
+//            drain_cnt += right;
+//            ready_buf->tail = 0;
+//        }
+//        //rte_prefetch0(ready_buf->entries[0]);
+//        if(left < 8){
+//            while(drain_cnt < cnt){
+//        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+//		        ready_buf->tail++;   
+//            }
+//        } else {
+//            memcpy(&mbufs[drain_cnt], ready_buf->entries,left*mbuf_size);
+//            drain_cnt += left;
+//            ready_buf->tail = left;
+//        } 
+//    } else {
+//        if(cnt < 8){
+//            while(drain_cnt < cnt){
+//        		mbufs[drain_cnt++] = ready_buf->entries[ready_buf->tail];
+//		        ready_buf->tail++;   
+//            }
+//        } else {
+//            memcpy(mbufs, &(ready_buf->entries[ready_buf->tail]),cnt*mbuf_size);
+//            drain_cnt += cnt;
+//            ready_buf->tail += cnt;
+//        }
+//        ready_buf->tail = ready_buf->tail & ready_buf->mask;
+//    }
+//
+    ready_buf->len-=drain_cnt;
+
+	/*
+	 * If requested number of buffers not fetched from ready buffer, fetch
+	 * remaining buffers from order buffer.
+	 */
+	while ((drain_cnt < max_mbufs) &&
+			(order_buf->entries[order_buf->head] != NULL)) {
+		mbufs[drain_cnt++] = order_buf->entries[order_buf->head];
+		order_buf->entries[order_buf->head] = NULL;
+		//b->min_seqn++;
+		order_buf->head = (order_buf->head + 1) & order_buf->mask;
+	}
+    b->min_seqn += (drain_cnt - cnt);
 	return drain_cnt;
 }

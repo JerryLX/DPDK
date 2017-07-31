@@ -233,7 +233,7 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
 {
     char devname[PATH_MAX]; /* contains the /dev/uioX */
     int uio_num;
-    
+printf("alloc!\n");   
     /* find uio resource */
     uio_num = dev->uio_num;
     if(uio_num < 0){
@@ -268,7 +268,7 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     }
     */
 
-    if (dev->kdrv == RTE_KDRV_HNS_UIO)
+    if (dev->kdrv == RTE_KDRV_HNS_UIO || dev->kdrv == RTE_KDRV_PLF_UIO)
         dev->intr_handle.type = RTE_INTR_HANDLE_UIO;
     else{
         RTE_LOG(ERR, EAL, "not implement yet\n");
@@ -284,11 +284,11 @@ platform_uio_alloc_resource(struct rte_platform_device *dev,
     }
 
     snprintf((*uio_res)->path, sizeof((*uio_res)->path), "%s", devname);
-    memcpy(&(*uio_res)->name, &dev->name, sizeof((*uio_res)->name));
-
-
+    //memcpy((*uio_res)->name, dev->name, sizeof((*uio_res)->name));
+    strcpy((*uio_res)->name, dev->name);
     return 0;
 error:
+printf("error!\n");   
     platform_uio_free_resource(dev, *uio_res);
     return -1;
 }
@@ -331,9 +331,13 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 	if (platform_map_addr == NULL)
 		platform_map_addr = platform_find_max_end_va();
 
-    mapaddr = platform_map_resource(platform_map_addr, fd, 0,
-			(size_t)dev->mem_resource[res_idx].len, 0);
-	close(fd);
+    printf("dev name:%s, mapidx:%d\n",devname,map_idx);
+    
+//    mapaddr = platform_map_resource(platform_map_addr, fd, map_idx*getpagesize(),
+//			(size_t)dev->mem_resource[res_idx].len, 0);
+    	mapaddr = (void *)mmap(NULL, (size_t)dev->mem_resource[res_idx].len,
+                           PROT_READ|PROT_WRITE,MAP_SHARED,fd, map_idx*getpagesize());
+    close(fd);
 	if (mapaddr == MAP_FAILED)
 		goto error;
 
@@ -343,10 +347,10 @@ platform_uio_map_resource_by_index(struct rte_platform_device *dev, int res_idx,
 	maps[map_idx].phaddr = dev->mem_resource[res_idx].phys_addr;
 	maps[map_idx].size = dev->mem_resource[res_idx].len;
 	maps[map_idx].addr = mapaddr;
-	maps[map_idx].offset = 0;
-	strcpy(maps[map_idx].path, devname);
+	maps[map_idx].offset = map_idx*getpagesize();
+	printf("idx:%d,%p, mapped addr:%p\n",map_idx,(void *)(dev->mem_resource[res_idx].phys_addr),mapaddr);
+    strcpy(maps[map_idx].path, devname);
 	dev->mem_resource[res_idx].addr = mapaddr;
-
 	return 0;
 
 error:
